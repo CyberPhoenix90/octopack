@@ -1,0 +1,38 @@
+{
+	"[json]": {
+		"editor.formatOnSave": true,
+		"files.trimTrailingWhitespace": true,
+		"editor.trimAutoWhitespace": true,
+		"editor.defaultFormatter": "esbenp.prettier-vscode"
+	},
+	"[jsonc]": {
+		"editor.formatOnSave": true,
+		"files.trimTrailingWhitespace": true,
+		"editor.trimAutoWhitespace": true
+	},
+	"[typescriptreact]": {
+		"editor.formatOnSave": true,
+		"files.trimTrailingWhitespace": true,
+		"editor.trimAutoWhitespace": true,
+		"editor.defaultFormatter": "esbenp.prettier-vscode"
+	},
+	"[typescript]": {
+		"editor.formatOnSave": true,
+		"files.trimTrailingWhitespace": true,
+		"editor.trimAutoWhitespace": true,
+		"editor.defaultFormatter": "esbenp.prettier-vscode"
+	},
+	"[less]": {
+		"editor.formatOnSave": true,
+		"files.trimTrailingWhitespace": true,
+		"editor.trimAutoWhitespace": true,
+		"editor.defaultFormatter": "esbenp.prettier-vscode"
+	},
+
+	"[javascript]": {
+		"editor.formatOnSave": true,
+		"files.trimTrailingWhitespace": true,
+		"editor.trimAutoWhitespace": true,
+		"editor.defaultFormatter": "esbenp.prettier-vscode"
+	}
+}
