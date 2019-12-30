@@ -1,4 +1,4 @@
-export default {
+module.exports = {
 	name: 'octopack',
 	scope: 'workspace',
 	configVersion: '1',

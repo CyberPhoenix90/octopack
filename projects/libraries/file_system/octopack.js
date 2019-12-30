@@ -1,4 +1,4 @@
-export default {
+module.exports = {
 	name: 'file_system',
 	scope: 'project',
 	configVersion: '1',
