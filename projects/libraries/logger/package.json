@@ -1,0 +1,13 @@
+{
+	"name": "octopack-logger",
+	"version": "0.0.0",
+	"main": "dist/index.js",
+	"scripts": {
+		"test": "mocha test/**/*.spec.js"
+	},
+	"dependencies": {
+		"@types/mocha": "^5.2.7",
+		"@types/node": "^13.1.2",
+		"mocha": "^6.2.2"
+	}
+}
