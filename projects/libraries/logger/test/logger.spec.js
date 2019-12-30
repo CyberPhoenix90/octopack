@@ -1,4 +1,4 @@
 "use strict";
-exports.__esModule = true;
-var assert = require("assert");
+Object.defineProperty(exports, "__esModule", { value: true });
+const assert = require("assert");
 assert(true);
