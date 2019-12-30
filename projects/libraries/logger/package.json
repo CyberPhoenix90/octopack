@@ -10,5 +10,5 @@
 		"@types/node": "^13.1.2",
 		"mocha": "^6.2.2"
 	},
-	"typings": "dist/logger.d.ts"
+	"typings": "dist/index.d.ts"
 }
