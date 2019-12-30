@@ -9,5 +9,6 @@
 		"@types/mocha": "^5.2.7",
 		"@types/node": "^13.1.2",
 		"mocha": "^6.2.2"
-	}
+	},
+	"typings": "dist/logger.d.ts"
 }
