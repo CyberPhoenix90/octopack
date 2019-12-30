@@ -1,10 +1,6 @@
 #!/usr/bin/env node
-/*#
-eval(compiler) {
-    const files = compiler.matchFiles('**\/*', {
-        excludeSelf:true
-    })
-    files.map(f => compiler.generate(`export * from ${f.relative()}`))
-}
- */
-console.log('what');
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const config_resolver_1 = require("../../libraries/config_resolver");
+const file_system_1 = require("../../libraries/file_system");
+config_resolver_1.findConfiguration(process.cwd(), file_system_1.localDiskFileSystem);
