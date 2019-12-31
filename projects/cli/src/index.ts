@@ -5,6 +5,7 @@ import { localDiskFileSystem } from '../../libraries/file_system';
 import { join } from 'path';
 import { Build } from '../../libraries/api';
 import { Logger } from '../../libraries/logger/dist';
+import { parseArguments } from '../../libraries/argument_parser';
 
 //Self executing async function due to lack of top level async support
 (async () => {
@@ -36,13 +37,10 @@ function notFound() {
 }
 
 function runScript(config: OctopackConfiguration) {
-	new Build().run(
-		{},
-		{
-			fileSystem: localDiskFileSystem,
-			devLogger: new Logger(),
-			uiLogger: new Logger(),
-			workspaceConfig: config
-		}
-	);
+	new Build().run(parseArguments(process.argv.slice(2)), {
+		fileSystem: localDiskFileSystem,
+		devLogger: new Logger(),
+		uiLogger: new Logger(),
+		workspaceConfig: config
+	});
 }

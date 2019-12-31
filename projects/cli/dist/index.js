@@ -6,6 +6,7 @@ const file_system_1 = require("../../libraries/file_system");
 const path_1 = require("path");
 const api_1 = require("../../libraries/api");
 const dist_1 = require("../../libraries/logger/dist");
+const argument_parser_1 = require("../../libraries/argument_parser");
 //Self executing async function due to lack of top level async support
 (async () => {
     const { config, directory: firstDirectory } = await config_resolver_1.findConfiguration(process.cwd(), file_system_1.localDiskFileSystem);
@@ -32,7 +33,7 @@ function notFound() {
     process.exit(-1);
 }
 function runScript(config) {
-    new api_1.Build().run({}, {
+    new api_1.Build().run(argument_parser_1.parseArguments(process.argv.slice(2)), {
         fileSystem: file_system_1.localDiskFileSystem,
         devLogger: new dist_1.Logger(),
         uiLogger: new dist_1.Logger(),

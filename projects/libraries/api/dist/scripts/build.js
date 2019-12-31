@@ -11,6 +11,7 @@ class Build extends script_1.Script {
         };
     }
     async run(args, context) {
+        console.log(args);
         return {};
     }
 }

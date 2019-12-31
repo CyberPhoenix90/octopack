@@ -12,6 +12,7 @@ export class Build extends Script {
 	}
 
 	public async run(args: any, context: ScriptContext): Promise<ScriptStatus> {
+		console.log(args);
 		return {};
 	}
 }
