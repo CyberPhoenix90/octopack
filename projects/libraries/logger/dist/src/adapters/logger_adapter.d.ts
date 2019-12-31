@@ -1,5 +1,5 @@
 import { Log } from '../log/log';
 export declare abstract class LoggerAdapter {
-    protected abstract log(log: Log): void;
+    abstract log(log: Log): void;
 }
 //# sourceMappingURL=logger_adapter.d.ts.map
