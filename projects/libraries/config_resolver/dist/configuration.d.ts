@@ -25,3 +25,4 @@ export declare type OctopackBuildPlugin = string | {
         [key: string]: any;
     };
 };
+//# sourceMappingURL=configuration.d.ts.map

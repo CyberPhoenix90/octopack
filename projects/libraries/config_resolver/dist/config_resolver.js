@@ -13,6 +13,7 @@ async function findConfiguration(cwd, fileSystem) {
             segments.pop();
         }
     }
+    return { directory: '/', config: undefined };
 }
 exports.findConfiguration = findConfiguration;
 async function loadConfig(path, fileSystem) {
@@ -27,3 +28,4 @@ async function loadConfig(path, fileSystem) {
     }
     return config;
 }
+//# sourceMappingURL=config_resolver.js.map

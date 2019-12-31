@@ -11,9 +11,9 @@ class FileSystem {
 }
 exports.FileSystem = FileSystem;
 function runModule(code) {
-    const sandboxContext = { module: {} };
+    const sandboxContext = { module: { exports: undefined } };
     vm.createContext(sandboxContext);
     vm.runInContext(`((module) => {${code}})(module)`, sandboxContext);
-    return sandboxContext.module;
+    return sandboxContext.module.exports;
 }
 //# sourceMappingURL=file_system.js.map

@@ -1,11 +1,9 @@
 {
+	"extends": "../../tsconfig.json",
 	"compilerOptions": {
-		"moduleResolution": "Node",
-		"outDir": "dist",
-		"target": "esnext",
-		"module": "CommonJS",
-		"sourceMap": true,
-		"declarationMap": true
+		"declarationMap": false,
+		"declaration": false,
+		"outDir": "dist"
 	},
 	"include": ["src/**/*.ts"]
 }

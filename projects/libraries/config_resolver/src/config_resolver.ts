@@ -15,6 +15,7 @@ export async function findConfiguration(cwd: string, fileSystem: FileSystem): Pr
 			segments.pop();
 		}
 	}
+	return { directory: '/', config: undefined };
 }
 
 async function loadConfig(path: string, fileSystem: FileSystem): Promise<OctopackConfiguration> {

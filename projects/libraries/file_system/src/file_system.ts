@@ -16,8 +16,8 @@ export abstract class FileSystem {
 }
 
 function runModule(code: string) {
-	const sandboxContext = { module: {} };
+	const sandboxContext: any = { module: { exports: undefined } };
 	vm.createContext(sandboxContext);
 	vm.runInContext(`((module) => {${code}})(module)`, sandboxContext);
-	return sandboxContext.module;
+	return sandboxContext.module.exports;
 }
