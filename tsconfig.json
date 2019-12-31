@@ -9,6 +9,7 @@
 		"noImplicitReturns": true,
 		"noFallthroughCasesInSwitch": true,
 		"noImplicitThis": true,
-		"noImplicitAny": true
+		"noImplicitAny": true,
+		"noUnusedLocals": true
 	}
 }

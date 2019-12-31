@@ -4,6 +4,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const config_resolver_1 = require("../../libraries/config_resolver");
 const file_system_1 = require("../../libraries/file_system");
 const path_1 = require("path");
+const api_1 = require("../../libraries/api");
+const dist_1 = require("../../libraries/logger/dist");
 //Self executing async function due to lack of top level async support
 (async () => {
     const { config, directory: firstDirectory } = await config_resolver_1.findConfiguration(process.cwd(), file_system_1.localDiskFileSystem);
@@ -16,21 +18,25 @@ const path_1 = require("path");
             notFound();
         }
         if (config.scope !== 'workspace') {
-            debugger;
             console.error(`Expected to find workspace scope but found ${config.scope} at ${directory}`);
             process.exit(-1);
         }
-        discoverWorkspace(config);
+        runScript(config);
     }
     else {
-        discoverWorkspace(config);
+        runScript(config);
     }
 })();
 function notFound() {
     console.error(`Could not find any octopack configuration. Please run octo from a folder or subfolder that contains a workspace configuration`);
     process.exit(-1);
 }
-function discoverWorkspace(config) {
-    console.log(config);
+function runScript(config) {
+    new api_1.Build().run({}, {
+        fileSystem: file_system_1.localDiskFileSystem,
+        devLogger: new dist_1.Logger(),
+        uiLogger: new dist_1.Logger(),
+        workspaceConfig: config
+    });
 }
 //# sourceMappingURL=index.js.map

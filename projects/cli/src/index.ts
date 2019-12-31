@@ -3,6 +3,8 @@
 import { findConfiguration, OctopackConfiguration } from '../../libraries/config_resolver';
 import { localDiskFileSystem } from '../../libraries/file_system';
 import { join } from 'path';
+import { Build } from '../../libraries/api';
+import { Logger } from '../../libraries/logger/dist';
 
 //Self executing async function due to lack of top level async support
 (async () => {
@@ -19,13 +21,12 @@ import { join } from 'path';
 		}
 
 		if (config.scope !== 'workspace') {
-			debugger;
 			console.error(`Expected to find workspace scope but found ${config.scope} at ${directory}`);
 			process.exit(-1);
 		}
-		discoverWorkspace(config);
+		runScript(config);
 	} else {
-		discoverWorkspace(config);
+		runScript(config);
 	}
 })();
 
@@ -34,6 +35,14 @@ function notFound() {
 	process.exit(-1);
 }
 
-function discoverWorkspace(config: OctopackConfiguration) {
-	console.log(config);
+function runScript(config: OctopackConfiguration) {
+	new Build().run(
+		{},
+		{
+			fileSystem: localDiskFileSystem,
+			devLogger: new Logger(),
+			uiLogger: new Logger(),
+			workspaceConfig: config
+		}
+	);
 }
