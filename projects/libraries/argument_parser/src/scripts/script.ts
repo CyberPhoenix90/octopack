@@ -1,14 +1,12 @@
-import { FileSystem as FileSystemEntryData } from '../../../file_system';
+import { FileSystemEntryData } from '../../../file_system';
 import { Logger } from '../../../logger';
 import { OctopackConfiguration } from '../../../config_resolver';
-import { ParsedArguments } from '../../../argument_parser';
 
 export interface ScriptContext {
 	workspaceConfig: OctopackConfiguration;
 	uiLogger: Logger;
 	devLogger: Logger;
 	fileSystem: FileSystemEntryData;
-	workspaceRoot: string;
 }
 
 export interface Help {
@@ -24,5 +22,5 @@ export interface ScriptStatus {
 export abstract class Script {
 	public abstract autoComplete(): Promise<string[]>;
 	public abstract help(): Help;
-	public abstract run(args: ParsedArguments, context: ScriptContext): Promise<ScriptStatus>;
+	public abstract run(args: any, context: ScriptContext): Promise<ScriptStatus>;
 }

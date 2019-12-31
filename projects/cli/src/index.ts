@@ -25,9 +25,9 @@ import { parseArguments } from '../../libraries/argument_parser';
 			console.error(`Expected to find workspace scope but found ${config.scope} at ${directory}`);
 			process.exit(-1);
 		}
-		runScript(config);
+		runScript(config, directory);
 	} else {
-		runScript(config);
+		runScript(config, firstDirectory);
 	}
 })();
 
@@ -36,8 +36,9 @@ function notFound() {
 	process.exit(-1);
 }
 
-function runScript(config: OctopackConfiguration) {
+function runScript(config: OctopackConfiguration, workspaceRoot: string) {
 	new Build().run(parseArguments(process.argv.slice(2)), {
+		workspaceRoot,
 		fileSystem: localDiskFileSystem,
 		devLogger: new Logger(),
 		uiLogger: new Logger(),

@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const script_1 = require("./script");
+const project_crawler_1 = require("../projects/project_crawler");
 class Build extends script_1.Script {
     autoComplete() {
         throw new Error('Method not implemented.');
@@ -11,7 +12,8 @@ class Build extends script_1.Script {
         };
     }
     async run(args, context) {
-        console.log(args);
+        const projects = await project_crawler_1.projectCrawler.findProjects(context.workspaceRoot, context.fileSystem);
+        console.log(projects);
         return {};
     }
 }

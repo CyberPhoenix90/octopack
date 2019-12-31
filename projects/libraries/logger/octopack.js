@@ -1,4 +1,4 @@
-export default {
+module.exports = {
 	name: 'logger',
 	scope: 'project',
 	configVersion: '1',

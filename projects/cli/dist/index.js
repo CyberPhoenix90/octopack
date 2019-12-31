@@ -22,18 +22,19 @@ const argument_parser_1 = require("../../libraries/argument_parser");
             console.error(`Expected to find workspace scope but found ${config.scope} at ${directory}`);
             process.exit(-1);
         }
-        runScript(config);
+        runScript(config, directory);
     }
     else {
-        runScript(config);
+        runScript(config, firstDirectory);
     }
 })();
 function notFound() {
     console.error(`Could not find any octopack configuration. Please run octo from a folder or subfolder that contains a workspace configuration`);
     process.exit(-1);
 }
-function runScript(config) {
+function runScript(config, workspaceRoot) {
     new api_1.Build().run(argument_parser_1.parseArguments(process.argv.slice(2)), {
+        workspaceRoot,
         fileSystem: file_system_1.localDiskFileSystem,
         devLogger: new dist_1.Logger(),
         uiLogger: new dist_1.Logger(),

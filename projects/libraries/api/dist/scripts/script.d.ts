@@ -1,4 +1,4 @@
-import { FileSystem } from '../../../file_system';
+import { FileSystem as FileSystemEntryData } from '../../../file_system';
 import { Logger } from '../../../logger';
 import { OctopackConfiguration } from '../../../config_resolver';
 import { ParsedArguments } from '../../../argument_parser';
@@ -6,7 +6,8 @@ export interface ScriptContext {
     workspaceConfig: OctopackConfiguration;
     uiLogger: Logger;
     devLogger: Logger;
-    fileSystem: FileSystem;
+    fileSystem: FileSystemEntryData;
+    workspaceRoot: string;
 }
 export interface Help {
     description: string;

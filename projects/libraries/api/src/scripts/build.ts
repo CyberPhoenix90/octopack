@@ -1,4 +1,5 @@
 import { Help, Script, ScriptContext, ScriptStatus } from './script';
+import { projectCrawler } from '../projects/project_crawler';
 
 export class Build extends Script {
 	public autoComplete(): Promise<string[]> {
@@ -12,7 +13,9 @@ export class Build extends Script {
 	}
 
 	public async run(args: any, context: ScriptContext): Promise<ScriptStatus> {
-		console.log(args);
+		const projects = await projectCrawler.findProjects(context.workspaceRoot, context.fileSystem);
+		console.log(projects);
+
 		return {};
 	}
 }

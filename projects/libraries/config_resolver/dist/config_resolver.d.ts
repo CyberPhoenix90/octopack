@@ -5,4 +5,5 @@ export declare function findConfiguration(cwd: string, fileSystem: FileSystem): 
     config: OctopackConfiguration;
     directory: string;
 }>;
+export declare function loadConfig(path: string, fileSystem: FileSystem): Promise<OctopackConfiguration>;
 //# sourceMappingURL=config_resolver.d.ts.map

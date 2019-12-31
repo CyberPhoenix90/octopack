@@ -28,4 +28,5 @@ async function loadConfig(path, fileSystem) {
     }
     return config;
 }
+exports.loadConfig = loadConfig;
 //# sourceMappingURL=config_resolver.js.map

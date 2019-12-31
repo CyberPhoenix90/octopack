@@ -1,5 +1,5 @@
-export default {
-    ip: '0.0.0.0',
+module.exports = {
+	ip: '0.0.0.0',
 	port: 2500,
 	peers: ['127.0.0.1:2501'],
 	services: {
