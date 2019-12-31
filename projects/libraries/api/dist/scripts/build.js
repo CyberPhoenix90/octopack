@@ -24,7 +24,8 @@ class Build extends script_1.Script {
     }
     buildProject(project) {
         return new Promise((resolve, reject) => {
-            const handle = child_process_1.spawn('tsc', {
+            const handle = child_process_1.spawn('tsc', [], {
+                stdio: 'inherit',
                 cwd: project.path
             });
             handle.on('error', (err) => {

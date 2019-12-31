@@ -29,7 +29,8 @@ export class Build extends Script {
 
 	private buildProject(project: Project): Promise<void> {
 		return new Promise((resolve, reject) => {
-			const handle = spawn('tsc', {
+			const handle = spawn('tsc', [], {
+				stdio: 'inherit',
 				cwd: project.path
 			});
 
