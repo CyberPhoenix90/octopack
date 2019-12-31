@@ -1,4 +1,6 @@
+import { LoggerConfiguration } from './logger_configuration';
 export declare class Logger {
-    constructor();
+    private configuration;
+    constructor(configuration: LoggerConfiguration);
 }
 //# sourceMappingURL=logger.d.ts.map

@@ -1,3 +1,9 @@
+import { LoggerConfiguration } from './logger_configuration';
+
 export class Logger {
-	constructor() {}
+	private configuration: LoggerConfiguration;
+
+	constructor(configuration: LoggerConfiguration) {
+		this.configuration = configuration;
+	}
 }

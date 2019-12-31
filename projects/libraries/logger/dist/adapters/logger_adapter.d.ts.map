@@ -1,0 +1,1 @@
+{"version":3,"file":"logger_adapter.d.ts","sourceRoot":"","sources":["../../src/adapters/logger_adapter.ts"],"names":[],"mappings":"AAAA,OAAO,EAAE,GAAG,EAAE,MAAM,YAAY,CAAC;AAEjC,8BAAsB,aAAa;IAClC,SAAS,CAAC,QAAQ,CAAC,GAAG,CAAC,GAAG,EAAE,GAAG,GAAG,IAAI;CACtC"}
