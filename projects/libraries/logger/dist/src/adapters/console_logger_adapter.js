@@ -11,16 +11,16 @@ class ConsoleLoggerAdapter extends logger_adapter_1.LoggerAdapter {
         }
         switch (logLevel) {
             case log_level_1.LogLevel.INFO:
-                console.info(logInfo);
+                console.info(...logInfo);
                 break;
             case log_level_1.LogLevel.DEBUG:
-                console.debug(logInfo);
+                console.debug(...logInfo);
                 break;
             case log_level_1.LogLevel.WARN:
-                console.warn(logInfo);
+                console.warn(...logInfo);
                 break;
             case log_level_1.LogLevel.ERROR:
-                console.error(logInfo);
+                console.error(...logInfo);
                 break;
             default:
                 throw new Error(`${logLevel} is not a known log level`);
