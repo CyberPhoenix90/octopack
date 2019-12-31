@@ -5,16 +5,18 @@ import { PassThroughLoggerEnhancer } from '../src/enhancers/pass_through_logger_
 
 describe('Logger', () => {
 	it('works', () => {
-		let logged = false;
+		let loggedText = '';
+		const textToBeLogged = 'hey there';
 		const logger = new Logger({
 			adapters: [
 				new CallbackLoggerAdapter((log) => {
-					logged = true;
+					loggedText = log.text;
 				})
 			],
 			enhancers: [PassThroughLoggerEnhancer]
 		});
-		console.log(logger, logged);
-		assert(true);
+
+		logger.info(textToBeLogged);
+		assert(loggedText === textToBeLogged);
 	});
 });

@@ -6,17 +6,18 @@ const callback_logger_adapter_1 = require("../src/adapters/callback_logger_adapt
 const pass_through_logger_enhancer_1 = require("../src/enhancers/pass_through_logger_enhancer");
 describe('Logger', () => {
     it('works', () => {
-        let logged = false;
+        let loggedText = '';
+        const textToBeLogged = 'hey there';
         const logger = new logger_1.Logger({
             adapters: [
                 new callback_logger_adapter_1.CallbackLoggerAdapter((log) => {
-                    logged = true;
+                    loggedText = log.text;
                 })
             ],
             enhancers: [pass_through_logger_enhancer_1.PassThroughLoggerEnhancer]
         });
-        console.log(logger, logged);
-        assert(true);
+        logger.info(textToBeLogged);
+        assert(loggedText === textToBeLogged);
     });
 });
 //# sourceMappingURL=logger.spec.js.map
