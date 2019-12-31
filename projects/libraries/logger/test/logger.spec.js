@@ -1,4 +1,8 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const assert = require("assert");
-assert(true);
+describe('Logger', () => {
+    it('works', () => {
+        assert(true);
+    });
+});

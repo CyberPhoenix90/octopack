@@ -1,3 +1,7 @@
 import * as assert from 'assert';
 
-assert(true);
+describe('Logger', () => {
+	it('works', () => {
+		assert(true);
+	});
+});
