@@ -7,7 +7,7 @@ class CallbackLoggerAdapter extends logger_adapter_1.LoggerAdapter {
         this.callback = callback;
     }
     log(log) {
-        this.callback();
+        this.callback(log);
     }
 }
 exports.CallbackLoggerAdapter = CallbackLoggerAdapter;

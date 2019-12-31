@@ -5,5 +5,6 @@ export class Logger {
 
 	constructor(configuration: LoggerConfiguration) {
 		this.configuration = configuration;
+		console.log(this.configuration);
 	}
 }
