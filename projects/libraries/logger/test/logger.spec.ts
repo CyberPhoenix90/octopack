@@ -37,4 +37,19 @@ describe('Logger', () => {
 		logger.info(textToBeLogged);
 		assert(loggedText.includes(textToBeLogged) && loggedText.includes(LogLevel.INFO));
 	});
+
+	it('has working log level prepender if object is passed', () => {
+		let loggedText: string;
+		const logger = new Logger({
+			adapters: [
+				new CallbackLoggerAdapter((log) => {
+					loggedText = log.text;
+				})
+			],
+			enhancers: [LogLevelPrependerLoggerEnhancer]
+		});
+
+		logger.debug({ dummy: 'tada' });
+		assert(loggedText.includes(LogLevel.DEBUG));
+	});
 });
