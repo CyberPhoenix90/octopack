@@ -36,8 +36,8 @@ function runScript(config, workspaceRoot) {
     new api_1.Build().run(argument_parser_1.parseArguments(process.argv.slice(2)), {
         workspaceRoot,
         fileSystem: file_system_1.localDiskFileSystem,
-        devLogger: new src_1.Logger(),
-        uiLogger: new src_1.Logger(),
+        devLogger: new src_1.Logger({ adapters: [new src_1.CallbackLoggerAdapter(() => { })], enhancers: [src_1.PassThroughLoggerEnhancer] }),
+        uiLogger: new src_1.Logger({ adapters: [new src_1.CallbackLoggerAdapter(() => { })], enhancers: [src_1.PassThroughLoggerEnhancer] }),
         workspaceConfig: config
     });
 }
