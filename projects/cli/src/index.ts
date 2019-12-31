@@ -4,7 +4,7 @@ import { findConfiguration, OctopackConfiguration } from '../../libraries/config
 import { localDiskFileSystem } from '../../libraries/file_system';
 import { join } from 'path';
 import { Build } from '../../libraries/api';
-import { Logger, CallbackLoggerAdapter, PassThroughLoggerEnhancer } from '../../libraries/logger/dist/src';
+import { Logger, CallbackLoggerAdapter, PassThroughLoggerEnhancer } from '../../libraries/logger';
 import { parseArguments } from '../../libraries/argument_parser';
 
 //Self executing async function due to lack of top level async support
