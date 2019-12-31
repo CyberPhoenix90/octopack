@@ -31,7 +31,7 @@ class Logger {
         }
     }
     createLog(logData, logLevel) {
-        let text;
+        let text = '';
         let object;
         if (typeof logData === 'string') {
             text = logData;

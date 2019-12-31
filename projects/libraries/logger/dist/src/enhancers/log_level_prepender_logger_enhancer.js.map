@@ -1,0 +1,1 @@
+{"version":3,"file":"log_level_prepender_logger_enhancer.js","sourceRoot":"","sources":["../../../src/enhancers/log_level_prepender_logger_enhancer.ts"],"names":[],"mappings":";;AAEa,QAAA,+BAA+B,GAAmB,CAAC,GAAG,EAAE,EAAE;IACtE,GAAG,CAAC,IAAI,GAAG,IAAI,GAAG,CAAC,QAAQ,KAAK,GAAG,CAAC,IAAI,EAAE,CAAC;IAC3C,OAAO,GAAG,CAAC;AACZ,CAAC,CAAC"}

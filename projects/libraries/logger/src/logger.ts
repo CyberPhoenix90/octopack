@@ -42,7 +42,7 @@ export class Logger {
 	}
 
 	private createLog(logData: any, logLevel: LogLevel): Log {
-		let text: string;
+		let text = '';
 		let object: any;
 
 		if (typeof logData === 'string') {
