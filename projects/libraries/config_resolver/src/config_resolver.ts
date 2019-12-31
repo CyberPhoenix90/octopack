@@ -10,15 +10,15 @@ export async function findConfiguration(cwd: string, fileSystem: FileSystem): Pr
 		const path = segments.join('/');
 
 		if (await fileSystem.exists(join(path, OCTOPACK_CONFIG_FILE_NAME))) {
-			return { config: await loadConfig(path), directory: path };
+			return { config: await loadConfig(path, fileSystem), directory: path };
 		} else {
 			segments.pop();
 		}
 	}
 }
 
-async function loadConfig(path: string): Promise<OctopackConfiguration> {
-	const config: OctopackConfiguration = await import(join(path, OCTOPACK_CONFIG_FILE_NAME));
+async function loadConfig(path: string, fileSystem: FileSystem): Promise<OctopackConfiguration> {
+	const config: OctopackConfiguration = await fileSystem.import(join(path, OCTOPACK_CONFIG_FILE_NAME));
 	if (!config && !(config as any).default) {
 		throw new Error(`Invalid octopack configuration at ${path}. No configuration returned`);
 	}

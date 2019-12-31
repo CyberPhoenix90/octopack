@@ -7,7 +7,7 @@ async function findConfiguration(cwd, fileSystem) {
     while (segments.length) {
         const path = segments.join('/');
         if (await fileSystem.exists(path_1.join(path, exports.OCTOPACK_CONFIG_FILE_NAME))) {
-            return { config: await loadConfig(path), directory: path };
+            return { config: await loadConfig(path, fileSystem), directory: path };
         }
         else {
             segments.pop();
@@ -15,8 +15,8 @@ async function findConfiguration(cwd, fileSystem) {
     }
 }
 exports.findConfiguration = findConfiguration;
-async function loadConfig(path) {
-    const config = await Promise.resolve().then(() => require(path_1.join(path, exports.OCTOPACK_CONFIG_FILE_NAME)));
+async function loadConfig(path, fileSystem) {
+    const config = await fileSystem.import(path_1.join(path, exports.OCTOPACK_CONFIG_FILE_NAME));
     if (!config && !config.default) {
         throw new Error(`Invalid octopack configuration at ${path}. No configuration returned`);
     }

@@ -34,5 +34,6 @@
 		"files.trimTrailingWhitespace": true,
 		"editor.trimAutoWhitespace": true,
 		"editor.defaultFormatter": "esbenp.prettier-vscode"
-	}
+	},
+	"debug.node.autoAttach": "on"
 }
