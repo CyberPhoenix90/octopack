@@ -6,3 +6,4 @@ export declare class DiskFileSystem extends FileSystem {
     readFileSync(path: string, encoding?: string): string;
 }
 export declare const localDiskFileSystem: DiskFileSystem;
+//# sourceMappingURL=disk_file_system.d.ts.map

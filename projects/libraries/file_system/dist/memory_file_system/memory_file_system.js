@@ -16,3 +16,4 @@ class MemoryFileSystem extends file_system_1.FileSystem {
     }
 }
 exports.MemoryFileSystem = MemoryFileSystem;
+//# sourceMappingURL=memory_file_system.js.map

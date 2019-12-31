@@ -9,3 +9,4 @@ const file_system_1 = require("../../libraries/file_system");
     const config = await config_resolver_1.findConfiguration(process.cwd(), file_system_1.localDiskFileSystem);
     console.log(config);
 })();
+//# sourceMappingURL=index.js.map

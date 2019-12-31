@@ -4,3 +4,4 @@ class Logger {
     constructor() { }
 }
 exports.Logger = Logger;
+//# sourceMappingURL=logger.js.map

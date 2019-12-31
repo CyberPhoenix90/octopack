@@ -6,3 +6,4 @@ export declare abstract class FileSystem {
     import(path: string): Promise<any>;
     importSync(path: string): any;
 }
+//# sourceMappingURL=file_system.d.ts.map

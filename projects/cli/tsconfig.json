@@ -3,7 +3,9 @@
 		"moduleResolution": "Node",
 		"outDir": "dist",
 		"target": "esnext",
-		"module": "CommonJS"
+		"module": "CommonJS",
+		"sourceMap": true,
+		"declarationMap": true
 	},
 	"include": ["src/**/*.ts"]
 }

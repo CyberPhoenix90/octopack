@@ -5,3 +5,4 @@ export declare class MemoryFileSystem extends FileSystem {
     exists(path: string): Promise<boolean>;
     existsSync(path: string): boolean;
 }
+//# sourceMappingURL=memory_file_system.d.ts.map
