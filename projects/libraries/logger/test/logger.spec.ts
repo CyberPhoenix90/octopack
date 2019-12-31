@@ -8,13 +8,13 @@ describe('Logger', () => {
 		let logged = false;
 		const logger = new Logger({
 			adapters: [
-				new CallbackLoggerAdapter(() => {
+				new CallbackLoggerAdapter((log) => {
 					logged = true;
 				})
 			],
 			enhancers: [PassThroughLoggerEnhancer]
 		});
-
+		console.log(logger, logged);
 		assert(true);
 	});
 });

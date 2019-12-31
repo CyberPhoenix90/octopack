@@ -1,9 +1,0 @@
-{
-	"compilerOptions": {
-		"moduleResolution": "Node",
-		"target": "esnext",
-		"module": "CommonJS",
-		"outDir": "dist"
-	},
-	"include": ["./**/*.ts"]
-}

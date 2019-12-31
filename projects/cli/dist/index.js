@@ -5,7 +5,7 @@ const config_resolver_1 = require("../../libraries/config_resolver");
 const file_system_1 = require("../../libraries/file_system");
 const path_1 = require("path");
 const api_1 = require("../../libraries/api");
-const dist_1 = require("../../libraries/logger/dist");
+const src_1 = require("../../libraries/logger/dist/src");
 const argument_parser_1 = require("../../libraries/argument_parser");
 //Self executing async function due to lack of top level async support
 (async () => {
@@ -36,8 +36,8 @@ function runScript(config, workspaceRoot) {
     new api_1.Build().run(argument_parser_1.parseArguments(process.argv.slice(2)), {
         workspaceRoot,
         fileSystem: file_system_1.localDiskFileSystem,
-        devLogger: new dist_1.Logger(),
-        uiLogger: new dist_1.Logger(),
+        devLogger: new src_1.Logger(),
+        uiLogger: new src_1.Logger(),
         workspaceConfig: config
     });
 }
