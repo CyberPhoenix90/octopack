@@ -32,6 +32,9 @@ export declare abstract class FileSystem {
     abstract rmdirSync(path: string): void;
     abstract unlink(path: string): Promise<void>;
     abstract unlinkSync(path: string): void;
+    glob(directory: string, globPattern: string): Promise<string[]>;
+    globSync(directory: string, globPattern: string): string[];
+    private optimizeGlob;
     mkdirp(path: string): Promise<void>;
     mkdirpSync(path: string): void;
     deleteDirectory(path: string): Promise<void>;
@@ -40,7 +43,10 @@ export declare abstract class FileSystem {
     emptyDirectorySync(path: string): void;
     merge(fileSystem: FileSystem, options: ReadDirOptions, targetPath?: string, sourcePath?: string): Promise<void>;
     readDirRecursive(path: string, options: ReadDirOptions): Promise<string[]>;
+    readDirRecursiveSync(path: string, options: ReadDirOptions): string[];
     private _readDirRecursive;
+    private _readDirRecursiveSync;
+    private addFileIfMatch;
     import(path: string): Promise<any>;
     importSync(path: string): any;
     getSubfolders(path: string): Promise<string[]>;

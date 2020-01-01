@@ -1,6 +1,7 @@
 import * as vm from 'vm';
 import { join, sep } from 'path';
 import { FilePath } from './file_path_utils';
+import { match } from 'minimatch';
 
 export interface ReadDirOptions {
 	directoryNameBlackList?: string[];
@@ -38,6 +39,30 @@ export abstract class FileSystem {
 	public abstract rmdirSync(path: string): void;
 	public abstract unlink(path: string): Promise<void>;
 	public abstract unlinkSync(path: string): void;
+
+	public async glob(directory: string, globPattern: string): Promise<string[]> {
+		({ directory, globPattern } = this.optimizeGlob(directory, globPattern));
+		const candidates = await this.readDirRecursive(directory, {});
+		return match(candidates, globPattern);
+	}
+
+	public globSync(directory: string, globPattern: string): string[] {
+		({ directory, globPattern } = this.optimizeGlob(directory, globPattern));
+		const candidates = this.readDirRecursiveSync(directory, {});
+		return match(candidates, globPattern);
+	}
+
+	private optimizeGlob(directory: string, globPattern: string): { directory: string; globPattern: string } {
+		if (globPattern.startsWith('/')) {
+			globPattern = globPattern.substring(1);
+		}
+		const pieces = globPattern.split('/');
+		while (pieces.length !== 0 && !pieces[0].includes('*') && !pieces[0].includes('!') && !pieces[0].includes('(')) {
+			directory = join(directory, pieces.shift());
+		}
+
+		return { directory, globPattern: pieces.join('/') };
+	}
 
 	public async mkdirp(path: string): Promise<void> {
 		const pieces = path.split(sep);
@@ -124,6 +149,10 @@ export abstract class FileSystem {
 		return this._readDirRecursive(path, options, []);
 	}
 
+	public readDirRecursiveSync(path: string, options: ReadDirOptions): string[] {
+		return this._readDirRecursiveSync(path, options, []);
+	}
+
 	private async _readDirRecursive(path: string, options: ReadDirOptions, results: string[]): Promise<string[]> {
 		if (!(await this.exists(path))) {
 			throw new Error(`Path does not exist ${path}`);
@@ -132,21 +161,7 @@ export abstract class FileSystem {
 		const f = await this.readDir(path);
 		for (const file of f) {
 			if ((await this.stat(join(path, file))).isFile) {
-				if (!options.excludeFiles) {
-					if (options.extensionWhiteList) {
-						const fp = new FilePath(file);
-						if (options.extensionWhiteList.includes(fp.getExtensionString())) {
-							results.push(join(path, file));
-						}
-					} else if (options.extensionBlackList) {
-						const fp = new FilePath(file);
-						if (!options.extensionBlackList.includes(fp.getExtensionString())) {
-							results.push(join(path, file));
-						}
-					} else {
-						results.push(join(path, file));
-					}
-				}
+				this.addFileIfMatch(options, file, results, path);
 			} else {
 				if (!options.directoryNameBlackList || !options.directoryNameBlackList.includes(file)) {
 					if (options.includeDirectories) {
@@ -157,6 +172,45 @@ export abstract class FileSystem {
 			}
 		}
 		return results;
+	}
+
+	private _readDirRecursiveSync(path: string, options: ReadDirOptions, results: string[]): string[] {
+		if (!this.existsSync(path)) {
+			throw new Error(`Path does not exist ${path}`);
+		}
+
+		const f = this.readDirSync(path);
+		for (const file of f) {
+			if (this.statSync(join(path, file)).isFile) {
+				this.addFileIfMatch(options, file, results, path);
+			} else {
+				if (!options.directoryNameBlackList || !options.directoryNameBlackList.includes(file)) {
+					if (options.includeDirectories) {
+						results.push(join(path, file));
+					}
+					this._readDirRecursiveSync(join(path, file), options, results);
+				}
+			}
+		}
+		return results;
+	}
+
+	private addFileIfMatch(options: ReadDirOptions, file: string, results: string[], path: string) {
+		if (!options.excludeFiles) {
+			if (options.extensionWhiteList) {
+				const fp = new FilePath(file);
+				if (options.extensionWhiteList.includes(fp.getExtensionString())) {
+					results.push(join(path, file));
+				}
+			} else if (options.extensionBlackList) {
+				const fp = new FilePath(file);
+				if (!options.extensionBlackList.includes(fp.getExtensionString())) {
+					results.push(join(path, file));
+				}
+			} else {
+				results.push(join(path, file));
+			}
+		}
 	}
 
 	public async import(path: string): Promise<any> {
