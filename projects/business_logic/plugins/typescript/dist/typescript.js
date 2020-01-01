@@ -23,8 +23,13 @@ function buildProject(project) {
         handle.on('close', () => {
             resolve();
         });
-        handle.on('exit', () => {
-            resolve();
+        handle.on('exit', (code) => {
+            if (code !== 0) {
+                reject(code);
+            }
+            else {
+                resolve();
+            }
         });
     });
 }

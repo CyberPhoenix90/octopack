@@ -10,11 +10,18 @@ export async function npmInstallPlugin(projects: Project[]): Promise<void> {
 	await Promise.all(promises);
 }
 
-function npmInstall(project: Project): Promise<void> {
+function npmInstall(project: Project, isRetry: boolean = false): Promise<void> {
 	return new Promise((resolve, reject) => {
 		const handle = spawn('npm', ['install'], {
-			stdio: 'inherit',
 			cwd: project.path
+		});
+
+		const stdBuffer: string[] = [];
+		handle.stdout.on('data', (msg) => {
+			stdBuffer.push(msg);
+		});
+		handle.stderr.on('data', (msg) => {
+			stdBuffer.push(msg);
 		});
 
 		handle.on('error', (err) => {
@@ -25,8 +32,17 @@ function npmInstall(project: Project): Promise<void> {
 			resolve();
 		});
 
-		handle.on('exit', () => {
-			resolve();
+		handle.on('exit', (code) => {
+			if (code !== 0) {
+				if (isRetry) {
+					console.error(stdBuffer.join(''));
+					reject(code);
+				} else {
+					npmInstall(project, true).then(resolve, reject);
+				}
+			} else {
+				resolve();
+			}
 		});
 	});
 }

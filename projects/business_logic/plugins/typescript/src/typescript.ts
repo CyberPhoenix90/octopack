@@ -27,8 +27,12 @@ function buildProject(project: Project): Promise<void> {
 			resolve();
 		});
 
-		handle.on('exit', () => {
-			resolve();
+		handle.on('exit', (code) => {
+			if (code !== 0) {
+				reject(code);
+			} else {
+				resolve();
+			}
 		});
 	});
 }
