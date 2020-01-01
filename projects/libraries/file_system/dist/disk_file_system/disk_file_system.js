@@ -16,6 +16,75 @@ class DiskFileSystem extends file_system_1.FileSystem {
     readDirSync(path) {
         return fs_1.readdirSync(path);
     }
+    writeFile(path, content) {
+        return new Promise((resolve, reject) => {
+            fs_1.writeFile(path, content, (err) => {
+                if (err) {
+                    reject(err);
+                }
+                else {
+                    resolve();
+                }
+            });
+        });
+    }
+    writeFileSync(path, content) {
+        return fs_1.writeFileSync(path, content);
+    }
+    mkdir(path) {
+        return new Promise((resolve, reject) => {
+            fs_1.mkdir(path, (err) => {
+                if (err) {
+                    reject(err);
+                }
+                else {
+                    resolve();
+                }
+            });
+        });
+    }
+    mkdirSync(path) {
+        return fs_1.mkdirSync(path);
+    }
+    rmdir(path) {
+        return new Promise((resolve, reject) => {
+            fs_1.rmdir(path, (err) => {
+                if (err) {
+                    reject(err);
+                }
+                else {
+                    resolve();
+                }
+            });
+        });
+    }
+    rmdirSync(path) {
+        return fs_1.rmdirSync(path);
+    }
+    unlink(path) {
+        return new Promise((resolve, reject) => {
+            fs_1.unlink(path, (err) => {
+                if (err) {
+                    reject(err);
+                }
+                else {
+                    resolve();
+                }
+            });
+        });
+    }
+    unlinkSync(path) {
+        return new Promise((resolve, reject) => {
+            fs_1.unlink(path, (err) => {
+                if (err) {
+                    reject(err);
+                }
+                else {
+                    resolve();
+                }
+            });
+        });
+    }
     stat(path) {
         return new Promise((resolve, reject) => {
             return fs_1.stat(path, (err, data) => {
@@ -24,7 +93,13 @@ class DiskFileSystem extends file_system_1.FileSystem {
                 }
                 resolve({
                     isDirectory: data.isDirectory(),
-                    isFile: data.isFile()
+                    isFile: data.isFile(),
+                    isBlockDevice: data.isBlockDevice(),
+                    isCharacterDevice: data.isCharacterDevice(),
+                    isFIFO: data.isFIFO(),
+                    isSocket: data.isSocket(),
+                    isSymbolicLink: data.isSymbolicLink(),
+                    size: data.size
                 });
             });
         });
@@ -33,7 +108,13 @@ class DiskFileSystem extends file_system_1.FileSystem {
         const data = fs_1.statSync(path);
         return {
             isDirectory: data.isDirectory(),
-            isFile: data.isFile()
+            isFile: data.isFile(),
+            isBlockDevice: data.isBlockDevice(),
+            isCharacterDevice: data.isCharacterDevice(),
+            isFIFO: data.isFIFO(),
+            isSocket: data.isSocket(),
+            isSymbolicLink: data.isSymbolicLink(),
+            size: data.size
         };
     }
     exists(path) {
