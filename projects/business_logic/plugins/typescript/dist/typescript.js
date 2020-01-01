@@ -4,7 +4,7 @@ const child_process_1 = require("child_process");
 async function typescriptPlugin(projects) {
     const promises = [];
     for (const project of projects) {
-        buildProject(project);
+        promises.push(buildProject(project));
     }
     await Promise.all(promises);
 }

@@ -4,7 +4,7 @@ import { spawn } from 'child_process';
 export async function typescriptPlugin(projects: Project[]): Promise<void> {
 	const promises: Promise<void>[] = [];
 	for (const project of projects) {
-		buildProject(project);
+		promises.push(buildProject(project));
 	}
 
 	await Promise.all(promises);

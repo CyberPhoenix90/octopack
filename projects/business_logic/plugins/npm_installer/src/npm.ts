@@ -4,7 +4,7 @@ import { spawn } from 'child_process';
 export async function npmInstallPlugin(projects: Project[]): Promise<void> {
 	const promises: Promise<void>[] = [];
 	for (const project of projects) {
-		npmInstall(project);
+		promises.push(npmInstall(project));
 	}
 
 	await Promise.all(promises);

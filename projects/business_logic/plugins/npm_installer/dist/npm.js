@@ -4,7 +4,7 @@ const child_process_1 = require("child_process");
 async function npmInstallPlugin(projects) {
     const promises = [];
     for (const project of projects) {
-        npmInstall(project);
+        promises.push(npmInstall(project));
     }
     await Promise.all(promises);
 }
