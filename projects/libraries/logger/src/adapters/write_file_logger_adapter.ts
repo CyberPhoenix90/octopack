@@ -7,33 +7,28 @@ export class WriteFileLoggerAdapter extends LoggerAdapter {
 	protected path: string;
 
 	private timeOutId: NodeJS.Timeout;
-	private bufferedLogLines: string;
+	private bufferedLogLines: string[];
 
 	constructor(path: string) {
 		super();
 		this.path = path;
-		this.bufferedLogLines = '';
+		this.bufferedLogLines = [];
 	}
 
 	public log(log: Log): void {
-		this.bufferedLogLines = this.bufferedLogLines + this.createLogLine(log);
+		this.bufferedLogLines.push(this.createLogLine(log));
 
 		if (this.timeOutId) {
 			clearTimeout(this.timeOutId);
 		}
 
 		this.timeOutId = setTimeout(() => {
-			fs.appendFile(this.path, this.bufferedLogLines, () => {});
-			this.bufferedLogLines = '';
+			fs.appendFile(this.path, this.bufferedLogLines.join(''), () => {});
+			this.bufferedLogLines = [];
 		}, 50);
 	}
 
 	private createLogLine(log: Log): string {
-		let logLine = log.text;
-		if (log.object) {
-			logLine = `${logLine}${JSON.stringify(log.object)}`;
-		}
-		logLine = logLine + '\n';
-		return logLine;
+		return [log.text, JSON.stringify(log.object), '\n'].filter((s) => s).join('');
 	}
 }
