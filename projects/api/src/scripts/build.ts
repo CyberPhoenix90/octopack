@@ -16,8 +16,11 @@ export class Build extends Script {
 
 	public async run(args: any, context: ScriptContext): Promise<ScriptStatus> {
 		const projects = await projectCrawler.findProjects(context.workspaceRoot, context.fileSystem);
-		console.log(`Building ${projects.length} projects...`);
+
+		console.log(`Npm installing ${projects.length} projects...`);
 		await npmInstallPlugin(projects);
+
+		console.log(`Building ${projects.length} projects...`);
 		await typescriptPlugin(projects);
 		return {};
 	}

@@ -15,8 +15,9 @@ class Build extends script_1.Script {
     }
     async run(args, context) {
         const projects = await project_crawler_1.projectCrawler.findProjects(context.workspaceRoot, context.fileSystem);
-        console.log(`Building ${projects.length} projects...`);
+        console.log(`Npm installing ${projects.length} projects...`);
         await npm_installer_1.npmInstallPlugin(projects);
+        console.log(`Building ${projects.length} projects...`);
         await typescript_1.typescriptPlugin(projects);
         return {};
     }

@@ -1,5 +1,6 @@
 import { Project } from '../../../models';
 import { spawn } from 'child_process';
+import { join } from 'path';
 
 export async function typescriptPlugin(projects: Project[]): Promise<void> {
 	const promises: Promise<void>[] = [];
@@ -11,8 +12,9 @@ export async function typescriptPlugin(projects: Project[]): Promise<void> {
 }
 
 function buildProject(project: Project): Promise<void> {
+	const typescript = join(__dirname, '../node_modules/typescript/bin/tsc');
 	return new Promise((resolve, reject) => {
-		const handle = spawn('tsc', [], {
+		const handle = spawn(typescript, [], {
 			stdio: 'inherit',
 			cwd: project.path
 		});

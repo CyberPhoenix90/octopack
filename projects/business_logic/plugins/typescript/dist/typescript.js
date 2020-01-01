@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const child_process_1 = require("child_process");
+const path_1 = require("path");
 async function typescriptPlugin(projects) {
     const promises = [];
     for (const project of projects) {
@@ -10,8 +11,9 @@ async function typescriptPlugin(projects) {
 }
 exports.typescriptPlugin = typescriptPlugin;
 function buildProject(project) {
+    const typescript = path_1.join(__dirname, '../node_modules/typescript/bin/tsc');
     return new Promise((resolve, reject) => {
-        const handle = child_process_1.spawn('tsc', [], {
+        const handle = child_process_1.spawn(typescript, [], {
             stdio: 'inherit',
             cwd: project.path
         });
