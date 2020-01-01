@@ -16,7 +16,7 @@ export class WriteFileLoggerAdapter extends LoggerAdapter {
 			logData = `${logData}${JSON.stringify(log.object)}`;
 		}
 
-		fs.appendFile(this.path, logData, (error) => {
+		fs.appendFile(this.path, logData + '\n', (error) => {
 			if (error) {
 				throw error;
 			}
