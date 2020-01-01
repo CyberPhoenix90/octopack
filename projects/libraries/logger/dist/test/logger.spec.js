@@ -16,37 +16,137 @@ describe('Logger', () => {
                     loggedText = log.text;
                 })
             ],
-            enhancers: [pass_through_logger_enhancer_1.PassThroughLoggerEnhancer]
+            enhancers: [new pass_through_logger_enhancer_1.PassThroughLoggerEnhancer()]
         });
         logger.info(textToBeLogged);
         assert(loggedText === textToBeLogged);
     });
-    it('has working log level prepender', () => {
-        let loggedText = '';
-        const textToBeLogged = 'hey there';
-        const logger = new logger_1.Logger({
-            adapters: [
-                new callback_logger_adapter_1.CallbackLoggerAdapter((log) => {
-                    loggedText = log.text;
-                })
-            ],
-            enhancers: [log_level_prepender_logger_enhancer_1.LogLevelPrependerLoggerEnhancer]
+    describe('Log level prepender', () => {
+        it('works with passed string', () => {
+            let loggedText = '';
+            const textToBeLogged = 'hey there';
+            const logger = new logger_1.Logger({
+                adapters: [
+                    new callback_logger_adapter_1.CallbackLoggerAdapter((log) => {
+                        loggedText = log.text;
+                    })
+                ],
+                enhancers: [new log_level_prepender_logger_enhancer_1.LogLevelPrependerLoggerEnhancer()]
+            });
+            logger.info(textToBeLogged);
+            assert(loggedText.includes(textToBeLogged) && loggedText.includes(src_1.LogLevel.INFO));
         });
-        logger.info(textToBeLogged);
-        assert(loggedText.includes(textToBeLogged) && loggedText.includes(src_1.LogLevel.INFO));
+        it('works with passed object', () => {
+            let loggedText;
+            const logger = new logger_1.Logger({
+                adapters: [
+                    new callback_logger_adapter_1.CallbackLoggerAdapter((log) => {
+                        loggedText = log.text;
+                    })
+                ],
+                enhancers: [new log_level_prepender_logger_enhancer_1.LogLevelPrependerLoggerEnhancer()]
+            });
+            logger.debug({ dummy: 'tada' });
+            assert(loggedText.includes(src_1.LogLevel.DEBUG));
+        });
     });
-    it('has working log level prepender if object is passed', () => {
-        let loggedText;
-        const logger = new logger_1.Logger({
-            adapters: [
-                new callback_logger_adapter_1.CallbackLoggerAdapter((log) => {
-                    loggedText = log.text;
-                })
-            ],
-            enhancers: [log_level_prepender_logger_enhancer_1.LogLevelPrependerLoggerEnhancer]
+    describe('Log level filter', () => {
+        it('works with debug level', () => {
+            let loggedText = '';
+            const textToBeLogged = 'hey there';
+            const logger = new logger_1.Logger({
+                adapters: [
+                    new callback_logger_adapter_1.CallbackLoggerAdapter((log) => {
+                        loggedText = log.text;
+                    })
+                ],
+                enhancers: [new src_1.LogLevelFilterLoggerEnhancer(src_1.LogLevel.DEBUG)]
+            });
+            logger.debug(textToBeLogged);
+            assert(loggedText === textToBeLogged);
+            loggedText = '';
+            logger.info(textToBeLogged);
+            assert(loggedText === textToBeLogged);
+            loggedText = '';
+            logger.warn(textToBeLogged);
+            assert(loggedText === textToBeLogged);
+            loggedText = '';
+            logger.error(textToBeLogged);
+            assert(loggedText === textToBeLogged);
+            loggedText = '';
         });
-        logger.debug({ dummy: 'tada' });
-        assert(loggedText.includes(src_1.LogLevel.DEBUG));
+        it('works with info level', () => {
+            let loggedText = '';
+            const textToBeLogged = 'hey there';
+            const logger = new logger_1.Logger({
+                adapters: [
+                    new callback_logger_adapter_1.CallbackLoggerAdapter((log) => {
+                        loggedText = log.text;
+                    })
+                ],
+                enhancers: [new src_1.LogLevelFilterLoggerEnhancer(src_1.LogLevel.INFO)]
+            });
+            logger.debug(textToBeLogged);
+            assert(loggedText === '');
+            loggedText = '';
+            logger.info(textToBeLogged);
+            assert(loggedText === textToBeLogged);
+            loggedText = '';
+            logger.warn(textToBeLogged);
+            assert(loggedText === textToBeLogged);
+            loggedText = '';
+            logger.error(textToBeLogged);
+            assert(loggedText === textToBeLogged);
+            loggedText = '';
+        });
+        it('works with warn level', () => {
+            let loggedText = '';
+            const textToBeLogged = 'hey there';
+            const logger = new logger_1.Logger({
+                adapters: [
+                    new callback_logger_adapter_1.CallbackLoggerAdapter((log) => {
+                        loggedText = log.text;
+                    })
+                ],
+                enhancers: [new src_1.LogLevelFilterLoggerEnhancer(src_1.LogLevel.WARN)]
+            });
+            logger.debug(textToBeLogged);
+            assert(loggedText === '');
+            loggedText = '';
+            logger.info(textToBeLogged);
+            assert(loggedText === '');
+            loggedText = '';
+            logger.warn(textToBeLogged);
+            assert(loggedText === textToBeLogged);
+            loggedText = '';
+            logger.error(textToBeLogged);
+            assert(loggedText === textToBeLogged);
+            loggedText = '';
+        });
+        it('works with error level', () => {
+            let loggedText = '';
+            const textToBeLogged = 'hey there';
+            const logger = new logger_1.Logger({
+                adapters: [
+                    new callback_logger_adapter_1.CallbackLoggerAdapter((log) => {
+                        loggedText = log.text;
+                    })
+                ],
+                enhancers: [new src_1.LogLevelFilterLoggerEnhancer(src_1.LogLevel.ERROR)]
+            });
+            logger.debug(textToBeLogged);
+            assert(loggedText === '');
+            loggedText = '';
+            logger.info(textToBeLogged);
+            assert(loggedText === '');
+            loggedText = '';
+            logger.warn(textToBeLogged);
+            assert(loggedText === '');
+            loggedText = '';
+            logger.error(textToBeLogged);
+            assert(loggedText === textToBeLogged);
+            loggedText = '';
+        });
     });
 });
 //# sourceMappingURL=logger.spec.js.map

@@ -1,5 +1,8 @@
-import { LoggerEnhancer } from './logger_enhancer';
+import { LoggerEnhancer, EnhancedLog } from './logger_enhancer';
+import { Log } from '../log/log';
 
-export const PassThroughLoggerEnhancer: LoggerEnhancer = (log) => {
-	return log;
-};
+export class PassThroughLoggerEnhancer extends LoggerEnhancer {
+	public enhance(log: Log): EnhancedLog {
+		return log;
+	}
+}

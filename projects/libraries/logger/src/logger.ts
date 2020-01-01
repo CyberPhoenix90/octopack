@@ -30,7 +30,7 @@ export class Logger {
 		let log = this.createLog(logData, logLevel);
 
 		for (const enhancer of enhancers) {
-			log = enhancer(log);
+			log = enhancer.enhance(log);
 			if (!log) {
 				return;
 			}

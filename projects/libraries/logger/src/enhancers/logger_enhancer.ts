@@ -1,3 +1,7 @@
 import { Log } from '../log/log';
 
-export type LoggerEnhancer = (log: Log) => Log | undefined;
+export type EnhancedLog = Log | undefined;
+
+export abstract class LoggerEnhancer {
+	public abstract enhance(log: Log): EnhancedLog;
+}

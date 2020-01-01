@@ -40,8 +40,8 @@ function runScript(config: OctopackConfiguration, workspaceRoot: string) {
 	new Build().run(parseArguments(process.argv.slice(2)), {
 		workspaceRoot,
 		fileSystem: localDiskFileSystem,
-		devLogger: new Logger({ adapters: [new CallbackLoggerAdapter(() => {})], enhancers: [PassThroughLoggerEnhancer] }),
-		uiLogger: new Logger({ adapters: [new CallbackLoggerAdapter(() => {})], enhancers: [PassThroughLoggerEnhancer] }),
+		devLogger: new Logger({ adapters: [new CallbackLoggerAdapter(() => {})], enhancers: [new PassThroughLoggerEnhancer()] }),
+		uiLogger: new Logger({ adapters: [new CallbackLoggerAdapter(() => {})], enhancers: [new PassThroughLoggerEnhancer()] }),
 		workspaceConfig: config
 	});
 }

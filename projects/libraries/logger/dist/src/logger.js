@@ -21,7 +21,7 @@ class Logger {
         const { enhancers, adapters } = this.configuration;
         let log = this.createLog(logData, logLevel);
         for (const enhancer of enhancers) {
-            log = enhancer(log);
+            log = enhancer.enhance(log);
             if (!log) {
                 return;
             }
