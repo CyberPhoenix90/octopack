@@ -1,7 +1,6 @@
 import * as assert from 'assert';
 import { Logger } from '../src/logger';
 import { CallbackLoggerAdapter } from '../src/adapters/callback_logger_adapter';
-import { PassThroughLoggerEnhancer } from '../src/enhancers/pass_through_logger_enhancer';
 import { LogLevelPrependerLoggerEnhancer } from '../src/enhancers/log_level_prepender_logger_enhancer';
 import { LogLevel, LogLevelFilterLoggerEnhancer } from '../src';
 
@@ -15,7 +14,7 @@ describe('Logger', () => {
 					loggedText = log.text;
 				})
 			],
-			enhancers: [new PassThroughLoggerEnhancer()]
+			enhancers: []
 		});
 
 		logger.info(textToBeLogged);
@@ -31,22 +30,6 @@ describe('Logger', () => {
 					loggedText = log.text;
 				})
 			]
-		});
-
-		logger.info(textToBeLogged);
-		assert(loggedText === textToBeLogged);
-	});
-
-	it('falls back to pass through if enhancer array is empty', () => {
-		let loggedText = '';
-		const textToBeLogged = 'hey there';
-		const logger = new Logger({
-			adapters: [
-				new CallbackLoggerAdapter((log) => {
-					loggedText = log.text;
-				})
-			],
-			enhancers: []
 		});
 
 		logger.info(textToBeLogged);

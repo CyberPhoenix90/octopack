@@ -1,7 +1,6 @@
 import { Log } from './log/log';
 import { LogLevel } from './log/log_level';
 import { LoggerConfiguration } from './logger_configuration';
-import { PassThroughLoggerEnhancer } from './enhancers/pass_through_logger_enhancer';
 
 export class Logger {
 	private configuration: LoggerConfiguration;
@@ -30,10 +29,6 @@ export class Logger {
 		const { enhancers = [], adapters } = this.configuration;
 		if (!adapters.length) {
 			return;
-		}
-
-		if (!enhancers.length) {
-			enhancers.push(new PassThroughLoggerEnhancer());
 		}
 
 		let log = this.createLog(logData, logLevel);

@@ -3,7 +3,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const assert = require("assert");
 const logger_1 = require("../src/logger");
 const callback_logger_adapter_1 = require("../src/adapters/callback_logger_adapter");
-const pass_through_logger_enhancer_1 = require("../src/enhancers/pass_through_logger_enhancer");
 const log_level_prepender_logger_enhancer_1 = require("../src/enhancers/log_level_prepender_logger_enhancer");
 const src_1 = require("../src");
 describe('Logger', () => {
@@ -16,7 +15,7 @@ describe('Logger', () => {
                     loggedText = log.text;
                 })
             ],
-            enhancers: [new pass_through_logger_enhancer_1.PassThroughLoggerEnhancer()]
+            enhancers: []
         });
         logger.info(textToBeLogged);
         assert(loggedText === textToBeLogged);
@@ -30,20 +29,6 @@ describe('Logger', () => {
                     loggedText = log.text;
                 })
             ]
-        });
-        logger.info(textToBeLogged);
-        assert(loggedText === textToBeLogged);
-    });
-    it('falls back to pass through if enhancer array is empty', () => {
-        let loggedText = '';
-        const textToBeLogged = 'hey there';
-        const logger = new logger_1.Logger({
-            adapters: [
-                new callback_logger_adapter_1.CallbackLoggerAdapter((log) => {
-                    loggedText = log.text;
-                })
-            ],
-            enhancers: []
         });
         logger.info(textToBeLogged);
         assert(loggedText === textToBeLogged);
