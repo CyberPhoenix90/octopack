@@ -5,5 +5,10 @@ export declare function findConfiguration(cwd: string, fileSystem: FileSystemEnt
     config: OctopackConfiguration;
     directory: string;
 }>;
+export declare function resolveConfig(configs: {
+    solution?: OctopackConfiguration;
+    workspace?: OctopackConfiguration;
+    project?: OctopackConfiguration;
+}): OctopackConfiguration;
 export declare function loadConfig(path: string, fileSystem: FileSystemEntryData): Promise<OctopackConfiguration>;
 //# sourceMappingURL=config_resolver.d.ts.map

@@ -16,8 +16,7 @@ export class Build extends Script {
 	}
 
 	public async run(args: ParsedArguments, context: ScriptContext): Promise<ScriptStatus> {
-		const projects = await projectCrawler.findProjects(context.workspaceRoot, context.fileSystem);
-
+		const projects = await projectCrawler.findProjects(context.workspaceRoot, context);
 		context.uiLogger.info(`Npm installing ${projects.length} projects...`);
 		await npmInstallPlugin(projects);
 

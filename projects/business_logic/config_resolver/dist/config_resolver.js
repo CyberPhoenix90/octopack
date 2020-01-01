@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const path_1 = require("path");
+const utilities_1 = require("../../../libraries/utilities");
 exports.OCTOPACK_CONFIG_FILE_NAME = 'octopack.js';
 async function findConfiguration(cwd, fileSystem) {
     const segments = cwd.split('/');
@@ -16,6 +17,15 @@ async function findConfiguration(cwd, fileSystem) {
     return { directory: '/', config: undefined };
 }
 exports.findConfiguration = findConfiguration;
+function resolveConfig(configs) {
+    return utilities_1.objectUtils.deepAssign({
+        build: undefined,
+        configVersion: undefined,
+        name: undefined,
+        scope: undefined
+    }, configs.solution, configs.workspace, configs.project);
+}
+exports.resolveConfig = resolveConfig;
 async function loadConfig(path, fileSystem) {
     const config = await fileSystem.import(path_1.join(path, exports.OCTOPACK_CONFIG_FILE_NAME));
     if (!config && !config.default) {

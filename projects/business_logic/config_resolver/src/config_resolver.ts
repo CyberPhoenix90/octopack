@@ -1,6 +1,7 @@
 import { FileSystem as FileSystemEntryData } from '../../../libraries/file_system';
 import { OctopackConfiguration } from './configuration';
 import { join } from 'path';
+import { objectUtils } from '../../../libraries/utilities';
 
 export const OCTOPACK_CONFIG_FILE_NAME = 'octopack.js';
 
@@ -16,6 +17,24 @@ export async function findConfiguration(cwd: string, fileSystem: FileSystemEntry
 		}
 	}
 	return { directory: '/', config: undefined };
+}
+
+export function resolveConfig(configs: {
+	solution?: OctopackConfiguration;
+	workspace?: OctopackConfiguration;
+	project?: OctopackConfiguration;
+}): OctopackConfiguration {
+	return objectUtils.deepAssign(
+		{
+			build: undefined,
+			configVersion: undefined,
+			name: undefined,
+			scope: undefined
+		},
+		configs.solution,
+		configs.workspace,
+		configs.project
+	);
 }
 
 export async function loadConfig(path: string, fileSystem: FileSystemEntryData): Promise<OctopackConfiguration> {
