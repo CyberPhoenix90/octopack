@@ -1,16 +1,13 @@
-import { FileSystem, FileSystemEntryData } from '../file_system';
+import { FileSystem, FileSystemEntryData, VirtualFile } from '../file_system';
 import { FilePath } from '../file_path_utils';
 import { MapLike } from '../../../../../typings/common';
 
 export type MemoryFileSystemData = { [path: string]: MemoryFileSystemEntry };
 
-export interface MemoryFileSystemEntry {
+export interface MemoryFileSystemEntry extends VirtualFile {
 	type: MemoryFileSystemEntryType;
-	name: string;
-	fullPath: string;
-	children?: { [key: string]: MemoryFileSystemEntry };
-	content?: string;
 	parent: MemoryFileSystemEntry;
+	children?: { [key: string]: MemoryFileSystemEntry };
 }
 
 export enum MemoryFileSystemEntryType {

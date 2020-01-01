@@ -1,7 +1,7 @@
-import * as vm from 'vm';
-import { join, sep } from 'path';
-import { FilePath } from './file_path_utils';
 import { match } from 'minimatch';
+import { join, parse, sep } from 'path';
+import * as vm from 'vm';
+import { FilePath } from './file_path_utils';
 
 export interface ReadDirOptions {
 	directoryNameBlackList?: string[];
@@ -20,6 +20,12 @@ export interface FileSystemEntryData {
 	isSocket: boolean;
 	isSymbolicLink: boolean;
 	size: number;
+}
+
+export interface VirtualFile {
+	name: string;
+	fullPath: string;
+	content?: string;
 }
 
 export abstract class FileSystem {
@@ -62,6 +68,32 @@ export abstract class FileSystem {
 		}
 
 		return { directory, globPattern: pieces.join('/') };
+	}
+
+	public async toVirtualFile(filePath: string): Promise<VirtualFile> {
+		const content = await this.readFile(filePath, 'utf8');
+		return {
+			fullPath: filePath,
+			name: parse(filePath).name,
+			content
+		};
+	}
+
+	public toVirtualFileSync(filePath: string): VirtualFile {
+		const content = this.readFileSync(filePath, 'utf8');
+		return {
+			fullPath: filePath,
+			name: parse(filePath).name,
+			content
+		};
+	}
+
+	public async writeVirtualFile(virtualFile: VirtualFile): Promise<void> {
+		this.writeFile(virtualFile.fullPath, virtualFile.content);
+	}
+
+	public writeVirtualFileSync(virtualFile: VirtualFile): void {
+		this.writeFileSync(virtualFile.fullPath, virtualFile.content);
 	}
 
 	public async mkdirp(path: string): Promise<void> {

@@ -1,7 +1,6 @@
 import { join } from 'path';
 import { loadConfig, OCTOPACK_CONFIG_FILE_NAME, resolveConfig } from '../../../business_logic/config_resolver';
-import { Project } from '../../../business_logic/models';
-import { ScriptContext } from '../scripts/script';
+import { ScriptContext, Project } from '../../../business_logic/models';
 
 export class ProjectCrawler {
 	public async findProjects(root: string, context: ScriptContext): Promise<Project[]> {

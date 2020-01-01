@@ -1,15 +1,5 @@
-import { FileSystem as FileSystemEntryData } from '../../../libraries/file_system';
-import { Logger } from '../../../libraries/logger';
-import { OctopackConfiguration } from '../../../business_logic/config_resolver';
 import { ParsedArguments } from '../../../libraries/argument_parser';
-
-export interface ScriptContext {
-	workspaceConfig: OctopackConfiguration;
-	uiLogger: Logger;
-	devLogger: Logger;
-	fileSystem: FileSystemEntryData;
-	workspaceRoot: string;
-}
+import { ScriptContext } from '../../../business_logic/models';
 
 export interface Help {
 	description: string;

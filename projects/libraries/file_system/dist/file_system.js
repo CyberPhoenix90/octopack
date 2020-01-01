@@ -1,9 +1,9 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const vm = require("vm");
-const path_1 = require("path");
-const file_path_utils_1 = require("./file_path_utils");
 const minimatch_1 = require("minimatch");
+const path_1 = require("path");
+const vm = require("vm");
+const file_path_utils_1 = require("./file_path_utils");
 class FileSystem {
     async glob(directory, globPattern) {
         ({ directory, globPattern } = this.optimizeGlob(directory, globPattern));
@@ -24,6 +24,28 @@ class FileSystem {
             directory = path_1.join(directory, pieces.shift());
         }
         return { directory, globPattern: pieces.join('/') };
+    }
+    async toVirtualFile(filePath) {
+        const content = await this.readFile(filePath, 'utf8');
+        return {
+            fullPath: filePath,
+            name: path_1.parse(filePath).name,
+            content
+        };
+    }
+    toVirtualFileSync(filePath) {
+        const content = this.readFileSync(filePath, 'utf8');
+        return {
+            fullPath: filePath,
+            name: path_1.parse(filePath).name,
+            content
+        };
+    }
+    async writeVirtualFile(virtualFile) {
+        this.writeFile(virtualFile.fullPath, virtualFile.content);
+    }
+    writeVirtualFileSync(virtualFile) {
+        this.writeFileSync(virtualFile.fullPath, virtualFile.content);
     }
     async mkdirp(path) {
         const pieces = path.split(path_1.sep);
