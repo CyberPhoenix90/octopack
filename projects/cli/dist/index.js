@@ -1,10 +1,10 @@
 #!/usr/bin/env node
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const config_resolver_1 = require("../../libraries/config_resolver");
+const config_resolver_1 = require("../../business_logic/config_resolver");
 const file_system_1 = require("../../libraries/file_system");
 const path_1 = require("path");
-const api_1 = require("../../libraries/api");
+const api_1 = require("../../api");
 const logger_1 = require("../../libraries/logger");
 const argument_parser_1 = require("../../libraries/argument_parser");
 //Self executing async function due to lack of top level async support

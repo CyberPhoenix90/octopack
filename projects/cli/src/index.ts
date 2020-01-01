@@ -1,9 +1,9 @@
 #!/usr/bin/env node
 
-import { findConfiguration, OctopackConfiguration } from '../../libraries/config_resolver';
+import { findConfiguration, OctopackConfiguration } from '../../business_logic/config_resolver';
 import { localDiskFileSystem } from '../../libraries/file_system';
 import { join } from 'path';
-import { Build } from '../../libraries/api';
+import { Build } from '../../api';
 import { Logger, CallbackLoggerAdapter, PassThroughLoggerEnhancer } from '../../libraries/logger';
 import { parseArguments } from '../../libraries/argument_parser';
 
