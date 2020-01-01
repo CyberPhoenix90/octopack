@@ -1,8 +1,8 @@
 import * as assert from 'assert';
-import { Logger } from '../src/logger';
+import { LogLevel, LogLevelFilterLoggerEnhancer } from '../src';
 import { CallbackLoggerAdapter } from '../src/adapters/callback_logger_adapter';
 import { LogLevelPrependerLoggerEnhancer } from '../src/enhancers/log_level_prepender_logger_enhancer';
-import { LogLevel, LogLevelFilterLoggerEnhancer } from '../src';
+import { Logger } from '../src/logger';
 
 describe('Logger', () => {
 	it('works', () => {
