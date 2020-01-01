@@ -17,7 +17,7 @@ export class ProjectCrawler {
 				result.push({
 					path,
 					rawConfig: config,
-					resoledConfig: resolveConfig({
+					resolvedConfig: resolveConfig({
 						project: config,
 						workspace: context.workspaceConfig
 					})

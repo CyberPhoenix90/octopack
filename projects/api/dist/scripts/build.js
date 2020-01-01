@@ -15,17 +15,46 @@ class Build extends script_1.Script {
         };
     }
     async run(args, context) {
-        const projects = await project_crawler_1.projectCrawler.findProjects(context.workspaceRoot, context);
-        if (args.map.pipe) {
-            await compiler_1.compiler.compile(projects, context);
+        const selectedProjects = this.getSelectedProjects(args, await project_crawler_1.projectCrawler.findProjects(context.workspaceRoot, context), context);
+        if (selectedProjects.length) {
+            if (args.map.pipe) {
+                await compiler_1.compiler.compile(selectedProjects, context);
+            }
+            else {
+                context.uiLogger.info(`Npm installing ${selectedProjects.length} projects...`);
+                await npm_installer_1.npmInstallPlugin(selectedProjects);
+                context.uiLogger.info(`Building ${selectedProjects.length} projects...`);
+                await typescript_1.typescriptPlugin(selectedProjects);
+            }
         }
         else {
-            context.uiLogger.info(`Npm installing ${projects.length} projects...`);
-            await npm_installer_1.npmInstallPlugin(projects);
-            context.uiLogger.info(`Building ${projects.length} projects...`);
-            await typescript_1.typescriptPlugin(projects);
+            context.uiLogger.error('None of the provided names were matching a project. Not building.');
         }
         return {};
+    }
+    getSelectedProjects(args, projects, context) {
+        if (!args.list.length) {
+            return projects;
+        }
+        else {
+            const selectedProjects = [];
+            projects.forEach((p) => {
+                if (args.list.includes(p.resolvedConfig.name)) {
+                    selectedProjects.push(p);
+                }
+            });
+            if (selectedProjects.length < args.list.length) {
+                const notFoundNames = [];
+                const selectedProjectNames = selectedProjects.map((p) => p.resolvedConfig.name);
+                args.list.forEach((a) => {
+                    if (!selectedProjectNames.includes(a)) {
+                        notFoundNames.push(a);
+                    }
+                });
+                context.uiLogger.warn(`No project(s) with the name(s) ${notFoundNames.join(', ')} could be located. Skipping these arguments.`);
+            }
+            return selectedProjects;
+        }
     }
 }
 exports.Build = Build;

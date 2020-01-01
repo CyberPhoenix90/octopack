@@ -5,7 +5,7 @@ import { Logger } from '../../../../libraries/logger';
 export interface Project {
 	path: string;
 	rawConfig: OctopackConfiguration;
-	resoledConfig: OctopackConfiguration;
+	resolvedConfig: OctopackConfiguration;
 }
 
 export interface ScriptContext {

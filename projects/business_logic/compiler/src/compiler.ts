@@ -28,7 +28,7 @@ export class Compiler {
 				project: p,
 				files: []
 			};
-			for (const pattern of p.resoledConfig.build.bundles.dist.input) {
+			for (const pattern of p.resolvedConfig.build.bundles.dist.input) {
 				const matches = await context.fileSystem.glob(p.path, pattern);
 				entry.files.push(...(await Promise.all(matches.map((p) => context.fileSystem.toVirtualFile(p)))));
 			}
