@@ -26,7 +26,7 @@ export class Logger {
 		this.log(logData, LogLevel.ERROR);
 	}
 
-	private log(logData: any, logLevel: LogLevel): void {
+	public log(logData: any, logLevel: LogLevel): void {
 		const { enhancers = [], adapters } = this.configuration;
 		if (!adapters.length) {
 			return;

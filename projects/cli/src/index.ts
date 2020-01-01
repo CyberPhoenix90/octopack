@@ -4,7 +4,7 @@ import { findConfiguration, OctopackConfiguration } from '../../business_logic/c
 import { localDiskFileSystem } from '../../libraries/file_system';
 import { join } from 'path';
 import { Build } from '../../api';
-import { Logger, CallbackLoggerAdapter, PassThroughLoggerEnhancer } from '../../libraries/logger';
+import { Logger, CallbackLoggerAdapter, LogLevelPrependerLoggerEnhancer, ConsoleLoggerAdapter } from '../../libraries/logger';
 import { parseArguments } from '../../libraries/argument_parser';
 
 //Self executing async function due to lack of top level async support
@@ -37,11 +37,17 @@ function notFound() {
 }
 
 function runScript(config: OctopackConfiguration, workspaceRoot: string) {
+	const devLogger = new Logger({ adapters: [], enhancers: [new LogLevelPrependerLoggerEnhancer()] });
+	const uiLogger = new Logger({
+		adapters: [new ConsoleLoggerAdapter(), new CallbackLoggerAdapter((log) => devLogger.log(log.text ?? log.object, log.logLevel))],
+		enhancers: [new LogLevelPrependerLoggerEnhancer()]
+	});
+
 	new Build().run(parseArguments(process.argv.slice(2)), {
 		workspaceRoot,
 		fileSystem: localDiskFileSystem,
-		devLogger: new Logger({ adapters: [new CallbackLoggerAdapter(() => {})], enhancers: [new PassThroughLoggerEnhancer()] }),
-		uiLogger: new Logger({ adapters: [new CallbackLoggerAdapter(() => {})], enhancers: [new PassThroughLoggerEnhancer()] }),
+		devLogger: devLogger,
+		uiLogger: uiLogger,
 		workspaceConfig: config
 	});
 }

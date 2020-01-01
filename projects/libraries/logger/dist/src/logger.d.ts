@@ -1,3 +1,4 @@
+import { LogLevel } from './log/log_level';
 import { LoggerConfiguration } from './logger_configuration';
 export declare class Logger {
     private configuration;
@@ -6,7 +7,7 @@ export declare class Logger {
     debug(logData: any): void;
     warn(logData: any): void;
     error(logData: any): void;
-    private log;
+    log(logData: any, logLevel: LogLevel): void;
     private createLog;
 }
 //# sourceMappingURL=logger.d.ts.map

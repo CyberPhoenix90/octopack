@@ -11,3 +11,4 @@ export { ConsoleLoggerAdapter } from './adapters/console_logger_adapter';
 export { LoggerEnhancer } from './enhancers/logger_enhancer';
 export { PassThroughLoggerEnhancer } from './enhancers/pass_through_logger_enhancer';
 export { LogLevelFilterLoggerEnhancer } from './enhancers/log_level_filter_logger_enhancer';
+export { LogLevelPrependerLoggerEnhancer } from './enhancers/log_level_prepender_logger_enhancer';

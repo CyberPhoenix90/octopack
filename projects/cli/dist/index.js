@@ -33,11 +33,16 @@ function notFound() {
     process.exit(-1);
 }
 function runScript(config, workspaceRoot) {
+    const devLogger = new logger_1.Logger({ adapters: [], enhancers: [new logger_1.LogLevelPrependerLoggerEnhancer()] });
+    const uiLogger = new logger_1.Logger({
+        adapters: [new logger_1.ConsoleLoggerAdapter(), new logger_1.CallbackLoggerAdapter((log) => { var _a; return devLogger.log((_a = log.text, (_a !== null && _a !== void 0 ? _a : log.object)), log.logLevel); })],
+        enhancers: [new logger_1.LogLevelPrependerLoggerEnhancer()]
+    });
     new api_1.Build().run(argument_parser_1.parseArguments(process.argv.slice(2)), {
         workspaceRoot,
         fileSystem: file_system_1.localDiskFileSystem,
-        devLogger: new logger_1.Logger({ adapters: [new logger_1.CallbackLoggerAdapter(() => { })], enhancers: [new logger_1.PassThroughLoggerEnhancer()] }),
-        uiLogger: new logger_1.Logger({ adapters: [new logger_1.CallbackLoggerAdapter(() => { })], enhancers: [new logger_1.PassThroughLoggerEnhancer()] }),
+        devLogger: devLogger,
+        uiLogger: uiLogger,
         workspaceConfig: config
     });
 }
