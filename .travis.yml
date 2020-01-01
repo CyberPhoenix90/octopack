@@ -9,5 +9,3 @@ jobs:
   include:
     - stage: build
       script: ./travis/build.js
-    - stage: test
-      script: ./travis/test.js

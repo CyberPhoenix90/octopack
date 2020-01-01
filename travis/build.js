@@ -1,4 +1,31 @@
 #!/usr/bin/env node
+const { Build } = require('../projects/api');
 const { join } = require('path');
+const { spawn } = require('child_process');
+const { Logger } = require('../projects/libraries/logger');
+const { localDiskFileSystem } = require('../projects/libraries/file_system');
+const { loadConfig } = require('../projects/business_logic/config_resolver');
 
-require(join(__dirname, '../projects/cli/dist/index'));
+(async () => {
+	new Build()
+		.run(
+			{
+				raw: [],
+				list: [],
+				map: {}
+			},
+			{
+				workspaceRoot: join(__dirname, '..'),
+				workspaceConfig: await loadConfig(join(__dirname, '..'), localDiskFileSystem),
+				fileSystem: localDiskFileSystem,
+				devLogger: new Logger({ adapters: [], enhancers: [] }),
+				uiLogger: new Logger({ adapters: [], enhancers: [] })
+			}
+		)
+		.then(() => {
+			spawn(join(__dirname, '../projects/libraries/logger/node_modules/mocha/bin/mocha'), ['**/*.spec.js'], {
+				stdio: 'inherit',
+				cwd: join(__dirname, '../projects/libraries/logger/dist/test')
+			});
+		});
+})();
