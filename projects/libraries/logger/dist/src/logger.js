@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const log_level_1 = require("./log/log_level");
+const pass_through_logger_enhancer_1 = require("./enhancers/pass_through_logger_enhancer");
 class Logger {
     constructor(configuration) {
         this.configuration = configuration;
@@ -18,7 +19,13 @@ class Logger {
         this.log(logData, log_level_1.LogLevel.ERROR);
     }
     log(logData, logLevel) {
-        const { enhancers, adapters } = this.configuration;
+        const { enhancers = [], adapters } = this.configuration;
+        if (!adapters.length) {
+            return;
+        }
+        if (!enhancers.length) {
+            enhancers.push(new pass_through_logger_enhancer_1.PassThroughLoggerEnhancer());
+        }
         let log = this.createLog(logData, logLevel);
         for (const enhancer of enhancers) {
             log = enhancer.enhance(log);

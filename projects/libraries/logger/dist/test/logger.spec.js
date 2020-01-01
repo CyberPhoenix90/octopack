@@ -21,6 +21,33 @@ describe('Logger', () => {
         logger.info(textToBeLogged);
         assert(loggedText === textToBeLogged);
     });
+    it('falls back to pass through if no enhancer array is passed', () => {
+        let loggedText = '';
+        const textToBeLogged = 'hey there';
+        const logger = new logger_1.Logger({
+            adapters: [
+                new callback_logger_adapter_1.CallbackLoggerAdapter((log) => {
+                    loggedText = log.text;
+                })
+            ]
+        });
+        logger.info(textToBeLogged);
+        assert(loggedText === textToBeLogged);
+    });
+    it('falls back to pass through if enhancer array is empty', () => {
+        let loggedText = '';
+        const textToBeLogged = 'hey there';
+        const logger = new logger_1.Logger({
+            adapters: [
+                new callback_logger_adapter_1.CallbackLoggerAdapter((log) => {
+                    loggedText = log.text;
+                })
+            ],
+            enhancers: []
+        });
+        logger.info(textToBeLogged);
+        assert(loggedText === textToBeLogged);
+    });
     describe('Log level prepender', () => {
         it('works with passed string', () => {
             let loggedText = '';
