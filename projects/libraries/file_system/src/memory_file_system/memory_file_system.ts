@@ -1,12 +1,21 @@
-import { MapLike } from '../../../../../typings/common';
+import { FileSystem, FileSystemEntryData, FileSystemEntryType } from '../file_system';
 import { FilePath } from '../file_path_utils';
-import { FileSystem, FileSystemEntryData, FileSystemEntryType, VirtualFileSystemEntry } from '../file_system';
+import { MapLike } from '../../../../../typings/common';
 
 export type MemoryFileSystemData = { [path: string]: MemoryFileSystemEntry };
 
-export interface MemoryFileSystemEntry extends VirtualFileSystemEntry {
+export interface MemoryFileSystemEntry {
+	name: string;
+	fullPath: string;
+	type: FileSystemEntryType;
 	parent: MemoryFileSystemEntry;
 	children?: { [key: string]: MemoryFileSystemEntry };
+	content?: string;
+}
+
+export enum MemoryFileSystemEntryType {
+	FILE,
+	DIRECTORY
 }
 
 export class MemoryFileSystem extends FileSystem {
@@ -113,7 +122,7 @@ export class MemoryFileSystem extends FileSystem {
 			throw new Error(`${path} is a directory`);
 		}
 
-		return entry.content as string;
+		return entry.content;
 	}
 
 	public async stat(path: string): Promise<FileSystemEntryData> {
