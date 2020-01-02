@@ -22,10 +22,22 @@ export interface FileSystemEntryData {
 	size: number;
 }
 
-export interface VirtualFile {
+export enum FileSystemEntryType {
+	FILE = 'FILE',
+	DIRECTORY = 'DIRECTORY'
+}
+
+export interface VirtualFileSystemEntry<T extends FileSystemEntryType = FileSystemEntryType> {
 	name: string;
 	fullPath: string;
-	content?: string;
+	type: T;
+	parent: VirtualFileSystemEntry;
+
+	content?: T extends FileSystemEntryType.FILE
+		? string
+		: T extends FileSystemEntryType.DIRECTORY
+		? VirtualFileSystemEntry[]
+		: never;
 }
 
 export abstract class FileSystem {
@@ -63,36 +75,45 @@ export abstract class FileSystem {
 			globPattern = globPattern.substring(1);
 		}
 		const pieces = globPattern.split('/');
-		while (pieces.length !== 0 && !pieces[0].includes('*') && !pieces[0].includes('!') && !pieces[0].includes('(')) {
+		while (
+			pieces.length !== 0 &&
+			!pieces[0].includes('*') &&
+			!pieces[0].includes('!') &&
+			!pieces[0].includes('(')
+		) {
 			directory = join(directory, pieces.shift());
 		}
 
 		return { directory, globPattern: pieces.join('/') };
 	}
 
-	public async toVirtualFile(filePath: string): Promise<VirtualFile> {
+	public async toVirtualFile(filePath: string): Promise<VirtualFileSystemEntry<FileSystemEntryType.FILE>> {
 		const content = await this.readFile(filePath, 'utf8');
 		return {
 			fullPath: filePath,
 			name: parse(filePath).name,
-			content
+			content,
+			type: FileSystemEntryType.FILE,
+			parent: undefined // what?
 		};
 	}
 
-	public toVirtualFileSync(filePath: string): VirtualFile {
+	public toVirtualFileSync(filePath: string): VirtualFileSystemEntry<FileSystemEntryType.FILE> {
 		const content = this.readFileSync(filePath, 'utf8');
 		return {
 			fullPath: filePath,
 			name: parse(filePath).name,
-			content
+			content,
+			type: FileSystemEntryType.FILE,
+			parent: undefined // what?
 		};
 	}
 
-	public async writeVirtualFile(virtualFile: VirtualFile): Promise<void> {
+	public async writeVirtualFile(virtualFile: VirtualFileSystemEntry<FileSystemEntryType.FILE>): Promise<void> {
 		this.writeFile(virtualFile.fullPath, virtualFile.content);
 	}
 
-	public writeVirtualFileSync(virtualFile: VirtualFile): void {
+	public writeVirtualFileSync(virtualFile: VirtualFileSystemEntry<FileSystemEntryType.FILE>): void {
 		this.writeFileSync(virtualFile.fullPath, virtualFile.content);
 	}
 
@@ -158,7 +179,12 @@ export abstract class FileSystem {
 		}
 	}
 
-	public async merge(fileSystem: FileSystem, options: ReadDirOptions, targetPath: string = '/', sourcePath: string = '/'): Promise<void> {
+	public async merge(
+		fileSystem: FileSystem,
+		options: ReadDirOptions,
+		targetPath: string = '/',
+		sourcePath: string = '/'
+	): Promise<void> {
 		if (!(await this.exists(targetPath))) {
 			throw new Error('target path does not exist');
 		}

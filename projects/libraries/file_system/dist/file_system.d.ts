@@ -15,10 +15,16 @@ export interface FileSystemEntryData {
     isSymbolicLink: boolean;
     size: number;
 }
-export interface VirtualFile {
+export declare enum FileSystemEntryType {
+    FILE = "FILE",
+    DIRECTORY = "DIRECTORY"
+}
+export interface VirtualFileSystemEntry<T extends FileSystemEntryType = FileSystemEntryType> {
     name: string;
     fullPath: string;
-    content?: string;
+    type: T;
+    parent: VirtualFileSystemEntry;
+    content?: T extends FileSystemEntryType.FILE ? string : T extends FileSystemEntryType.DIRECTORY ? VirtualFileSystemEntry[] : never;
 }
 export declare abstract class FileSystem {
     abstract exists(path: string): Promise<boolean>;
@@ -40,10 +46,10 @@ export declare abstract class FileSystem {
     glob(directory: string, globPattern: string): Promise<string[]>;
     globSync(directory: string, globPattern: string): string[];
     private optimizeGlob;
-    toVirtualFile(filePath: string): Promise<VirtualFile>;
-    toVirtualFileSync(filePath: string): VirtualFile;
-    writeVirtualFile(virtualFile: VirtualFile): Promise<void>;
-    writeVirtualFileSync(virtualFile: VirtualFile): void;
+    toVirtualFile(filePath: string): Promise<VirtualFileSystemEntry<FileSystemEntryType.FILE>>;
+    toVirtualFileSync(filePath: string): VirtualFileSystemEntry<FileSystemEntryType.FILE>;
+    writeVirtualFile(virtualFile: VirtualFileSystemEntry<FileSystemEntryType.FILE>): Promise<void>;
+    writeVirtualFileSync(virtualFile: VirtualFileSystemEntry<FileSystemEntryType.FILE>): void;
     mkdirp(path: string): Promise<void>;
     mkdirpSync(path: string): void;
     deleteDirectory(path: string): Promise<void>;

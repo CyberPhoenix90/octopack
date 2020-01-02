@@ -4,6 +4,11 @@ const minimatch_1 = require("minimatch");
 const path_1 = require("path");
 const vm = require("vm");
 const file_path_utils_1 = require("./file_path_utils");
+var FileSystemEntryType;
+(function (FileSystemEntryType) {
+    FileSystemEntryType["FILE"] = "FILE";
+    FileSystemEntryType["DIRECTORY"] = "DIRECTORY";
+})(FileSystemEntryType = exports.FileSystemEntryType || (exports.FileSystemEntryType = {}));
 class FileSystem {
     async glob(directory, globPattern) {
         ({ directory, globPattern } = this.optimizeGlob(directory, globPattern));
@@ -20,7 +25,10 @@ class FileSystem {
             globPattern = globPattern.substring(1);
         }
         const pieces = globPattern.split('/');
-        while (pieces.length !== 0 && !pieces[0].includes('*') && !pieces[0].includes('!') && !pieces[0].includes('(')) {
+        while (pieces.length !== 0 &&
+            !pieces[0].includes('*') &&
+            !pieces[0].includes('!') &&
+            !pieces[0].includes('(')) {
             directory = path_1.join(directory, pieces.shift());
         }
         return { directory, globPattern: pieces.join('/') };
@@ -30,7 +38,9 @@ class FileSystem {
         return {
             fullPath: filePath,
             name: path_1.parse(filePath).name,
-            content
+            content,
+            type: FileSystemEntryType.FILE,
+            parent: undefined // what?
         };
     }
     toVirtualFileSync(filePath) {
@@ -38,7 +48,9 @@ class FileSystem {
         return {
             fullPath: filePath,
             name: path_1.parse(filePath).name,
-            content
+            content,
+            type: FileSystemEntryType.FILE,
+            parent: undefined // what?
         };
     }
     async writeVirtualFile(virtualFile) {
