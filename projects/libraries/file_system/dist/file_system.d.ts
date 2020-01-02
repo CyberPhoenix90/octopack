@@ -23,7 +23,7 @@ export interface VirtualFileSystemEntry<T extends FileSystemEntryType = FileSyst
     name: string;
     fullPath: string;
     type: T;
-    parent: VirtualFileSystemEntry;
+    parent: VirtualFileSystemEntry<FileSystemEntryType.DIRECTORY>;
     content?: T extends FileSystemEntryType.FILE ? string : T extends FileSystemEntryType.DIRECTORY ? {
         folders: VirtualFileSystemEntry<FileSystemEntryType.DIRECTORY>;
         files: VirtualFileSystemEntry<FileSystemEntryType.FILE>;

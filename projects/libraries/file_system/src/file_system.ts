@@ -31,7 +31,7 @@ export interface VirtualFileSystemEntry<T extends FileSystemEntryType = FileSyst
 	name: string;
 	fullPath: string;
 	type: T;
-	parent: VirtualFileSystemEntry;
+	parent: VirtualFileSystemEntry<FileSystemEntryType.DIRECTORY>;
 
 	content?: T extends FileSystemEntryType.FILE
 		? string
@@ -97,7 +97,7 @@ export abstract class FileSystem {
 			name: parse(filePath).name,
 			content,
 			type: FileSystemEntryType.FILE,
-			parent: undefined // what?
+			parent: undefined
 		};
 	}
 
@@ -108,7 +108,7 @@ export abstract class FileSystem {
 			name: parse(filePath).name,
 			content,
 			type: FileSystemEntryType.FILE,
-			parent: undefined // what?
+			parent: undefined
 		};
 	}
 

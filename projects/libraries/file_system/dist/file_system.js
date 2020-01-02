@@ -40,7 +40,7 @@ class FileSystem {
             name: path_1.parse(filePath).name,
             content,
             type: FileSystemEntryType.FILE,
-            parent: undefined // what?
+            parent: undefined
         };
     }
     toVirtualFileSync(filePath) {
@@ -50,7 +50,7 @@ class FileSystem {
             name: path_1.parse(filePath).name,
             content,
             type: FileSystemEntryType.FILE,
-            parent: undefined // what?
+            parent: undefined
         };
     }
     async writeVirtualFile(virtualFile) {
