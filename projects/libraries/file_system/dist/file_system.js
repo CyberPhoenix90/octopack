@@ -53,6 +53,59 @@ class FileSystem {
             parent: undefined
         };
     }
+    async serializeFolder(path) {
+        if (await this.exists(path)) {
+            const result = {};
+            const entry = {
+                fullPath: path,
+                name: path_1.parse(path).name,
+                parent: undefined,
+                type: FileSystemEntryType.DIRECTORY,
+                content: {
+                    files: [],
+                    folders: []
+                }
+            };
+            result[path] = entry;
+            await this.serializeFolderContent(result, entry);
+            return result;
+        }
+        else {
+            throw new Error(`Path ${path} does not exist`);
+        }
+    }
+    async serializeFolderContent(map, entry) {
+        const contents = await this.readDir(entry.fullPath);
+        for (const content of contents) {
+            const newPath = path_1.join(entry.fullPath, content);
+            if ((await this.stat(newPath)).isDirectory) {
+                const newEntry = {
+                    fullPath: newPath,
+                    name: content,
+                    parent: entry,
+                    type: FileSystemEntryType.DIRECTORY,
+                    content: {
+                        files: [],
+                        folders: []
+                    }
+                };
+                entry.content.folders.push(newEntry);
+                map[newPath] = newEntry;
+                this.serializeFolderContent(map, newEntry);
+            }
+            else {
+                const newEntry = {
+                    fullPath: newPath,
+                    name: content,
+                    parent: entry,
+                    type: FileSystemEntryType.FILE,
+                    content: await this.readFile(newPath, 'utf8')
+                };
+                entry.content.files.push(newEntry);
+                map[newPath] = newEntry;
+            }
+        }
+    }
     async writeVirtualFile(virtualFile) {
         this.writeFile(virtualFile.fullPath, virtualFile.content);
     }

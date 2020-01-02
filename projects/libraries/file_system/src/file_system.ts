@@ -2,6 +2,7 @@ import { match } from 'minimatch';
 import { join, parse, sep } from 'path';
 import * as vm from 'vm';
 import { FilePath } from './file_path_utils';
+import { MapLike } from '../../../../typings/common';
 
 export interface ReadDirOptions {
 	directoryNameBlackList?: string[];
@@ -37,8 +38,8 @@ export interface VirtualFileSystemEntry<T extends FileSystemEntryType = FileSyst
 		? string
 		: T extends FileSystemEntryType.DIRECTORY
 		? {
-				folders: VirtualFileSystemEntry<FileSystemEntryType.DIRECTORY>;
-				files: VirtualFileSystemEntry<FileSystemEntryType.FILE>;
+				folders: VirtualFileSystemEntry<FileSystemEntryType.DIRECTORY>[];
+				files: VirtualFileSystemEntry<FileSystemEntryType.FILE>[];
 		  }
 		: never;
 }
@@ -110,6 +111,64 @@ export abstract class FileSystem {
 			type: FileSystemEntryType.FILE,
 			parent: undefined
 		};
+	}
+
+	public async serializeFolder(path: string): Promise<MapLike<VirtualFileSystemEntry>> {
+		if (await this.exists(path)) {
+			const result: MapLike<VirtualFileSystemEntry> = {};
+
+			const entry: VirtualFileSystemEntry<FileSystemEntryType.DIRECTORY> = {
+				fullPath: path,
+				name: parse(path).name,
+				parent: undefined,
+				type: FileSystemEntryType.DIRECTORY,
+				content: {
+					files: [],
+					folders: []
+				}
+			};
+			result[path] = entry;
+			await this.serializeFolderContent(result, entry);
+
+			return result;
+		} else {
+			throw new Error(`Path ${path} does not exist`);
+		}
+	}
+
+	private async serializeFolderContent(
+		map: MapLike<VirtualFileSystemEntry>,
+		entry: VirtualFileSystemEntry<FileSystemEntryType.DIRECTORY>
+	): Promise<void> {
+		const contents = await this.readDir(entry.fullPath);
+		for (const content of contents) {
+			const newPath = join(entry.fullPath, content);
+			if ((await this.stat(newPath)).isDirectory) {
+				const newEntry: VirtualFileSystemEntry<FileSystemEntryType.DIRECTORY> = {
+					fullPath: newPath,
+					name: content,
+					parent: entry,
+					type: FileSystemEntryType.DIRECTORY,
+					content: {
+						files: [],
+						folders: []
+					}
+				};
+				entry.content.folders.push(newEntry);
+				map[newPath] = newEntry;
+				this.serializeFolderContent(map, newEntry);
+			} else {
+				const newEntry: VirtualFileSystemEntry<FileSystemEntryType.FILE> = {
+					fullPath: newPath,
+					name: content,
+					parent: entry,
+					type: FileSystemEntryType.FILE,
+					content: await this.readFile(newPath, 'utf8')
+				};
+				entry.content.files.push(newEntry);
+				map[newPath] = newEntry;
+			}
+		}
 	}
 
 	public async writeVirtualFile(virtualFile: VirtualFileSystemEntry<FileSystemEntryType.FILE>): Promise<void> {

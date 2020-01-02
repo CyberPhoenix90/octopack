@@ -1,3 +1,4 @@
+import { MapLike } from '../../../../typings/common';
 export interface ReadDirOptions {
     directoryNameBlackList?: string[];
     includeDirectories?: boolean;
@@ -25,8 +26,8 @@ export interface VirtualFileSystemEntry<T extends FileSystemEntryType = FileSyst
     type: T;
     parent: VirtualFileSystemEntry<FileSystemEntryType.DIRECTORY>;
     content?: T extends FileSystemEntryType.FILE ? string : T extends FileSystemEntryType.DIRECTORY ? {
-        folders: VirtualFileSystemEntry<FileSystemEntryType.DIRECTORY>;
-        files: VirtualFileSystemEntry<FileSystemEntryType.FILE>;
+        folders: VirtualFileSystemEntry<FileSystemEntryType.DIRECTORY>[];
+        files: VirtualFileSystemEntry<FileSystemEntryType.FILE>[];
     } : never;
 }
 export declare abstract class FileSystem {
@@ -51,6 +52,8 @@ export declare abstract class FileSystem {
     private optimizeGlob;
     toVirtualFile(filePath: string): Promise<VirtualFileSystemEntry<FileSystemEntryType.FILE>>;
     toVirtualFileSync(filePath: string): VirtualFileSystemEntry<FileSystemEntryType.FILE>;
+    serializeFolder(path: string): Promise<MapLike<VirtualFileSystemEntry>>;
+    private serializeFolderContent;
     writeVirtualFile(virtualFile: VirtualFileSystemEntry<FileSystemEntryType.FILE>): Promise<void>;
     writeVirtualFileSync(virtualFile: VirtualFileSystemEntry<FileSystemEntryType.FILE>): void;
     mkdirp(path: string): Promise<void>;
