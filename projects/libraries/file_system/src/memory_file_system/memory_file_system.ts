@@ -13,11 +13,6 @@ export interface MemoryFileSystemEntry {
 	content?: string;
 }
 
-export enum MemoryFileSystemEntryType {
-	FILE,
-	DIRECTORY
-}
-
 export class MemoryFileSystem extends FileSystem {
 	private fileSystem: MemoryFileSystemEntry;
 
