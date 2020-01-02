@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const file_path_utils_1 = require("../file_path_utils");
 const file_system_1 = require("../file_system");
+const file_path_utils_1 = require("../file_path_utils");
 class MemoryFileSystem extends file_system_1.FileSystem {
     constructor(data) {
         super();

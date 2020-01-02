@@ -1,5 +1,5 @@
 import { Project, ScriptContext } from '../../models';
-import { VirtualFile } from '../../../libraries/file_system';
+import { VirtualFileSystemEntry, FileSystemEntryType } from '../../../libraries/file_system';
 import { inspect } from 'util';
 
 export interface InputPhaseOutput {
@@ -8,7 +8,7 @@ export interface InputPhaseOutput {
 
 export interface ProjectWithInput {
 	project: Project;
-	files: VirtualFile[];
+	files: VirtualFileSystemEntry<FileSystemEntryType.FILE>[];
 }
 
 export class Compiler {

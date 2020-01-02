@@ -24,7 +24,10 @@ export interface VirtualFileSystemEntry<T extends FileSystemEntryType = FileSyst
     fullPath: string;
     type: T;
     parent: VirtualFileSystemEntry;
-    content?: T extends FileSystemEntryType.FILE ? string : T extends FileSystemEntryType.DIRECTORY ? VirtualFileSystemEntry[] : never;
+    content?: T extends FileSystemEntryType.FILE ? string : T extends FileSystemEntryType.DIRECTORY ? {
+        folders: VirtualFileSystemEntry<FileSystemEntryType.DIRECTORY>;
+        files: VirtualFileSystemEntry<FileSystemEntryType.FILE>;
+    } : never;
 }
 export declare abstract class FileSystem {
     abstract exists(path: string): Promise<boolean>;
