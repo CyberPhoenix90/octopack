@@ -53,7 +53,7 @@ export declare abstract class FileSystem {
     private optimizeGlob;
     toVirtualFile(filePath: string, parent?: VirtualFolder): Promise<VirtualFile>;
     toVirtualFileSync(filePath: string, parent?: VirtualFolder): VirtualFile;
-    toVirtualFolderSync(fullPath: string, parent?: VirtualFolder): VirtualFolder;
+    private createVirtualFolder;
     serializeFolder(path: string): Promise<MapLike<VirtualFileSystemEntry>>;
     private serializeFolderContent;
     writeVirtualFile(virtualFile: VirtualFile): Promise<void>;

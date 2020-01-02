@@ -1,0 +1,11 @@
+{
+	"name": "octopack-server",
+	"version": "0.0.0",
+	"main": "dist/index.js",
+	"typings": "dist/index.d.ts",
+	"dependencies": {
+		"@types/node": "^13.1.2",
+		"@types/ws": "^6.0.4",
+		"ws": "^7.2.1"
+	}
+}

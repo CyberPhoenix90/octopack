@@ -53,7 +53,7 @@ class FileSystem {
             parent
         };
     }
-    toVirtualFolderSync(fullPath, parent) {
+    createVirtualFolder(fullPath, parent) {
         return {
             type: FileSystemEntryType.DIRECTORY,
             fullPath,
@@ -65,7 +65,7 @@ class FileSystem {
     async serializeFolder(path) {
         if (await this.exists(path)) {
             const result = {};
-            const entry = this.toVirtualFolderSync(path);
+            const entry = this.createVirtualFolder(path);
             result[path] = entry;
             await this.serializeFolderContent(result, entry);
             return result;
@@ -79,7 +79,7 @@ class FileSystem {
         for (const content of contents) {
             const newPath = path_1.join(entry.fullPath, content);
             if ((await this.stat(newPath)).type === FileSystemEntryType.DIRECTORY) {
-                const newEntry = this.toVirtualFolderSync(newPath, entry);
+                const newEntry = this.createVirtualFolder(newPath, entry);
                 entry.content.folders.push(newEntry);
                 map[newPath] = newEntry;
                 this.serializeFolderContent(map, newEntry);
@@ -246,7 +246,7 @@ class FileSystem {
         const subEntries = (await this.readDir(path)).map((entry) => path_1.join(path, entry));
         const result = [];
         for (const entry of subEntries) {
-            if ((await (await this.stat(entry)).type) === FileSystemEntryType.DIRECTORY) {
+            if ((await this.stat(entry)).type === FileSystemEntryType.DIRECTORY) {
                 result.push(entry);
             }
         }
