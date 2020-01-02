@@ -1,41 +1,45 @@
 import { Project, ScriptContext } from '../../models';
-import { VirtualFile } from '../../../libraries/file_system';
 import { inspect } from 'util';
+import { inputPhase } from './phases/input';
+import { link } from './phases/link';
+import { ParsedArguments } from '../../../libraries/argument_parser';
 
-export interface InputPhaseOutput {
-	projectsWithInput: ProjectWithInput[];
-}
-
-export interface ProjectWithInput {
+export interface ProjectWithBundle {
 	project: Project;
-	files: VirtualFile[];
+	bundle: string;
 }
 
 export class Compiler {
-	public async compile(projects: Project[], context: ScriptContext): Promise<void> {
-		const projectsWithInput = await this.inputPhase(projects, context);
+	public async compile(projects: Project[], context: ScriptContext, args: ParsedArguments): Promise<void> {
+		const projectsWithBundle = projects.map((p) => ({ bundle: this.getBundle(p, args), project: p }));
 
-		console.log(inspect(projectsWithInput, false, 4));
+		const projectsWithInput = await inputPhase(projectsWithBundle, context);
+		const linkedProjects = await link(projectsWithInput, context);
+
+		console.log(inspect(linkedProjects, false, 4));
 	}
 
-	private async inputPhase(projects: Project[], context: ScriptContext): Promise<InputPhaseOutput> {
-		const inputPhaseResult: InputPhaseOutput = {
-			projectsWithInput: []
-		};
-
-		for (const p of projects) {
-			const entry: ProjectWithInput = {
-				project: p,
-				files: []
-			};
-			for (const pattern of p.resolvedConfig.build.bundles.dist.input) {
-				const matches = await context.fileSystem.glob(p.path, pattern);
-				entry.files.push(...(await Promise.all(matches.map((p) => context.fileSystem.toVirtualFile(p)))));
+	private getBundle(project: Project, args: ParsedArguments): string {
+		const bundles = Object.keys(project.resolvedConfig.build.bundles);
+		let defaultBundle;
+		for (const bundle of bundles) {
+			if (args.map[bundle] === true) {
+				return bundle;
 			}
-			inputPhaseResult.projectsWithInput.push(entry);
+			if (project.resolvedConfig.build.bundles[bundle].default) {
+				defaultBundle = bundle;
+			}
 		}
 
-		return inputPhaseResult;
+		if (defaultBundle) {
+			return defaultBundle;
+		} else if (bundles.length === 1) {
+			return bundles[0];
+		} else {
+			throw new Error(
+				`No bundle could be determined for project ${project} please define a default or state the bundle to be used with a CLI flag`
+			);
+		}
 	}
 }
 

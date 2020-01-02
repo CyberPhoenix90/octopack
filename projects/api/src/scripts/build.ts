@@ -26,7 +26,7 @@ export class Build extends Script {
 
 		if (selectedProjects.length) {
 			if (args.map.pipe) {
-				await compiler.compile(selectedProjects, context);
+				await compiler.compile(selectedProjects, context, args);
 			} else {
 				context.uiLogger.info(`Npm installing ${selectedProjects.length} projects...`);
 				await npmInstallPlugin(selectedProjects);

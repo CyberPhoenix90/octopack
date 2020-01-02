@@ -18,7 +18,7 @@ class Build extends script_1.Script {
         const selectedProjects = this.getSelectedProjects(args, await project_crawler_1.projectCrawler.findProjects(context.workspaceRoot, context), context);
         if (selectedProjects.length) {
             if (args.map.pipe) {
-                await compiler_1.compiler.compile(selectedProjects, context);
+                await compiler_1.compiler.compile(selectedProjects, context, args);
             }
             else {
                 context.uiLogger.info(`Npm installing ${selectedProjects.length} projects...`);
