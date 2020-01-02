@@ -2,11 +2,6 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const file_system_1 = require("../file_system");
 const file_path_utils_1 = require("../file_path_utils");
-var MemoryFileSystemEntryType;
-(function (MemoryFileSystemEntryType) {
-    MemoryFileSystemEntryType[MemoryFileSystemEntryType["FILE"] = 0] = "FILE";
-    MemoryFileSystemEntryType[MemoryFileSystemEntryType["DIRECTORY"] = 1] = "DIRECTORY";
-})(MemoryFileSystemEntryType = exports.MemoryFileSystemEntryType || (exports.MemoryFileSystemEntryType = {}));
 class MemoryFileSystem extends file_system_1.FileSystem {
     constructor(data) {
         super();
@@ -17,7 +12,7 @@ class MemoryFileSystem extends file_system_1.FileSystem {
                 fullPath: '/',
                 name: '/',
                 parent: undefined,
-                type: MemoryFileSystemEntryType.DIRECTORY
+                type: file_system_1.FileSystemEntryType.DIRECTORY
             };
     }
     fromJson(json) {
@@ -40,7 +35,7 @@ class MemoryFileSystem extends file_system_1.FileSystem {
         if (!entry) {
             throw new Error(`Path does not exist for ${path}`);
         }
-        else if (entry.type === MemoryFileSystemEntryType.FILE) {
+        else if (entry.type === file_system_1.FileSystemEntryType.FILE) {
             throw new Error('cannot add directories into files');
         }
         entry.children[fp.getFullFileName()] = {
@@ -48,7 +43,7 @@ class MemoryFileSystem extends file_system_1.FileSystem {
             children: {},
             name: fp.getFullFileName(),
             parent: entry,
-            type: MemoryFileSystemEntryType.DIRECTORY
+            type: file_system_1.FileSystemEntryType.DIRECTORY
         };
     }
     async rmdir(path) {
@@ -57,7 +52,7 @@ class MemoryFileSystem extends file_system_1.FileSystem {
     rmdirSync(path) {
         const entry = this.getEntry(path);
         if (entry) {
-            if (entry.type === MemoryFileSystemEntryType.DIRECTORY) {
+            if (entry.type === file_system_1.FileSystemEntryType.DIRECTORY) {
                 if (Object.keys(entry.children).length !== 0) {
                     throw new Error('unlink can only delete empty directories');
                 }
@@ -77,7 +72,7 @@ class MemoryFileSystem extends file_system_1.FileSystem {
     unlinkSync(path) {
         const entry = this.getEntry(path);
         if (entry) {
-            if (entry.type === MemoryFileSystemEntryType.DIRECTORY) {
+            if (entry.type === file_system_1.FileSystemEntryType.DIRECTORY) {
                 if (Object.keys(entry.children).length !== 0) {
                     throw new Error('unlink can only delete empty directories');
                 }
@@ -96,7 +91,7 @@ class MemoryFileSystem extends file_system_1.FileSystem {
         if (!entry) {
             throw new Error(`No such path ${path}`);
         }
-        if (entry.type === MemoryFileSystemEntryType.DIRECTORY) {
+        if (entry.type === file_system_1.FileSystemEntryType.DIRECTORY) {
             throw new Error(`${path} is a directory`);
         }
         return entry.content;
@@ -110,8 +105,7 @@ class MemoryFileSystem extends file_system_1.FileSystem {
             throw new Error(`No such path ${path}`);
         }
         const s = {
-            isDirectory: entry.type === MemoryFileSystemEntryType.DIRECTORY,
-            isFile: entry.type === MemoryFileSystemEntryType.FILE,
+            type: entry.type,
             isBlockDevice: false,
             isCharacterDevice: false,
             isFIFO: false,
@@ -129,7 +123,7 @@ class MemoryFileSystem extends file_system_1.FileSystem {
         if (!entry) {
             throw new Error(`No such path ${path}`);
         }
-        if (entry.type === MemoryFileSystemEntryType.FILE) {
+        if (entry.type === file_system_1.FileSystemEntryType.FILE) {
             throw new Error(`${path} is a file`);
         }
         return Object.keys(entry.children);
@@ -149,7 +143,7 @@ class MemoryFileSystem extends file_system_1.FileSystem {
         if (!entry) {
             throw new Error(`Path does not exist for ${path}`);
         }
-        else if (entry.type === MemoryFileSystemEntryType.FILE) {
+        else if (entry.type === file_system_1.FileSystemEntryType.FILE) {
             throw new Error('cannot add subfiles into files');
         }
         entry.children[fp.getFileName()] = {
@@ -157,7 +151,7 @@ class MemoryFileSystem extends file_system_1.FileSystem {
             content,
             name: fp.getFileName(),
             parent: entry,
-            type: MemoryFileSystemEntryType.FILE
+            type: file_system_1.FileSystemEntryType.FILE
         };
     }
     getEntry(path) {

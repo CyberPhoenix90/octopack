@@ -91,30 +91,23 @@ class DiskFileSystem extends file_system_1.FileSystem {
                 if (err) {
                     reject(err);
                 }
-                resolve({
-                    isDirectory: data.isDirectory(),
-                    isFile: data.isFile(),
-                    isBlockDevice: data.isBlockDevice(),
-                    isCharacterDevice: data.isCharacterDevice(),
-                    isFIFO: data.isFIFO(),
-                    isSocket: data.isSocket(),
-                    isSymbolicLink: data.isSymbolicLink(),
-                    size: data.size
-                });
+                resolve(this.mapStatsToFileSystemEntryStatus(data));
             });
         });
     }
     statSync(path) {
         const data = fs_1.statSync(path);
+        return this.mapStatsToFileSystemEntryStatus(data);
+    }
+    mapStatsToFileSystemEntryStatus(stats) {
         return {
-            isDirectory: data.isDirectory(),
-            isFile: data.isFile(),
-            isBlockDevice: data.isBlockDevice(),
-            isCharacterDevice: data.isCharacterDevice(),
-            isFIFO: data.isFIFO(),
-            isSocket: data.isSocket(),
-            isSymbolicLink: data.isSymbolicLink(),
-            size: data.size
+            type: stats.isDirectory() ? file_system_1.FileSystemEntryType.DIRECTORY : file_system_1.FileSystemEntryType.FILE,
+            isBlockDevice: stats.isBlockDevice(),
+            isCharacterDevice: stats.isCharacterDevice(),
+            isFIFO: stats.isFIFO(),
+            isSocket: stats.isSocket(),
+            isSymbolicLink: stats.isSymbolicLink(),
+            size: stats.size
         };
     }
     exists(path) {

@@ -4,6 +4,11 @@ const minimatch_1 = require("minimatch");
 const path_1 = require("path");
 const vm = require("vm");
 const file_path_utils_1 = require("./file_path_utils");
+var FileSystemEntryType;
+(function (FileSystemEntryType) {
+    FileSystemEntryType["FILE"] = "FILE";
+    FileSystemEntryType["DIRECTORY"] = "DIRECTORY";
+})(FileSystemEntryType = exports.FileSystemEntryType || (exports.FileSystemEntryType = {}));
 class FileSystem {
     async glob(directory, globPattern) {
         ({ directory, globPattern } = this.optimizeGlob(directory, globPattern));
@@ -20,26 +25,71 @@ class FileSystem {
             globPattern = globPattern.substring(1);
         }
         const pieces = globPattern.split('/');
-        while (pieces.length !== 0 && !pieces[0].includes('*') && !pieces[0].includes('!') && !pieces[0].includes('(')) {
+        while (pieces.length !== 0 &&
+            !pieces[0].includes('*') &&
+            !pieces[0].includes('!') &&
+            !pieces[0].includes('(')) {
             directory = path_1.join(directory, pieces.shift());
         }
         return { directory, globPattern: pieces.join('/') };
     }
-    async toVirtualFile(filePath) {
+    async toVirtualFile(filePath, parent) {
         const content = await this.readFile(filePath, 'utf8');
         return {
             fullPath: filePath,
             name: path_1.parse(filePath).name,
-            content
+            content,
+            type: FileSystemEntryType.FILE,
+            parent
         };
     }
-    toVirtualFileSync(filePath) {
+    toVirtualFileSync(filePath, parent) {
         const content = this.readFileSync(filePath, 'utf8');
         return {
             fullPath: filePath,
             name: path_1.parse(filePath).name,
-            content
+            content,
+            type: FileSystemEntryType.FILE,
+            parent
         };
+    }
+    toVirtualFolderSync(fullPath, parent) {
+        return {
+            type: FileSystemEntryType.DIRECTORY,
+            fullPath,
+            name: path_1.parse(fullPath).name,
+            parent,
+            content: { files: [], folders: [] }
+        };
+    }
+    async serializeFolder(path) {
+        if (await this.exists(path)) {
+            const result = {};
+            const entry = this.toVirtualFolderSync(path);
+            result[path] = entry;
+            await this.serializeFolderContent(result, entry);
+            return result;
+        }
+        else {
+            throw new Error(`Path ${path} does not exist`);
+        }
+    }
+    async serializeFolderContent(map, entry) {
+        const contents = await this.readDir(entry.fullPath);
+        for (const content of contents) {
+            const newPath = path_1.join(entry.fullPath, content);
+            if ((await this.stat(newPath)).type === FileSystemEntryType.DIRECTORY) {
+                const newEntry = this.toVirtualFolderSync(newPath, entry);
+                entry.content.folders.push(newEntry);
+                map[newPath] = newEntry;
+                this.serializeFolderContent(map, newEntry);
+            }
+            else {
+                const newEntry = await this.toVirtualFile(newPath, entry);
+                entry.content.files.push(newEntry);
+                map[newPath] = newEntry;
+            }
+        }
     }
     async writeVirtualFile(virtualFile) {
         this.writeFile(virtualFile.fullPath, virtualFile.content);
@@ -81,7 +131,7 @@ class FileSystem {
         const files = await this.readDir(path);
         for (const file of files) {
             const filePath = path_1.join(path.toString(), file);
-            if ((await this.stat(filePath)).isDirectory) {
+            if ((await this.stat(filePath)).type === FileSystemEntryType.DIRECTORY) {
                 await this.emptyDirectory(filePath);
                 await this.rmdir(filePath);
             }
@@ -94,7 +144,7 @@ class FileSystem {
         const files = this.readDirSync(path);
         for (const file of files) {
             const filePath = path_1.join(path.toString(), file);
-            if (this.statSync(filePath).isDirectory) {
+            if (this.statSync(filePath).type === FileSystemEntryType.DIRECTORY) {
                 this.emptyDirectorySync(filePath);
                 this.rmdirSync(filePath);
             }
@@ -112,7 +162,7 @@ class FileSystem {
         }
         const toMerge = await fileSystem.readDirRecursive(sourcePath, options);
         for (const file of toMerge) {
-            if (options.includeDirectories && (await this.stat(file)).isDirectory) {
+            if (options.includeDirectories && (await this.stat(file)).type === FileSystemEntryType.DIRECTORY) {
                 await this.mkdirp(file);
             }
             else {
@@ -133,7 +183,7 @@ class FileSystem {
         }
         const f = await this.readDir(path);
         for (const file of f) {
-            if ((await this.stat(path_1.join(path, file))).isFile) {
+            if ((await this.stat(path_1.join(path, file))).type === FileSystemEntryType.FILE) {
                 this.addFileIfMatch(options, file, results, path);
             }
             else {
@@ -153,7 +203,7 @@ class FileSystem {
         }
         const f = this.readDirSync(path);
         for (const file of f) {
-            if (this.statSync(path_1.join(path, file)).isFile) {
+            if (this.statSync(path_1.join(path, file)).type === FileSystemEntryType.FILE) {
                 this.addFileIfMatch(options, file, results, path);
             }
             else {
@@ -196,7 +246,7 @@ class FileSystem {
         const subEntries = (await this.readDir(path)).map((entry) => path_1.join(path, entry));
         const result = [];
         for (const entry of subEntries) {
-            if (await (await this.stat(entry)).isDirectory) {
+            if ((await (await this.stat(entry)).type) === FileSystemEntryType.DIRECTORY) {
                 result.push(entry);
             }
         }
@@ -205,7 +255,7 @@ class FileSystem {
     getSubfoldersSync(path) {
         return this.readDirSync(path)
             .map((entry) => path_1.join(path, entry))
-            .filter((entry) => this.statSync(entry).isDirectory);
+            .filter((entry) => this.statSync(entry).type === FileSystemEntryType.DIRECTORY);
     }
 }
 exports.FileSystem = FileSystem;

@@ -1,6 +1,5 @@
 import { join, parse } from 'path';
 
-//@exposed
 export class FilePath {
 	private directory: string;
 	private fileName: string;

@@ -2,6 +2,7 @@ import { match } from 'minimatch';
 import { join, parse, sep } from 'path';
 import * as vm from 'vm';
 import { FilePath } from './file_path_utils';
+import { MapLike } from '../../../../typings/common';
 
 export interface ReadDirOptions {
 	directoryNameBlackList?: string[];
@@ -11,22 +12,38 @@ export interface ReadDirOptions {
 	extensionWhiteList?: string[];
 }
 
-export interface FileSystemEntryData {
-	isDirectory: boolean;
-	isFile: boolean;
+export interface FileSystemEntryStatus {
 	isBlockDevice: boolean;
 	isCharacterDevice: boolean;
 	isFIFO: boolean;
 	isSocket: boolean;
 	isSymbolicLink: boolean;
 	size: number;
+	type: FileSystemEntryType;
 }
 
-export interface VirtualFile {
+export enum FileSystemEntryType {
+	FILE = 'FILE',
+	DIRECTORY = 'DIRECTORY'
+}
+
+export interface VirtualFileSystemEntry<T extends FileSystemEntryType = FileSystemEntryType> {
 	name: string;
 	fullPath: string;
-	content?: string;
+	type: T;
+	parent: VirtualFolder;
+
+	content?: T extends FileSystemEntryType.FILE
+		? string
+		: T extends FileSystemEntryType.DIRECTORY
+		? {
+				folders: VirtualFileSystemEntry<FileSystemEntryType.DIRECTORY>[];
+				files: VirtualFileSystemEntry<FileSystemEntryType.FILE>[];
+		  }
+		: never;
 }
+export type VirtualFile = VirtualFileSystemEntry<FileSystemEntryType.FILE>;
+export type VirtualFolder = VirtualFileSystemEntry<FileSystemEntryType.DIRECTORY>;
 
 export abstract class FileSystem {
 	public abstract exists(path: string): Promise<boolean>;
@@ -35,8 +52,8 @@ export abstract class FileSystem {
 	public abstract readFileSync(path: string, encoding: string): string;
 	public abstract readDir(path: string): Promise<string[]>;
 	public abstract readDirSync(path: string): string[];
-	public abstract stat(path: string): Promise<FileSystemEntryData>;
-	public abstract statSync(path: string): FileSystemEntryData;
+	public abstract stat(path: string): Promise<FileSystemEntryStatus>;
+	public abstract statSync(path: string): FileSystemEntryStatus;
 	public abstract writeFile(path: string, content: string): Promise<void>;
 	public abstract writeFileSync(path: string, content: string): void;
 	public abstract mkdir(path: string): Promise<void>;
@@ -63,29 +80,79 @@ export abstract class FileSystem {
 			globPattern = globPattern.substring(1);
 		}
 		const pieces = globPattern.split('/');
-		while (pieces.length !== 0 && !pieces[0].includes('*') && !pieces[0].includes('!') && !pieces[0].includes('(')) {
+		while (
+			pieces.length !== 0 &&
+			!pieces[0].includes('*') &&
+			!pieces[0].includes('!') &&
+			!pieces[0].includes('(')
+		) {
 			directory = join(directory, pieces.shift());
 		}
 
 		return { directory, globPattern: pieces.join('/') };
 	}
 
-	public async toVirtualFile(filePath: string): Promise<VirtualFile> {
+	public async toVirtualFile(filePath: string, parent?: VirtualFolder): Promise<VirtualFile> {
 		const content = await this.readFile(filePath, 'utf8');
 		return {
 			fullPath: filePath,
 			name: parse(filePath).name,
-			content
+			content,
+			type: FileSystemEntryType.FILE,
+			parent
 		};
 	}
 
-	public toVirtualFileSync(filePath: string): VirtualFile {
+	public toVirtualFileSync(filePath: string, parent?: VirtualFolder): VirtualFile {
 		const content = this.readFileSync(filePath, 'utf8');
 		return {
 			fullPath: filePath,
 			name: parse(filePath).name,
-			content
+			content,
+			type: FileSystemEntryType.FILE,
+			parent
 		};
+	}
+
+	private createVirtualFolder(fullPath: string, parent?: VirtualFolder): VirtualFolder {
+		return {
+			type: FileSystemEntryType.DIRECTORY,
+			fullPath,
+			name: parse(fullPath).name,
+			parent,
+			content: { files: [], folders: [] }
+		};
+	}
+
+	public async serializeFolder(path: string): Promise<MapLike<VirtualFileSystemEntry>> {
+		if (await this.exists(path)) {
+			const result: MapLike<VirtualFileSystemEntry> = {};
+
+			const entry = this.createVirtualFolder(path);
+			result[path] = entry;
+			await this.serializeFolderContent(result, entry);
+
+			return result;
+		} else {
+			throw new Error(`Path ${path} does not exist`);
+		}
+	}
+
+	private async serializeFolderContent(map: MapLike<VirtualFileSystemEntry>, entry: VirtualFolder): Promise<void> {
+		const contents = await this.readDir(entry.fullPath);
+		for (const content of contents) {
+			const newPath = join(entry.fullPath, content);
+			if ((await this.stat(newPath)).type === FileSystemEntryType.DIRECTORY) {
+				const newEntry = this.createVirtualFolder(newPath, entry);
+				entry.content.folders.push(newEntry);
+				map[newPath] = newEntry;
+				this.serializeFolderContent(map, newEntry);
+			} else {
+				const newEntry = await this.toVirtualFile(newPath, entry);
+				entry.content.files.push(newEntry);
+				map[newPath] = newEntry;
+			}
+		}
 	}
 
 	public async writeVirtualFile(virtualFile: VirtualFile): Promise<void> {
@@ -135,7 +202,7 @@ export abstract class FileSystem {
 
 		for (const file of files) {
 			const filePath = join(path.toString(), file);
-			if ((await this.stat(filePath)).isDirectory) {
+			if ((await this.stat(filePath)).type === FileSystemEntryType.DIRECTORY) {
 				await this.emptyDirectory(filePath);
 				await this.rmdir(filePath);
 			} else {
@@ -149,7 +216,7 @@ export abstract class FileSystem {
 
 		for (const file of files) {
 			const filePath = join(path.toString(), file);
-			if (this.statSync(filePath).isDirectory) {
+			if (this.statSync(filePath).type === FileSystemEntryType.DIRECTORY) {
 				this.emptyDirectorySync(filePath);
 				this.rmdirSync(filePath);
 			} else {
@@ -158,7 +225,12 @@ export abstract class FileSystem {
 		}
 	}
 
-	public async merge(fileSystem: FileSystem, options: ReadDirOptions, targetPath: string = '/', sourcePath: string = '/'): Promise<void> {
+	public async merge(
+		fileSystem: FileSystem,
+		options: ReadDirOptions,
+		targetPath: string = '/',
+		sourcePath: string = '/'
+	): Promise<void> {
 		if (!(await this.exists(targetPath))) {
 			throw new Error('target path does not exist');
 		}
@@ -168,7 +240,7 @@ export abstract class FileSystem {
 
 		const toMerge = await fileSystem.readDirRecursive(sourcePath, options);
 		for (const file of toMerge) {
-			if (options.includeDirectories && (await this.stat(file)).isDirectory) {
+			if (options.includeDirectories && (await this.stat(file)).type === FileSystemEntryType.DIRECTORY) {
 				await this.mkdirp(file);
 			} else {
 				await this.mkdirp(new FilePath(file).getDirectory());
@@ -192,7 +264,7 @@ export abstract class FileSystem {
 
 		const f = await this.readDir(path);
 		for (const file of f) {
-			if ((await this.stat(join(path, file))).isFile) {
+			if ((await this.stat(join(path, file))).type === FileSystemEntryType.FILE) {
 				this.addFileIfMatch(options, file, results, path);
 			} else {
 				if (!options.directoryNameBlackList || !options.directoryNameBlackList.includes(file)) {
@@ -213,7 +285,7 @@ export abstract class FileSystem {
 
 		const f = this.readDirSync(path);
 		for (const file of f) {
-			if (this.statSync(join(path, file)).isFile) {
+			if (this.statSync(join(path, file)).type === FileSystemEntryType.FILE) {
 				this.addFileIfMatch(options, file, results, path);
 			} else {
 				if (!options.directoryNameBlackList || !options.directoryNameBlackList.includes(file)) {
@@ -258,7 +330,7 @@ export abstract class FileSystem {
 		const result: string[] = [];
 
 		for (const entry of subEntries) {
-			if (await (await this.stat(entry)).isDirectory) {
+			if ((await this.stat(entry)).type === FileSystemEntryType.DIRECTORY) {
 				result.push(entry);
 			}
 		}
@@ -269,7 +341,7 @@ export abstract class FileSystem {
 	public getSubfoldersSync(path: string): string[] {
 		return this.readDirSync(path)
 			.map((entry) => join(path, entry))
-			.filter((entry) => this.statSync(entry).isDirectory);
+			.filter((entry) => this.statSync(entry).type === FileSystemEntryType.DIRECTORY);
 	}
 }
 
