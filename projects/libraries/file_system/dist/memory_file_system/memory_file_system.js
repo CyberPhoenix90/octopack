@@ -105,8 +105,7 @@ class MemoryFileSystem extends file_system_1.FileSystem {
             throw new Error(`No such path ${path}`);
         }
         const s = {
-            isDirectory: entry.type === file_system_1.FileSystemEntryType.DIRECTORY,
-            isFile: entry.type === file_system_1.FileSystemEntryType.FILE,
+            type: entry.type,
             isBlockDevice: false,
             isCharacterDevice: false,
             isFIFO: false,

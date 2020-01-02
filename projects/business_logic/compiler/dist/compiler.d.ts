@@ -1,11 +1,11 @@
 import { Project, ScriptContext } from '../../models';
-import { VirtualFileSystemEntry, FileSystemEntryType } from '../../../libraries/file_system';
+import { VirtualFile } from '../../../libraries/file_system';
 export interface InputPhaseOutput {
     projectsWithInput: ProjectWithInput[];
 }
 export interface ProjectWithInput {
     project: Project;
-    files: VirtualFileSystemEntry<FileSystemEntryType.FILE>[];
+    files: VirtualFile[];
 }
 export declare class Compiler {
     compile(projects: Project[], context: ScriptContext): Promise<void>;

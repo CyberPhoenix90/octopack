@@ -6,15 +6,14 @@ export interface ReadDirOptions {
     extensionBlackList?: string[];
     extensionWhiteList?: string[];
 }
-export interface FileSystemEntryData {
-    isDirectory: boolean;
-    isFile: boolean;
+export interface FileSystemEntryStatus {
     isBlockDevice: boolean;
     isCharacterDevice: boolean;
     isFIFO: boolean;
     isSocket: boolean;
     isSymbolicLink: boolean;
     size: number;
+    type: FileSystemEntryType;
 }
 export declare enum FileSystemEntryType {
     FILE = "FILE",
@@ -24,12 +23,14 @@ export interface VirtualFileSystemEntry<T extends FileSystemEntryType = FileSyst
     name: string;
     fullPath: string;
     type: T;
-    parent: VirtualFileSystemEntry<FileSystemEntryType.DIRECTORY>;
+    parent: VirtualFolder;
     content?: T extends FileSystemEntryType.FILE ? string : T extends FileSystemEntryType.DIRECTORY ? {
         folders: VirtualFileSystemEntry<FileSystemEntryType.DIRECTORY>[];
         files: VirtualFileSystemEntry<FileSystemEntryType.FILE>[];
     } : never;
 }
+export declare type VirtualFile = VirtualFileSystemEntry<FileSystemEntryType.FILE>;
+export declare type VirtualFolder = VirtualFileSystemEntry<FileSystemEntryType.DIRECTORY>;
 export declare abstract class FileSystem {
     abstract exists(path: string): Promise<boolean>;
     abstract existsSync(path: string): boolean;
@@ -37,8 +38,8 @@ export declare abstract class FileSystem {
     abstract readFileSync(path: string, encoding: string): string;
     abstract readDir(path: string): Promise<string[]>;
     abstract readDirSync(path: string): string[];
-    abstract stat(path: string): Promise<FileSystemEntryData>;
-    abstract statSync(path: string): FileSystemEntryData;
+    abstract stat(path: string): Promise<FileSystemEntryStatus>;
+    abstract statSync(path: string): FileSystemEntryStatus;
     abstract writeFile(path: string, content: string): Promise<void>;
     abstract writeFileSync(path: string, content: string): void;
     abstract mkdir(path: string): Promise<void>;
@@ -50,12 +51,13 @@ export declare abstract class FileSystem {
     glob(directory: string, globPattern: string): Promise<string[]>;
     globSync(directory: string, globPattern: string): string[];
     private optimizeGlob;
-    toVirtualFile(filePath: string): Promise<VirtualFileSystemEntry<FileSystemEntryType.FILE>>;
-    toVirtualFileSync(filePath: string): VirtualFileSystemEntry<FileSystemEntryType.FILE>;
+    toVirtualFile(filePath: string, parent?: VirtualFolder): Promise<VirtualFile>;
+    toVirtualFileSync(filePath: string, parent?: VirtualFolder): VirtualFile;
+    toVirtualFolderSync(fullPath: string, parent?: VirtualFolder): VirtualFolder;
     serializeFolder(path: string): Promise<MapLike<VirtualFileSystemEntry>>;
     private serializeFolderContent;
-    writeVirtualFile(virtualFile: VirtualFileSystemEntry<FileSystemEntryType.FILE>): Promise<void>;
-    writeVirtualFileSync(virtualFile: VirtualFileSystemEntry<FileSystemEntryType.FILE>): void;
+    writeVirtualFile(virtualFile: VirtualFile): Promise<void>;
+    writeVirtualFileSync(virtualFile: VirtualFile): void;
     mkdirp(path: string): Promise<void>;
     mkdirpSync(path: string): void;
     deleteDirectory(path: string): Promise<void>;

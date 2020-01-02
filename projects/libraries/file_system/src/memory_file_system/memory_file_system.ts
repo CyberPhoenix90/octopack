@@ -1,4 +1,4 @@
-import { FileSystem, FileSystemEntryData, FileSystemEntryType } from '../file_system';
+import { FileSystem, FileSystemEntryStatus, FileSystemEntryType } from '../file_system';
 import { FilePath } from '../file_path_utils';
 import { MapLike } from '../../../../../typings/common';
 
@@ -120,19 +120,18 @@ export class MemoryFileSystem extends FileSystem {
 		return entry.content;
 	}
 
-	public async stat(path: string): Promise<FileSystemEntryData> {
+	public async stat(path: string): Promise<FileSystemEntryStatus> {
 		return this.statSync(path);
 	}
 
-	public statSync(path: string): FileSystemEntryData {
+	public statSync(path: string): FileSystemEntryStatus {
 		const entry = this.getEntry(path);
 		if (!entry) {
 			throw new Error(`No such path ${path}`);
 		}
 
-		const s: FileSystemEntryData = {
-			isDirectory: entry.type === FileSystemEntryType.DIRECTORY,
-			isFile: entry.type === FileSystemEntryType.FILE,
+		const s: FileSystemEntryStatus = {
+			type: entry.type,
 			isBlockDevice: false,
 			isCharacterDevice: false,
 			isFIFO: false,

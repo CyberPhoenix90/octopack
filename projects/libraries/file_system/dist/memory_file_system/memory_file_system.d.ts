@@ -1,4 +1,4 @@
-import { FileSystem, FileSystemEntryData, FileSystemEntryType } from '../file_system';
+import { FileSystem, FileSystemEntryStatus, FileSystemEntryType } from '../file_system';
 import { MapLike } from '../../../../../typings/common';
 export declare type MemoryFileSystemData = {
     [path: string]: MemoryFileSystemEntry;
@@ -26,8 +26,8 @@ export declare class MemoryFileSystem extends FileSystem {
     unlinkSync(path: string): void;
     readFile(path: string, encoding: string): Promise<string>;
     readFileSync(path: string, encoding: string): string;
-    stat(path: string): Promise<FileSystemEntryData>;
-    statSync(path: string): FileSystemEntryData;
+    stat(path: string): Promise<FileSystemEntryStatus>;
+    statSync(path: string): FileSystemEntryStatus;
     readDir(path: string): Promise<string[]>;
     readDirSync(path: string): string[];
     exists(path: string): Promise<boolean>;

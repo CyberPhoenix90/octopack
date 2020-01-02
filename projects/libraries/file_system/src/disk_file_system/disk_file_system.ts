@@ -1,4 +1,4 @@
-import { FileSystem, FileSystemEntryData } from '../file_system';
+import { FileSystem, FileSystemEntryStatus, FileSystemEntryType } from '../file_system';
 import {
 	exists,
 	existsSync,
@@ -14,7 +14,8 @@ import {
 	unlink,
 	writeFileSync,
 	mkdirSync,
-	rmdirSync
+	rmdirSync,
+	Stats
 } from 'fs';
 
 export class DiskFileSystem extends FileSystem {
@@ -105,38 +106,34 @@ export class DiskFileSystem extends FileSystem {
 		});
 	}
 
-	public stat(path: string): Promise<FileSystemEntryData> {
+	public stat(path: string): Promise<FileSystemEntryStatus> {
 		return new Promise((resolve, reject) => {
 			return stat(path, (err, data) => {
 				if (err) {
 					reject(err);
 				}
-				resolve({
-					isDirectory: data.isDirectory(),
-					isFile: data.isFile(),
-					isBlockDevice: data.isBlockDevice(),
-					isCharacterDevice: data.isCharacterDevice(),
-					isFIFO: data.isFIFO(),
-					isSocket: data.isSocket(),
-					isSymbolicLink: data.isSymbolicLink(),
-					size: data.size
-				});
+				resolve(this.mapStatsToFileSystemEntryStatus(data));
 			});
 		});
 	}
-	public statSync(path: string): FileSystemEntryData {
+
+	public statSync(path: string): FileSystemEntryStatus {
 		const data = statSync(path);
+		return this.mapStatsToFileSystemEntryStatus(data);
+	}
+
+	private mapStatsToFileSystemEntryStatus(stats: Stats): FileSystemEntryStatus {
 		return {
-			isDirectory: data.isDirectory(),
-			isFile: data.isFile(),
-			isBlockDevice: data.isBlockDevice(),
-			isCharacterDevice: data.isCharacterDevice(),
-			isFIFO: data.isFIFO(),
-			isSocket: data.isSocket(),
-			isSymbolicLink: data.isSymbolicLink(),
-			size: data.size
+			type: stats.isDirectory() ? FileSystemEntryType.DIRECTORY : FileSystemEntryType.FILE,
+			isBlockDevice: stats.isBlockDevice(),
+			isCharacterDevice: stats.isCharacterDevice(),
+			isFIFO: stats.isFIFO(),
+			isSocket: stats.isSocket(),
+			isSymbolicLink: stats.isSymbolicLink(),
+			size: stats.size
 		};
 	}
+
 	public exists(path: string): Promise<boolean> {
 		return new Promise((resolve) => {
 			return exists(path, (exists) => {

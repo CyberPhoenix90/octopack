@@ -1,4 +1,4 @@
-import { FileSystem, FileSystemEntryData } from '../file_system';
+import { FileSystem, FileSystemEntryStatus } from '../file_system';
 export declare class DiskFileSystem extends FileSystem {
     readDir(path: string): Promise<string[]>;
     readDirSync(path: string): string[];
@@ -10,8 +10,9 @@ export declare class DiskFileSystem extends FileSystem {
     rmdirSync(path: string): void;
     unlink(path: string): Promise<void>;
     unlinkSync(path: string): Promise<void>;
-    stat(path: string): Promise<FileSystemEntryData>;
-    statSync(path: string): FileSystemEntryData;
+    stat(path: string): Promise<FileSystemEntryStatus>;
+    statSync(path: string): FileSystemEntryStatus;
+    private mapStatsToFileSystemEntryStatus;
     exists(path: string): Promise<boolean>;
     existsSync(path: string): boolean;
     readFile(path: string, encoding?: string): Promise<string>;
