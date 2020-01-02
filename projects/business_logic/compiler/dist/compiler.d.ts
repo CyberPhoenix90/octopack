@@ -1,15 +1,12 @@
 import { Project, ScriptContext } from '../../models';
-import { VirtualFile } from '../../../libraries/file_system';
-export interface InputPhaseOutput {
-    projectsWithInput: ProjectWithInput[];
-}
-export interface ProjectWithInput {
+import { ParsedArguments } from '../../../libraries/argument_parser';
+export interface ProjectWithBundle {
     project: Project;
-    files: VirtualFile[];
+    bundle: string;
 }
 export declare class Compiler {
-    compile(projects: Project[], context: ScriptContext): Promise<void>;
-    private inputPhase;
+    compile(projects: Project[], context: ScriptContext, args: ParsedArguments): Promise<void>;
+    private getBundle;
 }
 export declare const compiler: Compiler;
 //# sourceMappingURL=compiler.d.ts.map

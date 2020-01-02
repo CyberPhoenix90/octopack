@@ -11,12 +11,16 @@ export interface OctopackConfiguration {
     };
 }
 export interface OctopackBuildBundle {
+    default?: boolean;
     input: string[];
     output: string;
     compilation: {
-        init: OctopackBuildPlugin[];
-        link: OctopackBuildPlugin[];
-        compile: OctopackBuildPlugin[];
+        init?: OctopackBuildPlugin[];
+        link?: OctopackBuildPlugin[];
+        compile?: OctopackBuildPlugin[];
+        preProcess?: OctopackBuildPlugin[];
+        postProcess?: OctopackBuildPlugin[];
+        emit?: OctopackBuildPlugin[];
     };
 }
 export declare type OctopackBuildPlugin = string | {

@@ -1,27 +1,35 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const util_1 = require("util");
+const input_1 = require("./phases/input");
+const link_1 = require("./phases/link");
 class Compiler {
-    async compile(projects, context) {
-        const projectsWithInput = await this.inputPhase(projects, context);
-        console.log(util_1.inspect(projectsWithInput, false, 4));
+    async compile(projects, context, args) {
+        const projectsWithBundle = projects.map((p) => ({ bundle: this.getBundle(p, args), project: p }));
+        const projectsWithInput = await input_1.inputPhase(projectsWithBundle, context);
+        const linkedProjects = await link_1.link(projectsWithInput, context);
+        console.log(util_1.inspect(linkedProjects, false, 4));
     }
-    async inputPhase(projects, context) {
-        const inputPhaseResult = {
-            projectsWithInput: []
-        };
-        for (const p of projects) {
-            const entry = {
-                project: p,
-                files: []
-            };
-            for (const pattern of p.resolvedConfig.build.bundles.dist.input) {
-                const matches = await context.fileSystem.glob(p.path, pattern);
-                entry.files.push(...(await Promise.all(matches.map((p) => context.fileSystem.toVirtualFile(p)))));
+    getBundle(project, args) {
+        const bundles = Object.keys(project.resolvedConfig.build.bundles);
+        let defaultBundle;
+        for (const bundle of bundles) {
+            if (args.map[bundle] === true) {
+                return bundle;
             }
-            inputPhaseResult.projectsWithInput.push(entry);
+            if (project.resolvedConfig.build.bundles[bundle].default) {
+                defaultBundle = bundle;
+            }
         }
-        return inputPhaseResult;
+        if (defaultBundle) {
+            return defaultBundle;
+        }
+        else if (bundles.length === 1) {
+            return bundles[0];
+        }
+        else {
+            throw new Error(`No bundle could be determined for project ${project} please define a default or state the bundle to be used with a CLI flag`);
+        }
     }
 }
 exports.Compiler = Compiler;

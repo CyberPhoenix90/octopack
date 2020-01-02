@@ -9,11 +9,12 @@ module.exports = {
 	build: {
 		bundles: {
 			dist: {
+				default: true,
 				input: ['src/**/*.ts', 'src/**/*.tsx'],
 				output: 'dist',
 				compilation: {
 					init: ['npmInstaller'],
-					link: ['projectImporter', 'codeImporter'],
+					link: ['projectImporter'],
 					compile: ['typescript']
 				}
 			}
