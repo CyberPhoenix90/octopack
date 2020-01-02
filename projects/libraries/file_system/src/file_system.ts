@@ -36,7 +36,10 @@ export interface VirtualFileSystemEntry<T extends FileSystemEntryType = FileSyst
 	content?: T extends FileSystemEntryType.FILE
 		? string
 		: T extends FileSystemEntryType.DIRECTORY
-		? VirtualFileSystemEntry[]
+		? {
+				folders: VirtualFileSystemEntry<FileSystemEntryType.DIRECTORY>;
+				files: VirtualFileSystemEntry<FileSystemEntryType.FILE>;
+		  }
 		: never;
 }
 
