@@ -1,12 +1,15 @@
 #!/usr/bin/env node
 const { Build } = require('../projects/api');
 const { join } = require('path');
-const { spawn } = require('child_process');
+const { spawn, spawnSync } = require('child_process');
 const { Logger } = require('../projects/libraries/logger');
 const { localDiskFileSystem } = require('../projects/libraries/file_system');
 const { loadConfig } = require('../projects/business_logic/config_resolver');
 
 (async () => {
+	spawnSync('npm', ['install'], {
+		cwd: join(__dirname, '../projects/libraries/file_system')
+	});
 	new Build()
 		.run(
 			{
