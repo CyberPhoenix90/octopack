@@ -14,7 +14,7 @@ module.exports = {
 				output: 'dist',
 				compilation: {
 					init: ['npmInstaller'],
-					link: ['projectImporter'],
+					link: [],
 					compile: ['typescript']
 				}
 			}

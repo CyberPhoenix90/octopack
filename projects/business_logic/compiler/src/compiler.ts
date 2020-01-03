@@ -1,22 +1,22 @@
-import { Project, ScriptContext } from '../../models';
-import { inspect } from 'util';
-import { inputPhase } from './phases/input';
-import { link } from './phases/link';
 import { ParsedArguments } from '../../../libraries/argument_parser';
-
-export interface ProjectWithBundle {
-	project: Project;
-	bundle: string;
-}
+import { CompilerModel, Project, ScriptContext } from '../../models';
+import { inputPhase } from './phases/input';
+import { pluginBasedPhase } from './phases/plugin_phase';
 
 export class Compiler {
 	public async compile(projects: Project[], context: ScriptContext, args: ParsedArguments): Promise<void> {
-		const projectsWithBundle = projects.map((p) => ({ bundle: this.getBundle(p, args), project: p }));
+		const compileModel: CompilerModel = {
+			projectsBuildData: projects.map((p) => ({
+				bundle: this.getBundle(p, args),
+				project: p,
+				files: []
+			}))
+		};
 
-		const projectsWithInput = await inputPhase(projectsWithBundle, context);
-		const linkedProjects = await link(projectsWithInput, context);
-
-		console.log(inspect(linkedProjects, false, 4));
+		await inputPhase(compileModel, context);
+		await pluginBasedPhase('link', compileModel, context);
+		await pluginBasedPhase('compile', compileModel, context);
+		await pluginBasedPhase('emit', compileModel, context);
 	}
 
 	private getBundle(project: Project, args: ParsedArguments): string {

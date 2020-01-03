@@ -1,14 +1,20 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const util_1 = require("util");
 const input_1 = require("./phases/input");
-const link_1 = require("./phases/link");
+const plugin_phase_1 = require("./phases/plugin_phase");
 class Compiler {
     async compile(projects, context, args) {
-        const projectsWithBundle = projects.map((p) => ({ bundle: this.getBundle(p, args), project: p }));
-        const projectsWithInput = await input_1.inputPhase(projectsWithBundle, context);
-        const linkedProjects = await link_1.link(projectsWithInput, context);
-        console.log(util_1.inspect(linkedProjects, false, 4));
+        const compileModel = {
+            projectsBuildData: projects.map((p) => ({
+                bundle: this.getBundle(p, args),
+                project: p,
+                files: []
+            }))
+        };
+        await input_1.inputPhase(compileModel, context);
+        await plugin_phase_1.pluginBasedPhase('link', compileModel, context);
+        await plugin_phase_1.pluginBasedPhase('compile', compileModel, context);
+        await plugin_phase_1.pluginBasedPhase('emit', compileModel, context);
     }
     getBundle(project, args) {
         const bundles = Object.keys(project.resolvedConfig.build.bundles);

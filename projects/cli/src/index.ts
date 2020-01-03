@@ -4,7 +4,13 @@ import { findConfiguration, OctopackConfiguration } from '../../business_logic/c
 import { localDiskFileSystem } from '../../libraries/file_system';
 import { join } from 'path';
 import { Build } from '../../api';
-import { Logger, CallbackLoggerAdapter, LogLevelPrependerLoggerEnhancer, ConsoleLoggerAdapter } from '../../libraries/logger';
+import {
+	Logger,
+	CallbackLoggerAdapter,
+	LogLevelPrependerLoggerEnhancer,
+	ConsoleLoggerAdapter,
+	WriteFileLoggerAdapter
+} from '../../libraries/logger';
 import { parseArguments } from '../../libraries/argument_parser';
 
 //Self executing async function due to lack of top level async support
@@ -32,14 +38,22 @@ import { parseArguments } from '../../libraries/argument_parser';
 })();
 
 function notFound() {
-	console.error(`Could not find any octopack configuration. Please run octo from a folder or subfolder that contains a workspace configuration`);
+	console.error(
+		`Could not find any octopack configuration. Please run octo from a folder or subfolder that contains a workspace configuration`
+	);
 	process.exit(-1);
 }
 
 function runScript(config: OctopackConfiguration, workspaceRoot: string) {
-	const devLogger = new Logger({ adapters: [], enhancers: [new LogLevelPrependerLoggerEnhancer()] });
+	const devLogger = new Logger({
+		adapters: [new WriteFileLoggerAdapter(join(__dirname, '../log.txt'))],
+		enhancers: [new LogLevelPrependerLoggerEnhancer()]
+	});
 	const uiLogger = new Logger({
-		adapters: [new ConsoleLoggerAdapter(), new CallbackLoggerAdapter((log) => devLogger.log(log.text ?? log.object, log.logLevel))],
+		adapters: [
+			new ConsoleLoggerAdapter(),
+			new CallbackLoggerAdapter((log) => devLogger.log(log.text ?? log.object, log.logLevel))
+		],
 		enhancers: [new LogLevelPrependerLoggerEnhancer()]
 	});
 

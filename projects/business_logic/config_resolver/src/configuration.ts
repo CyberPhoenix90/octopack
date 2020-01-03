@@ -1,3 +1,5 @@
+import { MapLike } from '../../../../typings/common';
+
 export interface OctopackConfiguration {
 	name: string;
 	scope: 'project' | 'workspace' | 'solution';
@@ -16,13 +18,13 @@ export interface OctopackBuildBundle {
 	input: string[];
 	output: string;
 	compilation: {
-		init?: OctopackBuildPlugin[];
-		link?: OctopackBuildPlugin[];
-		compile?: OctopackBuildPlugin[];
-		preProcess?: OctopackBuildPlugin[];
-		postProcess?: OctopackBuildPlugin[];
-		emit?: OctopackBuildPlugin[];
+		init?: OctopackBuildPluginModel[];
+		link?: OctopackBuildPluginModel[];
+		compile?: OctopackBuildPluginModel[];
+		preProcess?: OctopackBuildPluginModel[];
+		postProcess?: OctopackBuildPluginModel[];
+		emit?: OctopackBuildPluginModel[];
 	};
 }
 
-export type OctopackBuildPlugin = string | { name: string; arguments: { [key: string]: any } };
+export type OctopackBuildPluginModel = string | { name: string; arguments: MapLike<any> };

@@ -1,6 +1,11 @@
-import { Project } from '../../../models';
 import { spawn } from 'child_process';
 import { join } from 'path';
+import { MapLike } from '../../../../../typings/common';
+import { OctoPackBuildPlugin, Project, ProjectBuildData } from '../../../models';
+
+export function typescript(args: MapLike<any>): OctoPackBuildPlugin {
+	return async (model: ProjectBuildData) => model;
+}
 
 export async function typescriptPlugin(projects: Project[]): Promise<void> {
 	const promises: Promise<void>[] = [];

@@ -2,6 +2,10 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const child_process_1 = require("child_process");
 const path_1 = require("path");
+function typescript(args) {
+    return async (model) => model;
+}
+exports.typescript = typescript;
 async function typescriptPlugin(projects) {
     const promises = [];
     for (const project of projects) {
