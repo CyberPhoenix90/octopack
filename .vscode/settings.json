@@ -1,4 +1,12 @@
 {
+	"search.exclude": {
+		"**/node_modules": true,
+		"**/bower_components": true,
+		"**/*.code-search": true,
+		"**/*.map": true,
+		"**/package-lock.json": true,
+		"**/dist": true
+	},
 	"[json]": {
 		"editor.formatOnSave": true,
 		"files.trimTrailingWhitespace": true,
@@ -28,7 +36,6 @@
 		"editor.trimAutoWhitespace": true,
 		"editor.defaultFormatter": "esbenp.prettier-vscode"
 	},
-
 	"[javascript]": {
 		"editor.formatOnSave": true,
 		"files.trimTrailingWhitespace": true,
