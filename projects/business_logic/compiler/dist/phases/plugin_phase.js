@@ -13,7 +13,7 @@ async function pluginBasedPhase(name, model, context) {
             context.devLogger.debug(
             //@ts-ignore
             `Running plugin ${_b = (_a = plugin) === null || _a === void 0 ? void 0 : _a.name, (_b !== null && _b !== void 0 ? _b : plugin)} for ${projectData.project.resolvedConfig.name}`);
-            await plugin_loader_1.loadPlugin(plugin)(projectData);
+            await plugin_loader_1.loadPlugin(plugin)(projectData, context);
         }
     }
     return model;

@@ -19,7 +19,7 @@ export async function pluginBasedPhase(
 				//@ts-ignore
 				`Running plugin ${plugin?.name ?? plugin} for ${projectData.project.resolvedConfig.name}`
 			);
-			await loadPlugin(plugin)(projectData);
+			await loadPlugin(plugin)(projectData, context);
 		}
 	}
 
