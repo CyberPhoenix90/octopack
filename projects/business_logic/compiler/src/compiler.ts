@@ -5,7 +5,7 @@ import { pluginBasedPhase } from './phases/plugin_phase';
 
 export class Compiler {
 	public async compile(projects: Project[], context: ScriptContext, args: ParsedArguments): Promise<void> {
-		const compileModel: CompilerModel = {
+		let compileModel: CompilerModel = {
 			projectsBuildData: projects.map((p) => ({
 				bundle: this.getBundle(p, args),
 				project: p,
@@ -13,10 +13,11 @@ export class Compiler {
 			}))
 		};
 
-		await inputPhase(compileModel, context);
-		await pluginBasedPhase('link', compileModel, context);
-		await pluginBasedPhase('compile', compileModel, context);
-		await pluginBasedPhase('emit', compileModel, context);
+		compileModel = await pluginBasedPhase('init', compileModel, context);
+		compileModel = await inputPhase(compileModel, context);
+		compileModel = await pluginBasedPhase('link', compileModel, context);
+		compileModel = await pluginBasedPhase('compile', compileModel, context);
+		compileModel = await pluginBasedPhase('emit', compileModel, context);
 	}
 
 	private getBundle(project: Project, args: ParsedArguments): string {

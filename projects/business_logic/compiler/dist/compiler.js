@@ -4,17 +4,18 @@ const input_1 = require("./phases/input");
 const plugin_phase_1 = require("./phases/plugin_phase");
 class Compiler {
     async compile(projects, context, args) {
-        const compileModel = {
+        let compileModel = {
             projectsBuildData: projects.map((p) => ({
                 bundle: this.getBundle(p, args),
                 project: p,
                 files: []
             }))
         };
-        await input_1.inputPhase(compileModel, context);
-        await plugin_phase_1.pluginBasedPhase('link', compileModel, context);
-        await plugin_phase_1.pluginBasedPhase('compile', compileModel, context);
-        await plugin_phase_1.pluginBasedPhase('emit', compileModel, context);
+        compileModel = await plugin_phase_1.pluginBasedPhase('init', compileModel, context);
+        compileModel = await input_1.inputPhase(compileModel, context);
+        compileModel = await plugin_phase_1.pluginBasedPhase('link', compileModel, context);
+        compileModel = await plugin_phase_1.pluginBasedPhase('compile', compileModel, context);
+        compileModel = await plugin_phase_1.pluginBasedPhase('emit', compileModel, context);
     }
     getBundle(project, args) {
         const bundles = Object.keys(project.resolvedConfig.build.bundles);

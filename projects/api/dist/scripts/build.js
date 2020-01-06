@@ -1,9 +1,8 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+const compiler_1 = require("../../../business_logic/compiler");
 const project_crawler_1 = require("../projects/project_crawler");
 const script_1 = require("./script");
-const npm_installer_1 = require("../../../business_logic/plugins/npm_installer");
-const compiler_1 = require("../../../business_logic/compiler");
 class Build extends script_1.Script {
     autoComplete() {
         throw new Error('Method not implemented.');
@@ -16,8 +15,6 @@ class Build extends script_1.Script {
     async run(args, context) {
         const selectedProjects = this.getSelectedProjects(args, await project_crawler_1.projectCrawler.findProjects(context.workspaceRoot, context), context);
         if (selectedProjects.length) {
-            context.uiLogger.info(`Npm installing ${selectedProjects.length} projects...`);
-            await npm_installer_1.npmInstallPlugin(selectedProjects);
             await compiler_1.compiler.compile(selectedProjects, context, args);
         }
         else {

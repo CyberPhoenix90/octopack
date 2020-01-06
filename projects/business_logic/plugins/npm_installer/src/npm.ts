@@ -1,16 +1,16 @@
-import { Project } from '../../../models/dist';
+import { Project, OctoPackBuildPlugin, ProjectBuildData, ScriptContext } from '../../../models';
 import { spawn } from 'child_process';
+import { MapLike } from '../../../../../typings/common';
 
-export async function npmInstallPlugin(projects: Project[]): Promise<void> {
-	const promises: Promise<void>[] = [];
-	for (const project of projects) {
-		promises.push(npmInstall(project));
-	}
-
-	await Promise.all(promises);
+export function npmInstall(args: MapLike<any>): OctoPackBuildPlugin {
+	return async (model: ProjectBuildData, context: ScriptContext) => {
+		context.uiLogger.info(`[${model.project.resolvedConfig.name}]Installing npm dependencies`);
+		await install(model.project);
+		return model;
+	};
 }
 
-function npmInstall(project: Project, isRetry: boolean = false): Promise<void> {
+function install(project: Project, isRetry: boolean = false): Promise<void> {
 	return new Promise((resolve, reject) => {
 		const handle = spawn('npm', ['install'], {
 			cwd: project.path
@@ -38,7 +38,7 @@ function npmInstall(project: Project, isRetry: boolean = false): Promise<void> {
 					console.error(stdBuffer.join(''));
 					reject(code);
 				} else {
-					npmInstall(project, true).then(resolve, reject);
+					install(project, true).then(resolve, reject);
 				}
 			} else {
 				resolve();

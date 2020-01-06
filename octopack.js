@@ -13,7 +13,7 @@ module.exports = {
 				input: ['src/**/*.ts', 'src/**/*.tsx'],
 				output: 'dist',
 				compilation: {
-					init: ['npmInstaller'],
+					init: ['npmInstall'],
 					link: [],
 					compile: ['typescript']
 				}

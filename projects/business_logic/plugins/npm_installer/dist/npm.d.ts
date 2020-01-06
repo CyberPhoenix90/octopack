@@ -1,3 +1,4 @@
-import { Project } from '../../../models/dist';
-export declare function npmInstallPlugin(projects: Project[]): Promise<void>;
+import { OctoPackBuildPlugin } from '../../../models';
+import { MapLike } from '../../../../../typings/common';
+export declare function npmInstall(args: MapLike<any>): OctoPackBuildPlugin;
 //# sourceMappingURL=npm.d.ts.map

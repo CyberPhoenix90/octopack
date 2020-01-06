@@ -1,9 +1,8 @@
+import { compiler } from '../../../business_logic/compiler';
+import { Project, ScriptContext } from '../../../business_logic/models';
+import { ParsedArguments } from '../../../libraries/argument_parser';
 import { projectCrawler } from '../projects/project_crawler';
 import { Help, Script, ScriptStatus } from './script';
-import { npmInstallPlugin } from '../../../business_logic/plugins/npm_installer';
-import { ScriptContext, Project } from '../../../business_logic/models';
-import { ParsedArguments } from '../../../libraries/argument_parser';
-import { compiler } from '../../../business_logic/compiler';
 
 export class Build extends Script {
 	public autoComplete(): Promise<string[]> {
@@ -24,8 +23,6 @@ export class Build extends Script {
 		);
 
 		if (selectedProjects.length) {
-			context.uiLogger.info(`Npm installing ${selectedProjects.length} projects...`);
-			await npmInstallPlugin(selectedProjects);
 			await compiler.compile(selectedProjects, context, args);
 		} else {
 			context.uiLogger.error('None of the provided names were matching a project. Not building.');

@@ -1,15 +1,15 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const child_process_1 = require("child_process");
-async function npmInstallPlugin(projects) {
-    const promises = [];
-    for (const project of projects) {
-        promises.push(npmInstall(project));
-    }
-    await Promise.all(promises);
+function npmInstall(args) {
+    return async (model, context) => {
+        context.uiLogger.info(`[${model.project.resolvedConfig.name}]Installing npm dependencies`);
+        await install(model.project);
+        return model;
+    };
 }
-exports.npmInstallPlugin = npmInstallPlugin;
-function npmInstall(project, isRetry = false) {
+exports.npmInstall = npmInstall;
+function install(project, isRetry = false) {
     return new Promise((resolve, reject) => {
         const handle = child_process_1.spawn('npm', ['install'], {
             cwd: project.path
@@ -34,7 +34,7 @@ function npmInstall(project, isRetry = false) {
                     reject(code);
                 }
                 else {
-                    npmInstall(project, true).then(resolve, reject);
+                    install(project, true).then(resolve, reject);
                 }
             }
             else {
