@@ -1,6 +1,7 @@
 import { Log } from './log/log';
 import { LogLevel } from './log/log_level';
 import { LoggerConfiguration } from './logger_configuration';
+import { LoggerAdapter } from './adapters/logger_adapter';
 
 export class Logger {
 	private configuration: LoggerConfiguration;
@@ -43,6 +44,10 @@ export class Logger {
 		for (const adapter of adapters) {
 			adapter.log(log);
 		}
+	}
+
+	public addAdapter(adapter: LoggerAdapter): void {
+		this.configuration.adapters.push(adapter);
 	}
 
 	private createLog(logData: any, logLevel: LogLevel): Log {

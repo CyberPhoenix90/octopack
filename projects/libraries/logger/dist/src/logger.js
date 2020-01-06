@@ -33,6 +33,9 @@ class Logger {
             adapter.log(log);
         }
     }
+    addAdapter(adapter) {
+        this.configuration.adapters.push(adapter);
+    }
     createLog(logData, logLevel) {
         let text = '';
         let object;

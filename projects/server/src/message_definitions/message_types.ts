@@ -1,0 +1,4 @@
+export enum MessageTypes {
+	LOGS_REQUEST = 'LOGS_REQUEST',
+	LOGS_RESPONSE = 'LOGS_RESPONSE'
+}
