@@ -1,6 +1,6 @@
 import { CompilerModel, ScriptContext } from '../../../models/dist';
-import { loadBuildPlugin } from '../../../plugin_loader';
-import { OctopackBuildBundle } from '../../../config_resolver';
+import { loadBuildPlugin } from 'plugin_loader';
+import { OctopackBuildBundle } from 'config_resolver';
 
 export async function pluginBasedPhase(
 	name: keyof OctopackBuildBundle['compilation'],

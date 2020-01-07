@@ -1,7 +1,7 @@
 import { MapLike } from '../../../../typings/common';
-import { OctopackBuildPluginModel } from '../../config_resolver';
-import { OctoPackGeneratorPlugin } from '../../models';
-import { tsconfigMappingGenerator } from '../../plugins/tsconfig_mapping_generator';
+import { OctopackBuildPluginModel } from 'config_resolver';
+import { OctoPackGeneratorPlugin } from 'models';
+import { tsconfigMappingGenerator } from 'tsconfig_mapping_generator';
 
 export function loadGeneratorPlugin(plugin: OctopackBuildPluginModel): OctoPackGeneratorPlugin {
 	if (typeof plugin === 'string') {

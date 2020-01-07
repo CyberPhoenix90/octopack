@@ -1,9 +1,9 @@
 import { MapLike } from '../../../../typings/common';
-import { OctopackBuildPluginModel } from '../../config_resolver';
-import { OctoPackBuildPlugin } from '../../models';
-import { npmInstall } from '../../plugins/npm_installer';
-import { projectImporter } from '../../plugins/project_importer';
-import { typescript } from '../../plugins/typescript_plugin';
+import { OctopackBuildPluginModel } from 'config_resolver';
+import { OctoPackBuildPlugin } from 'models';
+import { npmInstall } from 'npm_installer';
+import { projectImporter } from 'project_importer';
+import { typescript } from 'typescript_plugin';
 
 export function loadBuildPlugin(plugin: OctopackBuildPluginModel): OctoPackBuildPlugin {
 	if (typeof plugin === 'string') {

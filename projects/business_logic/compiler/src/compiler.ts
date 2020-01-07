@@ -1,5 +1,5 @@
-import { ParsedArguments } from '../../../libraries/argument_parser';
-import { CompilerModel, Project, ScriptContext } from '../../models';
+import { ParsedArguments } from 'argument_parser';
+import { CompilerModel, Project, ScriptContext } from 'models';
 import { inputPhase } from './phases/input';
 import { pluginBasedPhase } from './phases/plugin_phase';
 

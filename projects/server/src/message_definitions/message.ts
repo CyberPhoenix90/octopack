@@ -1,5 +1,5 @@
 import { MessageTypes } from './message_types';
-import { Log } from '../../../libraries/logger';
+import { Log } from 'logger';
 
 export interface Message<T extends MessageTypes = MessageTypes> {
 	type: T;

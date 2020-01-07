@@ -1,5 +1,5 @@
 import * as WebSocket from 'ws';
-import { Logger, /*ConsoleLoggerAdapter,*/ CallbackLoggerAdapter, Log, LogLevel } from '../../libraries/logger';
+import { Logger, /*ConsoleLoggerAdapter,*/ CallbackLoggerAdapter, Log, LogLevel } from 'logger';
 import { Message } from './message_definitions/message';
 import { MessageTypes } from './message_definitions/message_types';
 import { MessageResponse } from './message_definitions/message_response';

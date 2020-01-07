@@ -1,6 +1,6 @@
-import { compiler } from '../../../business_logic/compiler';
-import { Project, ScriptContext } from '../../../business_logic/models';
-import { ParsedArguments } from '../../../libraries/argument_parser';
+import { compiler } from 'compiler';
+import { Project, ScriptContext } from 'models';
+import { ParsedArguments } from 'argument_parser';
 import { projectCrawler } from '../projects/project_crawler';
 import { Help, Script, ScriptStatus } from './script';
 

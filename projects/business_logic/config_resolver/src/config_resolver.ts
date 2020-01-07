@@ -1,11 +1,14 @@
-import { FileSystem as FileSystemEntryData } from '../../../libraries/file_system';
+import { FileSystem as FileSystemEntryData } from 'file_system';
 import { OctopackConfiguration } from './configuration';
 import { join } from 'path';
-import { objectUtils } from '../../../libraries/utilities';
+import { objectUtils } from 'utilities';
 
 export const OCTOPACK_CONFIG_FILE_NAME = 'octopack.js';
 
-export async function findConfiguration(cwd: string, fileSystem: FileSystemEntryData): Promise<{ config: OctopackConfiguration; directory: string }> {
+export async function findConfiguration(
+	cwd: string,
+	fileSystem: FileSystemEntryData
+): Promise<{ config: OctopackConfiguration; directory: string }> {
 	const segments = cwd.split('/');
 	while (segments.length) {
 		const path = segments.join('/');

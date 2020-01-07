@@ -1,8 +1,8 @@
-import { ScriptContext } from '../../../business_logic/models';
-import { ParsedArguments } from '../../../libraries/argument_parser';
+import { ScriptContext } from 'models';
+import { ParsedArguments } from 'argument_parser';
 import { projectCrawler } from '../projects/project_crawler';
 import { Help, Script, ScriptStatus } from './script';
-import { loadGeneratorPlugin } from '../../../business_logic/plugin_loader';
+import { loadGeneratorPlugin } from 'plugin_loader';
 
 export class Generate extends Script {
 	public autoComplete(): Promise<string[]> {

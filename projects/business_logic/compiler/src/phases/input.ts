@@ -1,4 +1,4 @@
-import { ScriptContext, CompilerModel } from '../../../models';
+import { ScriptContext, CompilerModel } from 'models';
 
 export async function inputPhase(model: CompilerModel, context: ScriptContext): Promise<CompilerModel> {
 	for (const p of model.projectsBuildData) {
