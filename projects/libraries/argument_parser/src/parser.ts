@@ -1,7 +1,15 @@
 export function parseArguments(args: string[]) {
+	const list = args.filter((a) => !a.startsWith('-'));
+	let arg: string = list.find((e) => e.includes('='));
+	if (arg) {
+		throw new Error(
+			`Argument ${arg} cannot have a value, if you meant to pass ${arg} as a flag prefix it with - or --`
+		);
+	}
+
 	return {
 		raw: args,
-		list: args.filter((a) => !a.startsWith('-')),
+		list,
 		map: createArgumentMap(args)
 	};
 }
@@ -35,6 +43,8 @@ function parseArgValue(value: string): ArgumentValue {
 		return true;
 	} else if (value === 'false') {
 		return false;
+	} else if (value.includes('[') && value.indexOf(']')) {
+		return value.substring(1, value.length - 1).split(',');
 	} else {
 		return value;
 	}
@@ -46,4 +56,4 @@ export interface ParsedArguments {
 	list: string[];
 }
 
-export type ArgumentValue = number | boolean | string;
+export type ArgumentValue = number | boolean | string | string[];

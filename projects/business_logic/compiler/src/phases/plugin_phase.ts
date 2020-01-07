@@ -1,5 +1,5 @@
 import { CompilerModel, ScriptContext } from '../../../models/dist';
-import { loadPlugin } from '../utilities/plugin_loader';
+import { loadBuildPlugin } from '../../../plugin_loader';
 import { OctopackBuildBundle } from '../../../config_resolver';
 
 export async function pluginBasedPhase(
@@ -19,7 +19,8 @@ export async function pluginBasedPhase(
 				//@ts-ignore
 				`Running plugin ${plugin?.name ?? plugin} for ${projectData.project.resolvedConfig.name}`
 			);
-			await loadPlugin(plugin)(projectData, context);
+			const run = await loadBuildPlugin(plugin);
+			await run(projectData, context);
 		}
 	}
 

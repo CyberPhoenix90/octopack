@@ -44,12 +44,31 @@ function runScript(config, workspaceRoot) {
         ],
         enhancers: [new logger_1.LogLevelPrependerLoggerEnhancer()]
     });
-    new api_1.Build().run(argument_parser_1.parseArguments(process.argv.slice(2)), {
-        workspaceRoot,
-        fileSystem: file_system_1.localDiskFileSystem,
-        devLogger: devLogger,
-        uiLogger: uiLogger,
-        workspaceConfig: config
-    });
+    if (process.argv[2] === 'build') {
+        new api_1.Build().run(argument_parser_1.parseArguments(process.argv.slice(3)), {
+            workspaceRoot,
+            fileSystem: file_system_1.localDiskFileSystem,
+            devLogger: devLogger,
+            uiLogger: uiLogger,
+            workspaceConfig: config
+        });
+    }
+    else if (process.argv[2] === 'generate') {
+        new api_1.Generate().run(argument_parser_1.parseArguments(process.argv.slice(3)), {
+            workspaceRoot,
+            fileSystem: file_system_1.localDiskFileSystem,
+            devLogger: devLogger,
+            uiLogger: uiLogger,
+            workspaceConfig: config
+        });
+    }
+    else {
+        if (process.argv[2]) {
+            uiLogger.error(`Could not find script ${process.argv[2]}`);
+        }
+        else {
+            uiLogger.error(`No script specified`);
+        }
+    }
 }
 //# sourceMappingURL=index.js.map

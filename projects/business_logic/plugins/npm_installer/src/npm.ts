@@ -1,4 +1,4 @@
-import { Project, OctoPackBuildPlugin, ProjectBuildData, ScriptContext } from '../../../models';
+import { Project, OctoPackBuildPlugin, ProjectBuildData, ScriptContext } from 'models';
 import { spawn } from 'child_process';
 import { MapLike } from '../../../../../typings/common';
 

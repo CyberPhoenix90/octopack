@@ -8,6 +8,7 @@ export class Compiler {
 		let compileModel: CompilerModel = {
 			projectsBuildData: projects.map((p) => ({
 				bundle: this.getBundle(p, args),
+				allProjects: projects,
 				project: p,
 				files: []
 			}))

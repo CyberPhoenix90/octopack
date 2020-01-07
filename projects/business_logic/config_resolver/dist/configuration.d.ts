@@ -3,6 +3,7 @@ export interface OctopackConfiguration {
     name: string;
     scope: 'project' | 'workspace' | 'solution';
     configVersion: string;
+    generator?: OctopackBuildPluginModel[];
     build: {
         platform: 'node' | 'browser' | 'electron';
         assembly: 'library' | 'executable';

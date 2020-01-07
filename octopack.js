@@ -6,6 +6,7 @@ module.exports = {
 	settings: {
 		nodeJsEngine: '13.5.0'
 	},
+	generator: ['tsconfigMappingGenerator'],
 	build: {
 		bundles: {
 			dist: {
@@ -14,7 +15,7 @@ module.exports = {
 				output: 'dist',
 				compilation: {
 					init: ['npmInstall'],
-					link: [],
+					link: ['projectImporter'],
 					compile: ['typescript']
 				}
 			}

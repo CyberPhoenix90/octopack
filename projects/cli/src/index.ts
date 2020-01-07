@@ -1,17 +1,17 @@
 #!/usr/bin/env node
 
-import { findConfiguration, OctopackConfiguration } from '../../business_logic/config_resolver';
-import { localDiskFileSystem } from '../../libraries/file_system';
+import { findConfiguration, OctopackConfiguration } from 'config_resolver';
+import { localDiskFileSystem } from 'file_system';
 import { join } from 'path';
-import { Build } from '../../api';
+import { Build, Generate } from 'api';
 import {
 	Logger,
 	CallbackLoggerAdapter,
 	LogLevelPrependerLoggerEnhancer,
 	ConsoleLoggerAdapter,
 	WriteFileLoggerAdapter
-} from '../../libraries/logger';
-import { parseArguments } from '../../libraries/argument_parser';
+} from 'logger';
+import { parseArguments } from 'argument_parser';
 
 //Self executing async function due to lack of top level async support
 (async () => {
@@ -57,11 +57,27 @@ function runScript(config: OctopackConfiguration, workspaceRoot: string) {
 		enhancers: [new LogLevelPrependerLoggerEnhancer()]
 	});
 
-	new Build().run(parseArguments(process.argv.slice(2)), {
-		workspaceRoot,
-		fileSystem: localDiskFileSystem,
-		devLogger: devLogger,
-		uiLogger: uiLogger,
-		workspaceConfig: config
-	});
+	if (process.argv[2] === 'build') {
+		new Build().run(parseArguments(process.argv.slice(3)), {
+			workspaceRoot,
+			fileSystem: localDiskFileSystem,
+			devLogger: devLogger,
+			uiLogger: uiLogger,
+			workspaceConfig: config
+		});
+	} else if (process.argv[2] === 'generate') {
+		new Generate().run(parseArguments(process.argv.slice(3)), {
+			workspaceRoot,
+			fileSystem: localDiskFileSystem,
+			devLogger: devLogger,
+			uiLogger: uiLogger,
+			workspaceConfig: config
+		});
+	} else {
+		if (process.argv[2]) {
+			uiLogger.error(`Could not find script ${process.argv[2]}`);
+		} else {
+			uiLogger.error(`No script specified`);
+		}
+	}
 }

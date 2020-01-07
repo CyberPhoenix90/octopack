@@ -1,9 +1,14 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 function parseArguments(args) {
+    const list = args.filter((a) => !a.startsWith('-'));
+    let arg = list.find((e) => e.includes('='));
+    if (arg) {
+        throw new Error(`Argument ${arg} cannot have a value, if you meant to pass ${arg} as a flag prefix it with - or --`);
+    }
     return {
         raw: args,
-        list: args.filter((a) => !a.startsWith('-')),
+        list,
         map: createArgumentMap(args)
     };
 }
@@ -38,6 +43,9 @@ function parseArgValue(value) {
     }
     else if (value === 'false') {
         return false;
+    }
+    else if (value.includes('[') && value.indexOf(']')) {
+        return value.substring(1, value.length - 1).split(',');
     }
     else {
         return value;
