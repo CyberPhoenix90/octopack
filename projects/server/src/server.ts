@@ -1,5 +1,5 @@
 import * as WebSocket from 'ws';
-import { Logger, /*ConsoleLoggerAdapter,*/ CallbackLoggerAdapter, Log } from '../../libraries/logger';
+import { Logger, /*ConsoleLoggerAdapter,*/ CallbackLoggerAdapter, Log, LogLevel } from '../../libraries/logger';
 import { Message } from './message_definitions/message';
 import { MessageTypes } from './message_definitions/message_types';
 import { MessageResponse } from './message_definitions/message_response';
@@ -41,7 +41,7 @@ export class Server {
 		this.server = new WebSocket.Server({ port: this.port });
 
 		this.server.on('connection', (socket) => {
-			this.logForEveryContext('A client connected');
+			this.logForEveryContext('A client connected', LogLevel.INFO);
 
 			socket.on('message', (message) => {
 				if (typeof message === 'string') {
@@ -52,19 +52,25 @@ export class Server {
 							socket.send(JSON.stringify(response));
 						}
 					} else {
-						this.logForEveryContext(`Received message without defined type. Received message: ${message}`);
+						this.logForEveryContext(
+							`Received message without defined type. It cannot be handled. Received message: ${message}`,
+							LogLevel.ERROR
+						);
 					}
 				} else {
-					this.logForEveryContext(`Received message that wasn't a string. Received message: ${message}`);
+					this.logForEveryContext(
+						`Received message that wasn't a string. It cannot be handled. Received message: ${message}`,
+						LogLevel.ERROR
+					);
 				}
 			});
 
 			socket.on('close', () => {
-				this.logForEveryContext('A client disconnected');
+				this.logForEveryContext('A client disconnected', LogLevel.INFO);
 			});
 		});
 
-		this.logForEveryContext('Server launched');
+		this.logForEveryContext('Server launched', LogLevel.INFO);
 	}
 
 	public close(): void {
@@ -73,9 +79,9 @@ export class Server {
 		}
 	}
 
-	private logForEveryContext(logData: any): void {
-		this.uiLogger.debug(logData);
-		this.devLogger.debug(logData);
+	private logForEveryContext(logData: any, logLevel: LogLevel): void {
+		this.uiLogger.log(logData, logLevel);
+		this.devLogger.log(logData, logLevel);
 	}
 
 	private processMessage(message: Message): MessageResponse | undefined {
@@ -84,6 +90,11 @@ export class Server {
 			case MessageTypes.LOGS_REQUEST:
 				return { type: MessageTypes.LOGS_RESPONSE, data: this.logs };
 		}
+
+		this.logForEveryContext(
+			`${type} does not have any handling. The server will not process this message.`,
+			LogLevel.ERROR
+		);
 		return undefined;
 	}
 }

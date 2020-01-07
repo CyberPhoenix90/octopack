@@ -23,7 +23,7 @@ class Server {
     initialize() {
         this.server = new WebSocket.Server({ port: this.port });
         this.server.on('connection', (socket) => {
-            this.logForEveryContext('A client connected');
+            this.logForEveryContext('A client connected', logger_1.LogLevel.INFO);
             socket.on('message', (message) => {
                 var _a;
                 if (typeof message === 'string') {
@@ -35,27 +35,27 @@ class Server {
                         }
                     }
                     else {
-                        this.logForEveryContext(`Received message without defined type. Received message: ${message}`);
+                        this.logForEveryContext(`Received message without defined type. It cannot be handled. Received message: ${message}`, logger_1.LogLevel.ERROR);
                     }
                 }
                 else {
-                    this.logForEveryContext(`Received message that wasn't a string. Received message: ${message}`);
+                    this.logForEveryContext(`Received message that wasn't a string. It cannot be handled. Received message: ${message}`, logger_1.LogLevel.ERROR);
                 }
             });
             socket.on('close', () => {
-                this.logForEveryContext('A client disconnected');
+                this.logForEveryContext('A client disconnected', logger_1.LogLevel.INFO);
             });
         });
-        this.logForEveryContext('Server launched');
+        this.logForEveryContext('Server launched', logger_1.LogLevel.INFO);
     }
     close() {
         if (this.server) {
             this.server.close();
         }
     }
-    logForEveryContext(logData) {
-        this.uiLogger.debug(logData);
-        this.devLogger.debug(logData);
+    logForEveryContext(logData, logLevel) {
+        this.uiLogger.log(logData, logLevel);
+        this.devLogger.log(logData, logLevel);
     }
     processMessage(message) {
         const { type } = message;
@@ -63,6 +63,7 @@ class Server {
             case message_types_1.MessageTypes.LOGS_REQUEST:
                 return { type: message_types_1.MessageTypes.LOGS_RESPONSE, data: this.logs };
         }
+        this.logForEveryContext(`${type} does not have any handling. The server will not process this message.`, logger_1.LogLevel.ERROR);
         return undefined;
     }
 }
