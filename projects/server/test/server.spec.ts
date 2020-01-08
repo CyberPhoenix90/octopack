@@ -1,3 +1,7 @@
+import { Server } from '../src';
+
 describe('Server', () => {
-	it('works', () => {});
+	it('works', () => {
+		new Server({});
+	});
 });

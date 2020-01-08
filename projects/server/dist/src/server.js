@@ -77,7 +77,7 @@ class Server {
             data: await new api_1.Build().run(args, {
                 devLogger: this.devLogger,
                 uiLogger: this.uiLogger,
-                fileSystem,
+                fileSystem: fileSystem,
                 workspaceRoot,
                 workspaceConfig
             })

@@ -111,7 +111,7 @@ export class Server {
 			data: await new Build().run(args, {
 				devLogger: this.devLogger,
 				uiLogger: this.uiLogger,
-				fileSystem,
+				fileSystem: fileSystem as any,
 				workspaceRoot,
 				workspaceConfig
 			})
