@@ -1,5 +1,5 @@
 module.exports = {
-	name: 'meta_programing',
+	name: 'meta_programming',
 	scope: 'project',
 	configVersion: '1',
 	build: {

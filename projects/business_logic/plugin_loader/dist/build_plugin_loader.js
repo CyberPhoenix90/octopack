@@ -3,6 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const npm_installer_1 = require("../../plugins/npm_installer");
 const project_importer_1 = require("../../plugins/project_importer");
 const typescript_plugin_1 = require("../../plugins/typescript_plugin");
+const meta_programming_1 = require("../../plugins/meta_programming");
 function loadBuildPlugin(plugin) {
     if (typeof plugin === 'string') {
         return initializePlugin(plugin, {});
@@ -20,6 +21,8 @@ function initializePlugin(name, args) {
             return typescript_plugin_1.typescript(args);
         case 'npmInstall':
             return npm_installer_1.npmInstall(args);
+        case 'metaProgramming':
+            return meta_programming_1.metaProgramming(args);
         default:
             throw new Error(`Plugin ${name} not found`);
     }

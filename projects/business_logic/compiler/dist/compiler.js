@@ -3,11 +3,11 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const input_1 = require("./phases/input");
 const plugin_phase_1 = require("./phases/plugin_phase");
 class Compiler {
-    async compile(projects, context, args) {
+    async compile(selectedProjects, allProjects, context, args) {
         let compileModel = {
-            projectsBuildData: projects.map((p) => ({
+            projectsBuildData: selectedProjects.map((p) => ({
                 bundle: this.getBundle(p, args),
-                allProjects: projects,
+                allProjects,
                 project: p,
                 files: []
             }))
@@ -15,6 +15,7 @@ class Compiler {
         compileModel = await plugin_phase_1.pluginBasedPhase('init', compileModel, context);
         compileModel = await input_1.inputPhase(compileModel, context);
         compileModel = await plugin_phase_1.pluginBasedPhase('link', compileModel, context);
+        compileModel = await plugin_phase_1.pluginBasedPhase('preProcess', compileModel, context);
         compileModel = await plugin_phase_1.pluginBasedPhase('compile', compileModel, context);
         compileModel = await plugin_phase_1.pluginBasedPhase('emit', compileModel, context);
     }

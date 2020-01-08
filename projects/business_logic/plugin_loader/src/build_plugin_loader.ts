@@ -4,6 +4,7 @@ import { OctoPackBuildPlugin } from 'models';
 import { npmInstall } from 'npm_installer';
 import { projectImporter } from 'project_importer';
 import { typescript } from 'typescript_plugin';
+import { metaProgramming } from 'meta_programming';
 
 export function loadBuildPlugin(plugin: OctopackBuildPluginModel): OctoPackBuildPlugin {
 	if (typeof plugin === 'string') {
@@ -21,6 +22,8 @@ function initializePlugin(name: string, args: MapLike<any>): OctoPackBuildPlugin
 			return typescript(args);
 		case 'npmInstall':
 			return npmInstall(args);
+		case 'metaProgramming':
+			return metaProgramming(args);
 		default:
 			throw new Error(`Plugin ${name} not found`);
 	}

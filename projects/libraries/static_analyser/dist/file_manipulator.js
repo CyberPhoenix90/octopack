@@ -3,6 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const typescript_1 = require("typescript");
 const file_system_1 = require("../../file_system");
 const path_1 = require("path");
+const tslint_1 = require("tslint");
 class FileManipulator {
     constructor(fileContent, language = typescript_1.ScriptKind.TSX) {
         this.ast = typescript_1.createSourceFile('virtual', fileContent, typescript_1.ScriptTarget.ESNext, true, language);
@@ -40,6 +41,11 @@ class FileManipulator {
             type: file_system_1.FileSystemEntryType.FILE,
             content: this.content
         };
+    }
+    forEachComment(query) {
+        tslint_1.forEachComment(this.ast, (fullText, kind, pos) => {
+            this.manipulations.push(...(query(fullText.substring(pos.fullStart, pos.end), pos, kind) || []));
+        });
     }
     queryAst(query) {
         const queryNode = (node) => {

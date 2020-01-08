@@ -16,14 +16,11 @@ export class Build extends Script {
 	}
 
 	public async run(args: ParsedArguments, context: ScriptContext): Promise<ScriptStatus> {
-		const selectedProjects = this.getSelectedProjects(
-			args,
-			await projectCrawler.findProjects(context.workspaceRoot, context),
-			context
-		);
+		const allProjects = await projectCrawler.findProjects(context.workspaceRoot, context);
+		const selectedProjects = this.getSelectedProjects(args, allProjects, context);
 
 		if (selectedProjects.length) {
-			await compiler.compile(selectedProjects, context, args);
+			await compiler.compile(selectedProjects, allProjects, context, args);
 		} else {
 			context.uiLogger.error('None of the provided names were matching a project. Not building.');
 		}

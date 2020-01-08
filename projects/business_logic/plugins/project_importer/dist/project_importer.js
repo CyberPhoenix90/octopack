@@ -5,7 +5,7 @@ const typescript_1 = require("typescript");
 const path_1 = require("path");
 function projectImporter(args) {
     return async (model, context) => {
-        context.uiLogger.info(`[${model.project.resolvedConfig.name}]Installing npm dependencies`);
+        context.uiLogger.info(`[${model.project.resolvedConfig.name}]Mapping project imports`);
         for (const file of model.files) {
             if (file.fullPath.endsWith('.ts') || file.fullPath.endsWith('.tsx')) {
                 remapImports(file, model.project, model.allProjects);

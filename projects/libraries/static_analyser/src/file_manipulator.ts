@@ -1,6 +1,7 @@
-import { createSourceFile, ScriptTarget, ScriptKind, SourceFile, Node } from 'typescript';
+import { createSourceFile, ScriptTarget, ScriptKind, SourceFile, Node, SyntaxKind } from 'typescript';
 import { FileSystem, VirtualFile, FileSystemEntryType } from 'file_system';
 import { parse } from 'path';
+import { forEachComment, TokenPosition } from 'tslint';
 
 interface Manipulation {
 	start: number;
@@ -55,6 +56,12 @@ export class FileManipulator {
 			type: FileSystemEntryType.FILE,
 			content: this.content
 		};
+	}
+
+	public forEachComment(query: (text: string, position: TokenPosition, kind: SyntaxKind) => Manipulation[]): void {
+		forEachComment(this.ast, (fullText: string, kind: SyntaxKind, pos: TokenPosition) => {
+			this.manipulations.push(...(query(fullText.substring(pos.fullStart, pos.end), pos, kind) || []));
+		});
 	}
 
 	public queryAst(query: (node: Node) => Manipulation[]): void {

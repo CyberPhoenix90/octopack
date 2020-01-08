@@ -28,8 +28,8 @@
             "plugin_loader": [
                 "projects/business_logic/plugin_loader"
             ],
-            "meta_programing": [
-                "projects/business_logic/plugins/meta_programing"
+            "meta_programming": [
+                "projects/business_logic/plugins/meta_programming"
             ],
             "npm_installer": [
                 "projects/business_logic/plugins/npm_installer"

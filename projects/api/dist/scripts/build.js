@@ -13,9 +13,10 @@ class Build extends script_1.Script {
         };
     }
     async run(args, context) {
-        const selectedProjects = this.getSelectedProjects(args, await project_crawler_1.projectCrawler.findProjects(context.workspaceRoot, context), context);
+        const allProjects = await project_crawler_1.projectCrawler.findProjects(context.workspaceRoot, context);
+        const selectedProjects = this.getSelectedProjects(args, allProjects, context);
         if (selectedProjects.length) {
-            await compiler_1.compiler.compile(selectedProjects, context, args);
+            await compiler_1.compiler.compile(selectedProjects, allProjects, context, args);
         }
         else {
             context.uiLogger.error('None of the provided names were matching a project. Not building.');

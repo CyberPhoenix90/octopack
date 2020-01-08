@@ -16,6 +16,7 @@ module.exports = {
 				compilation: {
 					init: ['npmInstall'],
 					link: ['projectImporter'],
+					preProcess: ['metaProgramming'],
 					compile: ['typescript']
 				}
 			}
