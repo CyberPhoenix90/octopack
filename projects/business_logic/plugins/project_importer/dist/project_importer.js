@@ -8,14 +8,14 @@ function projectImporter(args) {
         context.uiLogger.info(`[${model.project.resolvedConfig.name}]Mapping project imports`);
         for (const file of model.files) {
             if (file.fullPath.endsWith('.ts') || file.fullPath.endsWith('.tsx')) {
-                remapImports(file, model.project, model.allProjects);
+                remapImports(file, model);
             }
         }
         return model;
     };
 }
 exports.projectImporter = projectImporter;
-function remapImports(file, project, allProjects) {
+function remapImports(file, model) {
     const fm = new static_analyser_1.FileManipulator(file.content);
     fm.queryAst((node) => {
         if (typescript_1.isImportDeclaration(node)) {
@@ -23,8 +23,9 @@ function remapImports(file, project, allProjects) {
                 const moduleName = node.moduleSpecifier.text;
                 if (!moduleName.startsWith('.')) {
                     const [name, ...path] = moduleName.split('/');
-                    const target = allProjects.find((p) => p.resolvedConfig.name === name);
+                    const target = model.allProjects.find((p) => p.resolvedConfig.name === name);
                     if (target) {
+                        model.projectDependencies.add(target);
                         const newName = path_1.relative(path_1.parse(file.fullPath).dir, target.path);
                         return [
                             {

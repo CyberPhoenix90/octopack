@@ -4,7 +4,7 @@ import { compile } from './typescript_compiler';
 
 export function typescript(args: MapLike<any>): OctoPackBuildPlugin {
 	return async (model: ProjectBuildData, context: ScriptContext) => {
-		compile(model, context);
+		await compile(model, context);
 		return model;
 	};
 }

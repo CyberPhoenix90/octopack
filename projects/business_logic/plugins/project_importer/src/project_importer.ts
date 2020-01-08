@@ -1,4 +1,4 @@
-import { Project, OctoPackBuildPlugin, ProjectBuildData, ScriptContext } from 'models';
+import { OctoPackBuildPlugin, ProjectBuildData, ScriptContext } from 'models';
 import { MapLike } from '../../../../../typings/common';
 import { VirtualFile } from 'file_system';
 import { FileManipulator } from 'static_analyser';
@@ -10,14 +10,14 @@ export function projectImporter(args: MapLike<any>): OctoPackBuildPlugin {
 		context.uiLogger.info(`[${model.project.resolvedConfig.name}]Mapping project imports`);
 		for (const file of model.files) {
 			if (file.fullPath.endsWith('.ts') || file.fullPath.endsWith('.tsx')) {
-				remapImports(file, model.project, model.allProjects);
+				remapImports(file, model);
 			}
 		}
 		return model;
 	};
 }
 
-function remapImports(file: VirtualFile, project: Project, allProjects: Project[]) {
+function remapImports(file: VirtualFile, model: ProjectBuildData) {
 	const fm = new FileManipulator(file.content);
 	fm.queryAst((node) => {
 		if (isImportDeclaration(node)) {
@@ -25,8 +25,9 @@ function remapImports(file: VirtualFile, project: Project, allProjects: Project[
 				const moduleName: string = (node.moduleSpecifier as any).text;
 				if (!moduleName.startsWith('.')) {
 					const [name, ...path] = moduleName.split('/');
-					const target = allProjects.find((p) => p.resolvedConfig.name === name);
+					const target = model.allProjects.find((p) => p.resolvedConfig.name === name);
 					if (target) {
+						model.projectDependencies.add(target);
 						const newName = relative(parse(file.fullPath).dir, target.path);
 						return [
 							{

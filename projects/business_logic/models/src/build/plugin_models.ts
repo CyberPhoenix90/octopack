@@ -10,6 +10,7 @@ export interface CompilerModel {
 
 export interface ProjectBuildData {
 	project: Project;
+	projectDependencies: Set<Project>;
 	allProjects: Project[];
 	bundle: string;
 	files: VirtualFile[];
