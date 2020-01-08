@@ -1,1 +1,0 @@
-{"version":3,"file":"message_response.d.ts","sourceRoot":"","sources":["../../src/message_definitions/message_response.ts"],"names":[],"mappings":"AAAA,OAAO,EAAE,YAAY,EAAE,MAAM,iBAAiB,CAAC;AAC/C,OAAO,EAAE,OAAO,EAAE,MAAM,WAAW,CAAC;AAEpC,oBAAY,eAAe,CAAC,CAAC,SAAS,YAAY,GAAG,YAAY,IAAI,CAAC,SAAS,YAAY,CAAC,YAAY,GACrG,OAAO,CAAC,YAAY,CAAC,aAAa,CAAC,GACnC,KAAK,CAAC"}

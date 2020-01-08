@@ -1,6 +1,6 @@
 /**
 #generator(compiler) {
-	compiler.writeLine("console.log('hello world')")
+	compiler.writeLine("console.log('你好世界')")
 }
  */
 

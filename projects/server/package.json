@@ -1,11 +1,16 @@
 {
 	"name": "octopack-server",
 	"version": "0.0.0",
-	"main": "dist/index.js",
-	"typings": "dist/index.d.ts",
+	"main": "dist/src/index.js",
+	"typings": "dist/src/index.d.ts",
 	"dependencies": {
+		"@types/mocha": "^5.2.7",
 		"@types/node": "^13.1.2",
 		"@types/ws": "^6.0.4",
+		"mocha": "^7.0.0",
 		"ws": "^7.2.1"
+	},
+	"scripts": {
+		"test": "mocha dist/test/**/*.spec.js"
 	}
 }

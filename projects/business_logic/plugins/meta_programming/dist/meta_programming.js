@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-console.log('hello world');
+console.log('你好世界');
 const static_analyser_1 = require("../../../../libraries/static_analyser");
 const vm = require("vm");
 function metaProgramming(args) {

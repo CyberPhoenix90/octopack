@@ -10,5 +10,6 @@ export declare class Server {
     close(): void;
     private logForEveryContext;
     private processMessage;
+    private runBuildScript;
 }
 //# sourceMappingURL=server.d.ts.map

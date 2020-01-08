@@ -1,9 +1,10 @@
 import * as WebSocket from 'ws';
-import { Logger, /*ConsoleLoggerAdapter,*/ CallbackLoggerAdapter, Log, LogLevel } from 'logger';
+import { Logger, CallbackLoggerAdapter, Log, LogLevel } from 'logger';
 import { Message } from './message_definitions/message';
 import { MessageTypes } from './message_definitions/message_types';
 import { MessageResponse } from './message_definitions/message_response';
 import { ServerConfiguration } from './server_configuration';
+import { Build } from 'api';
 
 export class Server {
 	private server: WebSocket.Server;
@@ -43,11 +44,11 @@ export class Server {
 		this.server.on('connection', (socket) => {
 			this.logForEveryContext('A client connected', LogLevel.INFO);
 
-			socket.on('message', (message) => {
+			socket.on('message', async (message) => {
 				if (typeof message === 'string') {
 					const data = JSON.parse(message as string) as Message;
 					if (data?.type !== undefined) {
-						const response = this.processMessage(data);
+						const response = await this.processMessage(data);
 						if (response) {
 							socket.send(JSON.stringify(response));
 						}
@@ -84,11 +85,13 @@ export class Server {
 		this.devLogger.log(logData, logLevel);
 	}
 
-	private processMessage(message: Message): MessageResponse | undefined {
-		const { type } = message;
+	private async processMessage(message: Message): Promise<MessageResponse | undefined> {
+		const { type, data } = message;
 		switch (type) {
 			case MessageTypes.LOGS_REQUEST:
 				return { type: MessageTypes.LOGS_RESPONSE, data: this.logs };
+			case MessageTypes.BUILD_REQUEST:
+				return this.runBuildScript(data as Message<MessageTypes.BUILD_REQUEST>['data']);
 		}
 
 		this.logForEveryContext(
@@ -97,7 +100,21 @@ export class Server {
 		);
 		return undefined;
 	}
-}
 
-// const server = new Server({ loggingContexts: { uiLogger: new Logger({ adapters: [new ConsoleLoggerAdapter()] }) } });
-// server.initialize();
+	private async runBuildScript(
+		data: Message<MessageTypes.BUILD_REQUEST>['data']
+	): Promise<MessageResponse<MessageTypes.BUILD_REQUEST>> {
+		const { args, context } = data;
+		const { fileSystem, workspaceConfig, workspaceRoot } = context;
+		return {
+			type: MessageTypes.BUILD_RESPONSE,
+			data: await new Build().run(args, {
+				devLogger: this.devLogger,
+				uiLogger: this.uiLogger,
+				fileSystem,
+				workspaceRoot,
+				workspaceConfig
+			})
+		};
+	}
+}
