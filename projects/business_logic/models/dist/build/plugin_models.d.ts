@@ -7,6 +7,7 @@ export interface CompilerModel {
 }
 export interface ProjectBuildData {
     project: Project;
+    selectedProjects: Project[];
     projectDependencies: Set<Project>;
     allProjects: Project[];
     bundle: string;

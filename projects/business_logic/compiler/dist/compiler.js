@@ -9,6 +9,7 @@ class Compiler {
                 bundle: this.getBundle(p, args),
                 projectDependencies: new Set(),
                 allProjects,
+                selectedProjects,
                 project: p,
                 files: []
             }))

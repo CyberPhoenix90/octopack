@@ -27,7 +27,9 @@ function remapImports(file: VirtualFile, model: ProjectBuildData) {
 					const [name, ...path] = moduleName.split('/');
 					const target = model.allProjects.find((p) => p.resolvedConfig.name === name);
 					if (target) {
-						model.projectDependencies.add(target);
+						if (model.selectedProjects.includes(target)) {
+							model.projectDependencies.add(target);
+						}
 						const newName = relative(parse(file.fullPath).dir, target.path);
 						return [
 							{
