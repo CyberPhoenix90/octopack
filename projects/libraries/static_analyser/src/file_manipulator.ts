@@ -1,6 +1,5 @@
 import { createSourceFile, ScriptTarget, ScriptKind, SourceFile, Node, SyntaxKind } from 'typescript';
 import { FileSystem, VirtualFile, FileSystemEntryType } from 'file_system';
-import { parse } from 'path';
 import { forEachComment, TokenPosition } from 'tslint';
 
 interface Manipulation {
@@ -51,7 +50,6 @@ export class FileManipulator {
 
 		return {
 			fullPath: path,
-			name: parse(path).base,
 			parent: undefined,
 			type: FileSystemEntryType.FILE,
 			content: this.content

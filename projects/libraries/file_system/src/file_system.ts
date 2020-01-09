@@ -1,5 +1,5 @@
 import { match } from 'minimatch';
-import { join, parse, sep } from 'path';
+import { join, sep } from 'path';
 import * as vm from 'vm';
 import { FilePath } from './file_path_utils';
 import { MapLike } from '../../../../typings/common';
@@ -28,7 +28,6 @@ export enum FileSystemEntryType {
 }
 
 export interface VirtualFileSystemEntry<T extends FileSystemEntryType = FileSystemEntryType> {
-	name: string;
 	fullPath: string;
 	type: T;
 	parent: VirtualFolder;
@@ -96,7 +95,6 @@ export abstract class FileSystem {
 		const content = await this.readFile(filePath, 'utf8');
 		return {
 			fullPath: filePath,
-			name: parse(filePath).name,
 			content,
 			type: FileSystemEntryType.FILE,
 			parent
@@ -107,7 +105,6 @@ export abstract class FileSystem {
 		const content = this.readFileSync(filePath, 'utf8');
 		return {
 			fullPath: filePath,
-			name: parse(filePath).name,
 			content,
 			type: FileSystemEntryType.FILE,
 			parent
@@ -118,7 +115,6 @@ export abstract class FileSystem {
 		return {
 			type: FileSystemEntryType.DIRECTORY,
 			fullPath,
-			name: parse(fullPath).name,
 			parent,
 			content: { files: [], folders: [] }
 		};

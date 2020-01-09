@@ -6,10 +6,8 @@ import { FileSystemEntryType } from 'file_system';
 export interface TypescriptCompilerConfig {}
 
 export async function compile(model: ProjectBuildData, context: ScriptContext): Promise<ts.ExitStatus> {
-	const writtenFiles: Set<string> = new Set();
-
 	context.uiLogger.info(`[${model.project.resolvedConfig.name}] Compiling...`);
-	const system: ts.System = getSystem(model, context, writtenFiles);
+	const system: ts.System = getSystem(model, context);
 	const parsedConfig = parseConfigFile(
 		model.project.path,
 		await context.fileSystem.readFile(join(model.project.path, 'tsconfig.json'), 'utf8'),
@@ -24,9 +22,6 @@ export async function compile(model: ProjectBuildData, context: ScriptContext): 
 	const result: ts.ExitStatus = (ts as any).emitFilesAndReportErrors(program, log(model, context), (s: string) => {
 		return ts.sys.write(s + ts.sys.newLine);
 	});
-	for (const file of writtenFiles) {
-		model.files.push(await context.fileSystem.toVirtualFile(file));
-	}
 
 	return result;
 }
@@ -53,12 +48,17 @@ function log(model: ProjectBuildData, context: ScriptContext): (diagnostic: ts.D
 	};
 }
 
-function parseConfigFile(path: string, tsConfig: any, system: ts.System): ts.ParsedCommandLine {
-	const result = ts.parseJsonText('tsconfig.json', tsConfig);
+function parseConfigFile(path: string, tsConfig: string, system: ts.System): ts.ParsedCommandLine {
+	const parsedConfig = JSON.parse(tsConfig);
+	delete parsedConfig.compilerOptions.outDir;
+	delete parsedConfig.compilerOptions.outFile;
+	// parsedConfig.compilerOptions.module = 'es2015';
+
+	const result = ts.parseJsonText('tsconfig.json', JSON.stringify(parsedConfig));
 	return ts.parseJsonSourceFileConfigFileContent(result, system, path);
 }
 
-function getSystem(model: ProjectBuildData, context: ScriptContext, writtenFiles: Set<string>): ts.System {
+function getSystem(model: ProjectBuildData, context: ScriptContext): ts.System {
 	return {
 		...ts.sys,
 		readFile(path: string) {
@@ -70,8 +70,12 @@ function getSystem(model: ProjectBuildData, context: ScriptContext, writtenFiles
 			return context.fileSystem.readFileSync(resolve(model.project.path, path), 'utf8');
 		},
 		writeFile(fileName: string, data: string, writeByteOrderMark: boolean) {
-			writtenFiles.add(fileName);
-			return context.fileSystem.writeFileSync(resolve(model.project.path, fileName), data);
+			model.outFiles[fileName] = {
+				fullPath: fileName,
+				content: data,
+				parent: undefined,
+				type: FileSystemEntryType.FILE
+			};
 		},
 		deleteFile(path: string) {
 			return context.fileSystem.unlinkSync(resolve(model.project.path, path));

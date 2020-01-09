@@ -2,6 +2,7 @@ import { ParsedArguments } from 'argument_parser';
 import { CompilerModel, Project, ScriptContext, ProjectBuildData } from 'models';
 import { inputPhase } from './phases/input';
 import { pluginBasedPhase } from './phases/plugin_phase';
+import { outputPhase } from './phases/output';
 
 export class Compiler {
 	public async compile(
@@ -17,7 +18,8 @@ export class Compiler {
 				allProjects,
 				selectedProjects,
 				project: p,
-				files: []
+				files: [],
+				outFiles: {}
 			}))
 		};
 
@@ -29,6 +31,7 @@ export class Compiler {
 
 		compileModel = await pluginBasedPhase('preProcess', compileModel, context);
 		compileModel = await pluginBasedPhase('compile', compileModel, context);
+		compileModel = await outputPhase(compileModel, context);
 		compileModel = await pluginBasedPhase('emit', compileModel, context);
 	}
 

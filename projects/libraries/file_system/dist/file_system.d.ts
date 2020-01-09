@@ -20,7 +20,6 @@ export declare enum FileSystemEntryType {
     DIRECTORY = "DIRECTORY"
 }
 export interface VirtualFileSystemEntry<T extends FileSystemEntryType = FileSystemEntryType> {
-    name: string;
     fullPath: string;
     type: T;
     parent: VirtualFolder;

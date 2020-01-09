@@ -1,5 +1,6 @@
 import { Project, ScriptContext } from '../projects/project';
 import { VirtualFile } from '../../../../libraries/file_system';
+import { MapLike } from '../../../../../typings/common';
 export declare type OctoPackBuildPlugin = (model: ProjectBuildData, context: ScriptContext) => Promise<ProjectBuildData>;
 export declare type OctoPackGeneratorPlugin = (projects: Project[], context: ScriptContext) => Promise<void>;
 export interface CompilerModel {
@@ -12,5 +13,6 @@ export interface ProjectBuildData {
     allProjects: Project[];
     bundle: string;
     files: VirtualFile[];
+    outFiles: MapLike<VirtualFile>;
 }
 //# sourceMappingURL=plugin_models.d.ts.map

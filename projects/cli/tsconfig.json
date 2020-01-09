@@ -3,25 +3,7 @@
 	"compilerOptions": {
 		"declarationMap": false,
 		"declaration": false,
-		"outDir": "dist",
-		"baseUrl": ".",
-		"paths": {
-			"file_system": [
-				"../libraries/file_system"
-			],
-			"config_resolver": [
-				"../business_logic/config_resolver"
-			],
-			"logger": [
-				"../libraries/logger"
-			],
-			"argument_parser": [
-				"../libraries/argument_parser"
-			],
-			"api": [
-				"../api"
-			]
-		},
+		"outDir": "dist"
 	},
 	"include": [
 		"src/**/*.ts"
