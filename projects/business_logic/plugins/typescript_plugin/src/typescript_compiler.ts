@@ -6,8 +6,10 @@ import { FileSystemEntryType } from 'file_system';
 export interface TypescriptCompilerConfig {}
 
 export async function compile(model: ProjectBuildData, context: ScriptContext): Promise<ts.ExitStatus> {
+	const writtenFiles: Set<string> = new Set();
+
 	context.uiLogger.info(`[${model.project.resolvedConfig.name}] Compiling...`);
-	const system: ts.System = getSystem(model, context);
+	const system: ts.System = getSystem(model, context, writtenFiles);
 	const parsedConfig = parseConfigFile(
 		model.project.path,
 		await context.fileSystem.readFile(join(model.project.path, 'tsconfig.json'), 'utf8'),
@@ -22,6 +24,9 @@ export async function compile(model: ProjectBuildData, context: ScriptContext): 
 	const result: ts.ExitStatus = (ts as any).emitFilesAndReportErrors(program, log(model, context), (s: string) => {
 		return ts.sys.write(s + ts.sys.newLine);
 	});
+	for (const file of writtenFiles) {
+		model.files.push(await context.fileSystem.toVirtualFile(file));
+	}
 
 	return result;
 }
@@ -53,7 +58,7 @@ function parseConfigFile(path: string, tsConfig: any, system: ts.System): ts.Par
 	return ts.parseJsonSourceFileConfigFileContent(result, system, path);
 }
 
-function getSystem(model: ProjectBuildData, context: ScriptContext): ts.System {
+function getSystem(model: ProjectBuildData, context: ScriptContext, writtenFiles: Set<string>): ts.System {
 	return {
 		...ts.sys,
 		readFile(path: string) {
@@ -65,6 +70,7 @@ function getSystem(model: ProjectBuildData, context: ScriptContext): ts.System {
 			return context.fileSystem.readFileSync(resolve(model.project.path, path), 'utf8');
 		},
 		writeFile(fileName: string, data: string, writeByteOrderMark: boolean) {
+			writtenFiles.add(fileName);
 			return context.fileSystem.writeFileSync(resolve(model.project.path, fileName), data);
 		},
 		deleteFile(path: string) {

@@ -9,7 +9,12 @@ export function projectImporter(args: MapLike<any>): OctoPackBuildPlugin {
 	return async (model: ProjectBuildData, context: ScriptContext) => {
 		context.uiLogger.info(`[${model.project.resolvedConfig.name}]Mapping project imports`);
 		for (const file of model.files) {
-			if (file.fullPath.endsWith('.ts') || file.fullPath.endsWith('.tsx')) {
+			if (
+				file.fullPath.endsWith('.ts') ||
+				file.fullPath.endsWith('.tsx') ||
+				file.fullPath.endsWith('.js') ||
+				file.fullPath.endsWith('.jsx')
+			) {
 				remapImports(file, model);
 			}
 		}

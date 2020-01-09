@@ -27,7 +27,7 @@ async function isUpToDate(model: ProjectBuildData, context: ScriptContext, pkg: 
 			await context.fileSystem.readFile(join(model.project.path, 'package-lock.json'), 'utf8')
 		);
 		for (const dep of Object.keys(pkg.dependencies)) {
-			if (context.fileSystem.exists(join(model.project.path, 'node_modules', dep, 'package.json'))) {
+			if (await context.fileSystem.exists(join(model.project.path, 'node_modules', dep, 'package.json'))) {
 				const depPkg = JSON.parse(
 					await context.fileSystem.readFile(
 						join(model.project.path, 'node_modules', dep, 'package.json'),
