@@ -1,69 +1,72 @@
 {
-	"compilerOptions": {
-		"moduleResolution": "Node",
-		"target": "es2019",
-		"module": "CommonJS",
-		"declaration": true,
-		"inlineSourceMap": true,
-		"declarationMap": true,
-		"noImplicitReturns": true,
-		"noFallthroughCasesInSwitch": true,
-		"noImplicitThis": true,
-		"noImplicitAny": true,
-		"noUnusedLocals": true,
-		"baseUrl": ".",
-		"paths": {
-			"api": [
-				"projects/api"
-			],
-			"compiler": [
-				"projects/business_logic/compiler"
-			],
-			"config_resolver": [
-				"projects/business_logic/config_resolver"
-			],
-			"models": [
-				"projects/business_logic/models"
-			],
-			"plugin_loader": [
-				"projects/business_logic/plugin_loader"
-			],
-			"meta_programming": [
-				"projects/business_logic/plugins/meta_programming"
-			],
-			"npm_installer": [
-				"projects/business_logic/plugins/npm_installer"
-			],
-			"project_importer": [
-				"projects/business_logic/plugins/project_importer"
-			],
-			"tsconfig_mapping_generator": [
-				"projects/business_logic/plugins/tsconfig_mapping_generator"
-			],
-			"typescript_plugin": [
-				"projects/business_logic/plugins/typescript_plugin"
-			],
-			"cli": [
-				"projects/cli"
-			],
-			"argument_parser": [
-				"projects/libraries/argument_parser"
-			],
-			"file_system": [
-				"projects/libraries/file_system"
-			],
-			"logger": [
-				"projects/libraries/logger"
-			],
-			"static_analyser": [
-				"projects/libraries/static_analyser"
-			],
-			"utilities": [
-				"projects/libraries/utilities"
-			],
-			"server": [
-				"projects/server"
-			]
-		}
-	}
+    "compilerOptions": {
+        "moduleResolution": "Node",
+        "target": "es2019",
+        "module": "CommonJS",
+        "declaration": true,
+        "inlineSourceMap": true,
+        "declarationMap": true,
+        "noImplicitReturns": true,
+        "noFallthroughCasesInSwitch": true,
+        "noImplicitThis": true,
+        "noImplicitAny": true,
+        "noUnusedLocals": true,
+        "baseUrl": ".",
+        "paths": {
+            "api": [
+                "projects/api"
+            ],
+            "compiler": [
+                "projects/business_logic/compiler"
+            ],
+            "config_resolver": [
+                "projects/business_logic/config_resolver"
+            ],
+            "models": [
+                "projects/business_logic/models"
+            ],
+            "plugin_loader": [
+                "projects/business_logic/plugin_loader"
+            ],
+            "barrel_file": [
+                "projects/business_logic/plugins/barrel_file"
+            ],
+            "meta_programming": [
+                "projects/business_logic/plugins/meta_programming"
+            ],
+            "npm_installer": [
+                "projects/business_logic/plugins/npm_installer"
+            ],
+            "project_importer": [
+                "projects/business_logic/plugins/project_importer"
+            ],
+            "tsconfig_mapping_generator": [
+                "projects/business_logic/plugins/tsconfig_mapping_generator"
+            ],
+            "typescript_plugin": [
+                "projects/business_logic/plugins/typescript_plugin"
+            ],
+            "cli": [
+                "projects/cli"
+            ],
+            "argument_parser": [
+                "projects/libraries/argument_parser"
+            ],
+            "file_system": [
+                "projects/libraries/file_system"
+            ],
+            "logger": [
+                "projects/libraries/logger"
+            ],
+            "static_analyser": [
+                "projects/libraries/static_analyser"
+            ],
+            "utilities": [
+                "projects/libraries/utilities"
+            ],
+            "server": [
+                "projects/server"
+            ]
+        }
+    }
 }

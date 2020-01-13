@@ -6,7 +6,7 @@ import { FileSystemEntryType } from 'file_system';
 export interface TypescriptCompilerConfig {}
 
 export async function compile(model: ProjectBuildData, context: ScriptContext): Promise<ts.ExitStatus> {
-	context.uiLogger.info(`[${model.project.resolvedConfig.name}] Compiling...`);
+	context.uiLogger.info(`[${model.project.resolvedConfig.name}]Compiling...`);
 	const system: ts.System = getSystem(model, context);
 	const parsedConfig = parseConfigFile(
 		model.project.path,
@@ -39,10 +39,7 @@ function log(model: ProjectBuildData, context: ScriptContext): (diagnostic: ts.D
 			);
 		} else {
 			context.uiLogger.info(
-				`[${model.project.resolvedConfig.name}] ${ts.flattenDiagnosticMessageText(
-					diagnostic.messageText,
-					'\n'
-				)}`
+				`[${model.project.resolvedConfig.name}]${ts.flattenDiagnosticMessageText(diagnostic.messageText, '\n')}`
 			);
 		}
 	};

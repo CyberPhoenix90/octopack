@@ -7,7 +7,7 @@ export class LogLevelPrependerLoggerEnhancer extends LoggerEnhancer {
 	}
 
 	public enhance(log: Log): EnhancedLog {
-		log.text = `[${log.logLevel}] ${log.text}`;
+		log.text = `[${log.logLevel}]${log.text}`;
 		return log;
 	}
 }

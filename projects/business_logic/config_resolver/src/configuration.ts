@@ -28,4 +28,4 @@ export interface OctopackBuildBundle {
 	};
 }
 
-export type OctopackBuildPluginModel = string | { name: string; arguments: MapLike<any> };
+export type OctopackBuildPluginModel = string | { name: string; config: MapLike<any> };

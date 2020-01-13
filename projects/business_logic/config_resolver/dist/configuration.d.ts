@@ -27,6 +27,6 @@ export interface OctopackBuildBundle {
 }
 export declare type OctopackBuildPluginModel = string | {
     name: string;
-    arguments: MapLike<any>;
+    config: MapLike<any>;
 };
 //# sourceMappingURL=configuration.d.ts.map

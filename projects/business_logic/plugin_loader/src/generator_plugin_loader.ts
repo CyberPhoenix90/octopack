@@ -7,14 +7,14 @@ export function loadGeneratorPlugin(plugin: OctopackBuildPluginModel): OctoPackG
 	if (typeof plugin === 'string') {
 		return initializeGeneratorPlugin(plugin, {});
 	} else {
-		return initializeGeneratorPlugin(plugin.name, plugin.arguments);
+		return initializeGeneratorPlugin(plugin.name, plugin.config);
 	}
 }
 
-function initializeGeneratorPlugin(name: string, args: MapLike<any>): OctoPackGeneratorPlugin {
+function initializeGeneratorPlugin(name: string, config: MapLike<any>): OctoPackGeneratorPlugin {
 	switch (name) {
 		case 'tsconfigMappingGenerator':
-			return tsconfigMappingGenerator(args);
+			return tsconfigMappingGenerator(config);
 		default:
 			throw new Error(`Generator Plugin ${name} not found`);
 	}

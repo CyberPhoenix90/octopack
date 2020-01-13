@@ -5,12 +5,13 @@ import { npmInstall } from 'npm_installer';
 import { projectImporter } from 'project_importer';
 import { typescript } from 'typescript_plugin';
 import { metaProgramming } from 'meta_programming';
+import { barrelFile } from 'barrel_file';
 
 export function loadBuildPlugin(plugin: OctopackBuildPluginModel): OctoPackBuildPlugin {
 	if (typeof plugin === 'string') {
 		return initializePlugin(plugin, {});
 	} else {
-		return initializePlugin(plugin.name, plugin.arguments);
+		return initializePlugin(plugin.name, plugin.config);
 	}
 }
 
@@ -24,6 +25,8 @@ function initializePlugin(name: string, args: MapLike<any>): OctoPackBuildPlugin
 			return npmInstall(args);
 		case 'metaProgramming':
 			return metaProgramming(args);
+		case 'barrelFile':
+			return barrelFile(args);
 		default:
 			throw new Error(`Plugin ${name} not found`);
 	}
