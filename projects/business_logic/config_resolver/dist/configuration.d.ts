@@ -22,6 +22,7 @@ export interface OctopackBuildBundle {
         compile?: OctopackBuildPluginModel[];
         preProcess?: OctopackBuildPluginModel[];
         postProcess?: OctopackBuildPluginModel[];
+        output?: OctopackBuildPluginModel[];
         emit?: OctopackBuildPluginModel[];
     };
 }

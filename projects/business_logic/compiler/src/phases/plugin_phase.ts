@@ -1,6 +1,6 @@
 import { CompilerModel, ScriptContext } from '../../../models/dist';
 import { loadBuildPlugin } from 'plugin_loader';
-import { OctopackBuildBundle } from 'config_resolver';
+import { OctopackBuildBundle, OctopackBuildPluginModel } from 'config_resolver';
 
 export type PhaseConfig =
 	| keyof OctopackBuildBundle['compilation']

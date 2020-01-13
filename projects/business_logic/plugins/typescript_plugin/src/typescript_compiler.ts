@@ -31,11 +31,9 @@ function log(model: ProjectBuildData, context: ScriptContext): (diagnostic: ts.D
 		if (diagnostic.file) {
 			const { line, character } = diagnostic.file.getLineAndCharacterOfPosition(diagnostic.start);
 			const message = ts.flattenDiagnosticMessageText(diagnostic.messageText, '\n');
-			console.info(
-				context.uiLogger.error(
-					`[${model.project.resolvedConfig.name}]${diagnostic.file.fileName} (${line + 1},${character +
-						1}): ${message}`
-				)
+			context.uiLogger.error(
+				`[${model.project.resolvedConfig.name}]${diagnostic.file.fileName} (${line + 1},${character +
+					1}): ${message}`
 			);
 		} else {
 			context.uiLogger.info(
@@ -49,7 +47,7 @@ function parseConfigFile(path: string, tsConfig: string, system: ts.System): ts.
 	const parsedConfig = JSON.parse(tsConfig);
 	delete parsedConfig.compilerOptions.outDir;
 	delete parsedConfig.compilerOptions.outFile;
-	// parsedConfig.compilerOptions.module = 'es2015';
+	parsedConfig.compilerOptions.module = 'es2015';
 
 	const result = ts.parseJsonText('tsconfig.json', JSON.stringify(parsedConfig));
 	return ts.parseJsonSourceFileConfigFileContent(result, system, path);

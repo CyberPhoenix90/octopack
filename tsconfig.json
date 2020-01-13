@@ -37,6 +37,9 @@
             "npm_installer": [
                 "projects/business_logic/plugins/npm_installer"
             ],
+            "output_plugin": [
+                "projects/business_logic/plugins/output_plugin"
+            ],
             "project_importer": [
                 "projects/business_logic/plugins/project_importer"
             ],
