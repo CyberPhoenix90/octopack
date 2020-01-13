@@ -16,7 +16,7 @@ module.exports = {
 				compilation: {
 					init: ['npmInstall'],
 					link: ['projectImporter'],
-					preProcess: ['metaProgramming'],
+					preProcess: ['metaProgramming', 'barrelFile'],
 					compile: ['typescript']
 				}
 			}
