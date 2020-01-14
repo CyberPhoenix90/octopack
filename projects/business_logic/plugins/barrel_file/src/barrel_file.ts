@@ -1,6 +1,7 @@
 import { OctoPackBuildPlugin, ProjectBuildData, ScriptContext } from 'models';
-import { join, relative, sep, parse } from 'path';
+import { join, parse, relative, sep } from 'path';
 import { MapLike } from 'typings/common';
+import { FileManipulator } from 'static_analyser';
 
 export function barrelFile(args: MapLike<any>): OctoPackBuildPlugin {
 	return async (model: ProjectBuildData, context: ScriptContext) => {
@@ -9,7 +10,7 @@ export function barrelFile(args: MapLike<any>): OctoPackBuildPlugin {
 		const barrelFileContent: string[] = [];
 
 		const optMode: string = 'out';
-		const pragma = '@/ignore'.replace('/', ''); // so the file doesn't include the pragma wrongly
+		const pragma = '@ignore';
 		const fileSystem = context.fileSystem;
 
 		const pathToBarrelFileFolder = join(model.project.path, 'src');
@@ -20,11 +21,19 @@ export function barrelFile(args: MapLike<any>): OctoPackBuildPlugin {
 		}
 
 		for (const file of model.files) {
-			const { fullPath } = file;
+			const { fullPath, content } = file;
 
 			if (fullPath === pathToBarrelFile) {
 				continue;
 			}
+
+			let includesPragma = false;
+			new FileManipulator(content).forEachComment((c) => {
+				if (c.includes(pragma)) {
+					includesPragma = true;
+				}
+				return undefined;
+			});
 
 			if (
 				([
@@ -34,8 +43,8 @@ export function barrelFile(args: MapLike<any>): OctoPackBuildPlugin {
 					fullPath.endsWith('.jsx')
 				].some((c) => c) &&
 					optMode === 'in' &&
-					file.content.includes(pragma)) ||
-				(optMode === 'out' && !file.content.includes(pragma))
+					includesPragma) ||
+				(optMode === 'out' && !includesPragma)
 			) {
 				const parsedExportPath = parse(relative(pathToBarrelFileFolder, file.fullPath));
 				let exportPath = join(parsedExportPath.dir, parsedExportPath.name);
