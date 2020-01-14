@@ -1,8 +1,7 @@
 import { ParsedArguments } from 'argument_parser';
 import { CompilerModel, Project, ScriptContext, ProjectBuildData } from 'models';
 import { inputPhase } from './phases/input';
-import { pluginBasedPhase } from './phases/plugin_phase';
-import { outputPhase } from './phases/output';
+import { pluginBasedPhase, pluginBasedChainedPhase } from './phases/plugin_phase';
 
 export class Compiler {
 	public async compile(
@@ -30,8 +29,11 @@ export class Compiler {
 		this.sortByDependencies(compileModel);
 
 		compileModel = await pluginBasedPhase('preProcess', compileModel, context);
-		compileModel = await pluginBasedPhase('compile', compileModel, context);
-		compileModel = await outputPhase(compileModel, context);
+		compileModel = await pluginBasedChainedPhase(
+			['compile', { name: 'output', defaultPlugins: ['output'] }],
+			compileModel,
+			context
+		);
 		compileModel = await pluginBasedPhase('emit', compileModel, context);
 	}
 

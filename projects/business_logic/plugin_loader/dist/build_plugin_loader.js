@@ -1,33 +1,33 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-const npm_installer_1 = require("../../plugins/npm_installer");
-const project_importer_1 = require("../../plugins/project_importer");
-const typescript_plugin_1 = require("../../plugins/typescript_plugin");
-const meta_programming_1 = require("../../plugins/meta_programming");
-const barrel_file_1 = require("../../plugins/barrel_file");
+'use strict';
+Object.defineProperty(exports, '__esModule', { value: true });
+const npm_installer_1 = require('../../plugins/npm_installer');
+const project_importer_1 = require('../../plugins/project_importer');
+const typescript_plugin_1 = require('../../plugins/typescript_plugin');
+const meta_programming_1 = require('../../plugins/meta_programming');
+const output_plugin_1 = require('../../plugins/output_plugin');
 function loadBuildPlugin(plugin) {
-    if (typeof plugin === 'string') {
-        return initializePlugin(plugin, {});
-    }
-    else {
-        return initializePlugin(plugin.name, plugin.config);
-    }
+	if (typeof plugin === 'string') {
+		return initializePlugin(plugin, {});
+	} else {
+		return initializePlugin(plugin.name, plugin.arguments);
+	}
 }
 exports.loadBuildPlugin = loadBuildPlugin;
 function initializePlugin(name, args) {
-    switch (name) {
-        case 'projectImporter':
-            return project_importer_1.projectImporter(args);
-        case 'typescript':
-            return typescript_plugin_1.typescript(args);
-        case 'npmInstall':
-            return npm_installer_1.npmInstall(args);
-        case 'metaProgramming':
-            return meta_programming_1.metaProgramming(args);
-        case 'barrelFile':
-            return barrel_file_1.barrelFile(args);
-        default:
-            throw new Error(`Plugin ${name} not found`);
-    }
+	switch (name) {
+		case 'projectImporter':
+			return project_importer_1.projectImporter(args);
+		case 'typescript':
+			return typescript_plugin_1.typescript(args);
+		case 'npmInstall':
+			return npm_installer_1.npmInstall(args);
+		case 'metaProgramming':
+			return meta_programming_1.metaProgramming(args);
+		case 'output':
+			return output_plugin_1.output(args);
+		default:
+			throw new Error(`Plugin ${name} not found`);
+	}
 }
-//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiYnVpbGRfcGx1Z2luX2xvYWRlci5qcyIsInNvdXJjZVJvb3QiOiIiLCJzb3VyY2VzIjpbImJ1aWxkX3BsdWdpbl9sb2FkZXIudHMiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6Ijs7QUFHQSwrREFBeUQ7QUFDekQscUVBQWlFO0FBQ2pFLHVFQUE2RDtBQUM3RCxxRUFBaUU7QUFDakUsMkRBQXVEO0FBRXZELFNBQWdCLGVBQWUsQ0FBQyxNQUFnQztJQUMvRCxJQUFJLE9BQU8sTUFBTSxLQUFLLFFBQVEsRUFBRTtRQUMvQixPQUFPLGdCQUFnQixDQUFDLE1BQU0sRUFBRSxFQUFFLENBQUMsQ0FBQztLQUNwQztTQUFNO1FBQ04sT0FBTyxnQkFBZ0IsQ0FBQyxNQUFNLENBQUMsSUFBSSxFQUFFLE1BQU0sQ0FBQyxNQUFNLENBQUMsQ0FBQztLQUNwRDtBQUNGLENBQUM7QUFORCwwQ0FNQztBQUVELFNBQVMsZ0JBQWdCLENBQUMsSUFBWSxFQUFFLElBQWtCO0lBQ3pELFFBQVEsSUFBSSxFQUFFO1FBQ2IsS0FBSyxpQkFBaUI7WUFDckIsT0FBTyxrQ0FBZSxDQUFDLElBQUksQ0FBQyxDQUFDO1FBQzlCLEtBQUssWUFBWTtZQUNoQixPQUFPLDhCQUFVLENBQUMsSUFBSSxDQUFDLENBQUM7UUFDekIsS0FBSyxZQUFZO1lBQ2hCLE9BQU8sMEJBQVUsQ0FBQyxJQUFJLENBQUMsQ0FBQztRQUN6QixLQUFLLGlCQUFpQjtZQUNyQixPQUFPLGtDQUFlLENBQUMsSUFBSSxDQUFDLENBQUM7UUFDOUIsS0FBSyxZQUFZO1lBQ2hCLE9BQU8sd0JBQVUsQ0FBQyxJQUFJLENBQUMsQ0FBQztRQUN6QjtZQUNDLE1BQU0sSUFBSSxLQUFLLENBQUMsVUFBVSxJQUFJLFlBQVksQ0FBQyxDQUFDO0tBQzdDO0FBQ0YsQ0FBQyJ9
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiYnVpbGRfcGx1Z2luX2xvYWRlci5qcyIsInNvdXJjZVJvb3QiOiIiLCJzb3VyY2VzIjpbImJ1aWxkX3BsdWdpbl9sb2FkZXIudHMiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IkFBR0EsT0FBTyxFQUFFLFVBQVUsRUFBRSxNQUFNLDZCQUE2QixDQUFDO0FBQ3pELE9BQU8sRUFBRSxlQUFlLEVBQUUsTUFBTSxnQ0FBZ0MsQ0FBQztBQUNqRSxPQUFPLEVBQUUsVUFBVSxFQUFFLE1BQU0saUNBQWlDLENBQUM7QUFDN0QsT0FBTyxFQUFFLGVBQWUsRUFBRSxNQUFNLGdDQUFnQyxDQUFDO0FBQ2pFLE9BQU8sRUFBRSxNQUFNLEVBQUUsTUFBTSw2QkFBNkIsQ0FBQztBQUVyRCxNQUFNLFVBQVUsZUFBZSxDQUFDLE1BQWdDO0lBQy9ELElBQUksT0FBTyxNQUFNLEtBQUssUUFBUSxFQUFFO1FBQy9CLE9BQU8sZ0JBQWdCLENBQUMsTUFBTSxFQUFFLEVBQUUsQ0FBQyxDQUFDO0tBQ3BDO1NBQU07UUFDTixPQUFPLGdCQUFnQixDQUFDLE1BQU0sQ0FBQyxJQUFJLEVBQUUsTUFBTSxDQUFDLFNBQVMsQ0FBQyxDQUFDO0tBQ3ZEO0FBQ0YsQ0FBQztBQUVELFNBQVMsZ0JBQWdCLENBQUMsSUFBWSxFQUFFLElBQWtCO0lBQ3pELFFBQVEsSUFBSSxFQUFFO1FBQ2IsS0FBSyxpQkFBaUI7WUFDckIsT0FBTyxlQUFlLENBQUMsSUFBSSxDQUFDLENBQUM7UUFDOUIsS0FBSyxZQUFZO1lBQ2hCLE9BQU8sVUFBVSxDQUFDLElBQUksQ0FBQyxDQUFDO1FBQ3pCLEtBQUssWUFBWTtZQUNoQixPQUFPLFVBQVUsQ0FBQyxJQUFJLENBQUMsQ0FBQztRQUN6QixLQUFLLGlCQUFpQjtZQUNyQixPQUFPLGVBQWUsQ0FBQyxJQUFJLENBQUMsQ0FBQztRQUM5QixLQUFLLFFBQVE7WUFDWixPQUFPLE1BQU0sQ0FBQyxJQUFJLENBQUMsQ0FBQztRQUNyQjtZQUNDLE1BQU0sSUFBSSxLQUFLLENBQUMsVUFBVSxJQUFJLFlBQVksQ0FBQyxDQUFDO0tBQzdDO0FBQ0YsQ0FBQyJ9
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiYnVpbGRfcGx1Z2luX2xvYWRlci5qcyIsInNvdXJjZVJvb3QiOiIiLCJzb3VyY2VzIjpbImJ1aWxkX3BsdWdpbl9sb2FkZXIuanMiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6Ijs7QUFBQSwrREFBeUQ7QUFDekQscUVBQWlFO0FBQ2pFLHVFQUE2RDtBQUM3RCxxRUFBaUU7QUFDakUsK0RBQXFEO0FBQ3JELFNBQWdCLGVBQWUsQ0FBQyxNQUFNO0lBQ2xDLElBQUksT0FBTyxNQUFNLEtBQUssUUFBUSxFQUFFO1FBQzVCLE9BQU8sZ0JBQWdCLENBQUMsTUFBTSxFQUFFLEVBQUUsQ0FBQyxDQUFDO0tBQ3ZDO1NBQ0k7UUFDRCxPQUFPLGdCQUFnQixDQUFDLE1BQU0sQ0FBQyxJQUFJLEVBQUUsTUFBTSxDQUFDLFNBQVMsQ0FBQyxDQUFDO0tBQzFEO0FBQ0wsQ0FBQztBQVBELDBDQU9DO0FBQ0QsU0FBUyxnQkFBZ0IsQ0FBQyxJQUFJLEVBQUUsSUFBSTtJQUNoQyxRQUFRLElBQUksRUFBRTtRQUNWLEtBQUssaUJBQWlCO1lBQ2xCLE9BQU8sa0NBQWUsQ0FBQyxJQUFJLENBQUMsQ0FBQztRQUNqQyxLQUFLLFlBQVk7WUFDYixPQUFPLDhCQUFVLENBQUMsSUFBSSxDQUFDLENBQUM7UUFDNUIsS0FBSyxZQUFZO1lBQ2IsT0FBTywwQkFBVSxDQUFDLElBQUksQ0FBQyxDQUFDO1FBQzVCLEtBQUssaUJBQWlCO1lBQ2xCLE9BQU8sa0NBQWUsQ0FBQyxJQUFJLENBQUMsQ0FBQztRQUNqQyxLQUFLLFFBQVE7WUFDVCxPQUFPLHNCQUFNLENBQUMsSUFBSSxDQUFDLENBQUM7UUFDeEI7WUFDSSxNQUFNLElBQUksS0FBSyxDQUFDLFVBQVUsSUFBSSxZQUFZLENBQUMsQ0FBQztLQUNuRDtBQUNMLENBQUM7QUFDRCxzeENBQXN4QyJ9
