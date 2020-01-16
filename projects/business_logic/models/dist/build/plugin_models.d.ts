@@ -1,5 +1,5 @@
 import { Project, ScriptContext } from '../projects/project';
-import { VirtualFile } from '../../../../libraries/file_system';
+import { VirtualFile } from 'file_system';
 import { MapLike } from '../../../../../typings/common';
 export declare type OctoPackBuildPlugin = (model: ProjectBuildData, context: ScriptContext) => Promise<ProjectBuildData>;
 export declare type OctoPackGeneratorPlugin = (projects: Project[], context: ScriptContext) => Promise<void>;

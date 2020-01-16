@@ -26,7 +26,7 @@ export class Compiler {
 		compileModel = await inputPhase(compileModel, context);
 		compileModel = await pluginBasedPhase('link', compileModel, context);
 
-		this.sortByDependencies(compileModel);
+		this.sortByDependencies(compileModel, selectedProjects);
 
 		compileModel = await pluginBasedPhase('preProcess', compileModel, context);
 		compileModel = await pluginBasedChainedPhase(
@@ -37,13 +37,13 @@ export class Compiler {
 		compileModel = await pluginBasedPhase('emit', compileModel, context);
 	}
 
-	private sortByDependencies(compileModel: CompilerModel) {
+	private sortByDependencies(compileModel: CompilerModel, selectedProjects: Project[]) {
 		const order: ProjectBuildData[] = [];
 		while (compileModel.projectsBuildData.length > 0) {
 			let circle = true;
 
 			for (let i = compileModel.projectsBuildData.length - 1; i >= 0; i--) {
-				if (this.hasAll(compileModel.projectsBuildData[i].projectDependencies, order)) {
+				if (this.hasAll(compileModel.projectsBuildData[i].projectDependencies, selectedProjects, order)) {
 					order.push(compileModel.projectsBuildData[i]);
 					compileModel.projectsBuildData.splice(i, 1);
 					circle = false;
@@ -57,8 +57,11 @@ export class Compiler {
 		compileModel.projectsBuildData = order;
 	}
 
-	private hasAll(projectDependencies: Set<Project>, order: ProjectBuildData[]): boolean {
+	private hasAll(projectDependencies: Set<Project>, selectedProjects: Project[], order: ProjectBuildData[]): boolean {
 		for (const p of projectDependencies) {
+			if (!selectedProjects.includes(p)) {
+				continue;
+			}
 			let has = false;
 			for (const o of order) {
 				if (o.project === p) {

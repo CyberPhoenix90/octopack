@@ -1,10 +1,14 @@
 import { OctoPackBuildPlugin, ProjectBuildData, ScriptContext } from 'models';
-import { join, parse, relative, sep } from 'path';
-import { MapLike } from 'typings/common';
 import { FileManipulator } from 'static_analyser';
+import { join, relative, sep, parse } from 'path';
+import { MapLike } from '../../../../../typings/common';
 
 export function barrelFile(args: MapLike<any>): OctoPackBuildPlugin {
 	return async (model: ProjectBuildData, context: ScriptContext) => {
+		if (model.project.resolvedConfig.build.assembly === 'executable') {
+			return model;
+		}
+
 		context.uiLogger.info(`[${model.project.resolvedConfig.name}]Generating barrel file`);
 
 		const optMode: string = args.optMode;
@@ -73,7 +77,7 @@ export function barrelFile(args: MapLike<any>): OctoPackBuildPlugin {
 		}
 
 		if (barrelFileContent.length) {
-			fileSystem.writeFileSync(pathToBarrelFile, barrelFileContent.join(''));
+			await fileSystem.writeFile(pathToBarrelFile, barrelFileContent.join(''));
 		}
 		return model;
 	};

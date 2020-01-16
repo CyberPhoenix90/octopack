@@ -20,21 +20,48 @@ class ObjectUtils {
 
 				if (key in source && !(key in target)) {
 					//@ts-ignore
-					target[key] = source[key];
+					this.simpleAssign<T>(key, source, target);
 				} else if (key in target && key in source) {
-					//@ts-ignore
-					if (typeof target[key] === 'object' && typeof source[key] === 'object') {
+					if (
+						//@ts-ignore
+						typeof target[key] === 'object' &&
+						//@ts-ignore
+						typeof source[key] === 'object' &&
+						//@ts-ignore
+						!Array.isArray(target[key]) &&
+						//@ts-ignore
+						!Array.isArray(source[key])
+					) {
 						//@ts-ignore
 						this.deepAssign(target[key], source[key]);
 					} else {
 						//@ts-ignore
-						target[key] = source[key];
+						this.simpleAssign<T>(key, source, target);
 					}
 				}
 			}
 		}
 
 		return target;
+	}
+
+	private simpleAssign<T>(key: string, source: T, target: T) {
+		//@ts-ignore
+		if (typeof source[key] === 'object') {
+			//@ts-ignore
+			if (Array.isArray(source[key])) {
+				//@ts-ignore
+				target[key] = source[key].slice();
+			} else {
+				//@ts-ignore
+				target[key] = {};
+				//@ts-ignore
+				this.deepAssign(target[key], source[key]);
+			}
+		} else {
+			//@ts-ignore
+			target[key] = source[key];
+		}
 	}
 }
 

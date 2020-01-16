@@ -1,9 +1,8 @@
-import { OctoPackBuildPlugin, ProjectBuildData, ScriptContext } from 'models';
-import { MapLike } from '../../../../../typings/common';
 import { VirtualFile } from 'file_system';
+import { OctoPackBuildPlugin, ProjectBuildData, ScriptContext } from 'models';
 import { FileManipulator } from 'static_analyser';
 import { isImportDeclaration } from 'typescript';
-import { parse, relative } from 'path';
+import { MapLike } from '../../../../../typings/common';
 
 export function projectImporter(args: MapLike<any>): OctoPackBuildPlugin {
 	return async (model: ProjectBuildData, context: ScriptContext) => {
@@ -29,20 +28,10 @@ function remapImports(file: VirtualFile, model: ProjectBuildData) {
 			if (node.moduleSpecifier) {
 				const moduleName: string = (node.moduleSpecifier as any).text;
 				if (!moduleName.startsWith('.')) {
-					const [name, ...path] = moduleName.split('/');
+					const [name] = moduleName.split('/');
 					const target = model.allProjects.find((p) => p.resolvedConfig.name === name);
 					if (target) {
-						if (model.selectedProjects.includes(target)) {
-							model.projectDependencies.add(target);
-						}
-						const newName = relative(parse(file.fullPath).dir, target.path);
-						return [
-							{
-								start: node.moduleSpecifier.getStart() + 1,
-								end: node.moduleSpecifier.getEnd() - 1,
-								replacement: [newName, ...path].join('/')
-							}
-						];
+						model.projectDependencies.add(target);
 					}
 				}
 			}

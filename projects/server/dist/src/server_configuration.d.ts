@@ -1,4 +1,4 @@
-import { Logger } from '../../libraries/logger';
+import { Logger } from 'logger';
 export interface ServerConfiguration {
     port?: number;
     loggingContexts?: {

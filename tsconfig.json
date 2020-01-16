@@ -43,6 +43,9 @@
             "project_importer": [
                 "projects/business_logic/plugins/project_importer"
             ],
+            "runtime": [
+                "projects/business_logic/plugins/runtime"
+            ],
             "tsconfig_mapping_generator": [
                 "projects/business_logic/plugins/tsconfig_mapping_generator"
             ],

@@ -4,6 +4,21 @@ module.exports = {
 	configVersion: '1',
 	build: {
 		platform: 'node',
-		assembly: 'library'
+		assembly: 'library',
+		bundles: {
+			dist: {
+				compilation: {
+					emit: [
+						{
+							name: 'runtime',
+							config: {
+								out: 'dist/src/index.js',
+								handleExisting: 'prepend'
+							}
+						}
+					]
+				}
+			}
+		}
 	}
 };

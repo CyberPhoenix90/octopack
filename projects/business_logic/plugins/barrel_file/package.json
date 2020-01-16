@@ -1,10 +1,8 @@
 {
-	"name": "octopack-barrel-file",
+	"name": "@octopack/barrel-file",
 	"version": "0.0.0",
 	"main": "dist/index.js",
-	"bin": {
-		"octo": "dist/index.js"
-	},
+	"typings": "dist/index.d.ts",
 	"dependencies": {
 		"@types/node": "^13.1.2"
 	}

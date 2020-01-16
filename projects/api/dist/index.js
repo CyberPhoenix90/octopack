@@ -1,3 +1,17 @@
+
+const importData = {'config_resolver': '../../business_logic/config_resolver','models': '../../business_logic/models','compiler': '../../business_logic/compiler','argument_parser': '../../libraries/argument_parser','plugin_loader': '../../business_logic/plugin_loader'}
+const mod = require('module');
+
+const original = mod.prototype.require;
+mod.prototype.require = function(path, ...args) {
+	if (importData[path]) {
+		path = importData[path];
+		return original.call(module, path, ...args);
+	} else {
+		return original.call(this, path, ...args);
+	}
+};
+
 "use strict";
 function __export(m) {
     for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];

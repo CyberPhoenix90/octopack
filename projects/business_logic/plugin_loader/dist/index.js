@@ -1,3 +1,17 @@
+
+const importData = {'config_resolver': '../../config_resolver','models': '../../models','npm_installer': '../../plugins/npm_installer','project_importer': '../../plugins/project_importer','typescript_plugin': '../../plugins/typescript_plugin','meta_programming': '../../plugins/meta_programming','barrel_file': '../../plugins/barrel_file','output_plugin': '../../plugins/output_plugin','runtime': '../../plugins/runtime','tsconfig_mapping_generator': '../../plugins/tsconfig_mapping_generator'}
+const mod = require('module');
+
+const original = mod.prototype.require;
+mod.prototype.require = function(path, ...args) {
+	if (importData[path]) {
+		path = importData[path];
+		return original.call(module, path, ...args);
+	} else {
+		return original.call(this, path, ...args);
+	}
+};
+
 "use strict";
 function __export(m) {
     for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];

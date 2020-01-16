@@ -1,5 +1,5 @@
-import { ScriptContext } from '../../../business_logic/models';
-import { ParsedArguments } from '../../../libraries/argument_parser';
+import { ScriptContext } from 'models';
+import { ParsedArguments } from 'argument_parser';
 import { Help, Script, ScriptStatus } from './script';
 export declare class Build extends Script {
     autoComplete(): Promise<string[]>;

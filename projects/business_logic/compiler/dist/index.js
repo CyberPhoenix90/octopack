@@ -1,3 +1,17 @@
+
+const importData = {'argument_parser': '../../../libraries/argument_parser','models': '../../models','plugin_loader': '../../plugin_loader','config_resolver': '../../config_resolver'}
+const mod = require('module');
+
+const original = mod.prototype.require;
+mod.prototype.require = function(path, ...args) {
+	if (importData[path]) {
+		path = importData[path];
+		return original.call(module, path, ...args);
+	} else {
+		return original.call(this, path, ...args);
+	}
+};
+
 "use strict";
 function __export(m) {
     for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];

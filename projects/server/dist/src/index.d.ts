@@ -1,3 +1,4 @@
+export * from './main';
 export * from './message_definitions/build_data';
 export * from './message_definitions/message';
 export * from './message_definitions/message_response';

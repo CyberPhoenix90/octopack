@@ -1,5 +1,5 @@
 import { ScriptKind, Node, SyntaxKind } from 'typescript';
-import { FileSystem, VirtualFile } from '../../file_system';
+import { FileSystem, VirtualFile } from 'file_system';
 import { TokenPosition } from 'tslint';
 interface Manipulation {
     start: number;

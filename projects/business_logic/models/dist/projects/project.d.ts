@@ -1,6 +1,6 @@
-import { OctopackConfiguration } from '../../../config_resolver';
-import { FileSystem } from '../../../../libraries/file_system';
-import { Logger } from '../../../../libraries/logger';
+import { OctopackConfiguration } from 'config_resolver';
+import { FileSystem } from 'file_system';
+import { Logger } from 'logger';
 export interface Project {
     path: string;
     rawConfig: OctopackConfiguration;

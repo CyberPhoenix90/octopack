@@ -27,7 +27,8 @@ module.exports = {
 							}
 						}
 					],
-					compile: ['typescript']
+					compile: ['typescript'],
+					emit: [{ name: 'runtime', config: { out: 'dist/index.js', handleExisting: 'prepend' } }]
 				}
 			}
 		}

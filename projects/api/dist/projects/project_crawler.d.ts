@@ -1,4 +1,4 @@
-import { ScriptContext, Project } from '../../../business_logic/models';
+import { ScriptContext, Project } from 'models';
 export declare class ProjectCrawler {
     findProjects(root: string, context: ScriptContext): Promise<Project[]>;
     searchDirectory(result: Project[], path: string, context: ScriptContext): Promise<void>;
