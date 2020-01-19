@@ -1,5 +1,11 @@
 import { FileSystem, FileSystemEntryStatus } from '../file_system';
 export declare class DiskFileSystem extends FileSystem {
+    watch(paths: string[], options: any, callback: any): Promise<() => void>;
+    watchSync(paths: string[], options: any, callback: any): () => void;
+    readlink(path: string): Promise<string>;
+    readlinkSync(path: string): string;
+    realpath(path: string): Promise<string>;
+    realpathSync(path: string): string;
     readDir(path: string): Promise<string[]>;
     readDirSync(path: string): string[];
     writeFile(path: string, content: string): Promise<void>;

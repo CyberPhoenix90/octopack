@@ -17,8 +17,7 @@ export class Compiler {
 				allProjects,
 				selectedProjects,
 				project: p,
-				files: [],
-				outFiles: {}
+				input: []
 			}))
 		};
 
@@ -30,11 +29,10 @@ export class Compiler {
 
 		compileModel = await pluginBasedPhase('preProcess', compileModel, context);
 		compileModel = await pluginBasedChainedPhase(
-			['compile', { name: 'output', defaultPlugins: ['output'] }],
+			['compile', 'postProcess', { name: 'emit', defaultPlugins: ['output'] }],
 			compileModel,
 			context
 		);
-		compileModel = await pluginBasedPhase('emit', compileModel, context);
 	}
 
 	private sortByDependencies(compileModel: CompilerModel, selectedProjects: Project[]) {

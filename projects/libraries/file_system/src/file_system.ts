@@ -1,8 +1,20 @@
 import { match } from 'minimatch';
-import { join, sep } from 'path';
+import { join, sep, relative, parse } from 'path';
 import * as vm from 'vm';
 import { FilePath } from './file_path_utils';
 import { MapLike } from '../../../../typings/common';
+import { createHash } from 'crypto';
+
+export interface WatchOptions {
+	recursive: boolean;
+	filter?: (path: string) => boolean;
+	persistent?: boolean;
+	changeBufferTime?: number;
+}
+
+export type WatchEvent = 'create' | 'update' | 'remove';
+
+export type WatchCallback = (event: WatchEvent, path: string) => void;
 
 export interface ReadDirOptions {
 	directoryNameBlackList?: string[];
@@ -61,6 +73,12 @@ export abstract class FileSystem {
 	public abstract rmdirSync(path: string): void;
 	public abstract unlink(path: string): Promise<void>;
 	public abstract unlinkSync(path: string): void;
+	public abstract async watch(paths: string[], options: WatchOptions, callback: WatchCallback): Promise<() => void>;
+	public abstract watchSync(paths: string[], options: WatchOptions, callback: WatchCallback): () => void;
+	public abstract readlink(path: string): Promise<string>;
+	public abstract readlinkSync(path: string): string;
+	public abstract realpath(path: string): Promise<string>;
+	public abstract realpathSync(path: string): string;
 
 	public async glob(directory: string, globPattern: string): Promise<string[]> {
 		({ directory, globPattern } = this.optimizeGlob(directory, globPattern));
@@ -101,6 +119,49 @@ export abstract class FileSystem {
 		};
 	}
 
+	public readFiles(files: string[], encoding?: string): Promise<string[]> {
+		return Promise.all(files.map((f) => this.readFile(f, encoding)));
+	}
+
+	public async readFilesIfExist(files: string[], encoding?: string): Promise<string[]> {
+		const promises: Promise<string | void>[] = [];
+		const results: string[] = [];
+		let i = 0;
+		for (const file of files) {
+			const index: number = i++;
+			promises.push(
+				this.exists(file).then((exists) => {
+					if (exists) {
+						return this.readFile(file, encoding).then((content) => {
+							results[index] = content;
+						});
+					} else {
+						return undefined;
+					}
+				})
+			);
+		}
+
+		await Promise.all(promises);
+		return results.filter((p) => p !== undefined);
+	}
+
+	public async readFileIfExist(file: string, encoding?: string): Promise<string> {
+		if (await this.exists(file)) {
+			return this.readFile(file, encoding);
+		} else {
+			return undefined;
+		}
+	}
+
+	public readFileIfExistSync(file: string, encoding?: string): string {
+		if (this.existsSync(file)) {
+			return this.readFileSync(file, encoding);
+		} else {
+			return undefined;
+		}
+	}
+
 	public toVirtualFileSync(filePath: string, parent?: VirtualFolder): VirtualFile {
 		const content = this.readFileSync(filePath, 'utf8');
 		return {
@@ -109,6 +170,43 @@ export abstract class FileSystem {
 			type: FileSystemEntryType.FILE,
 			parent
 		};
+	}
+
+	public async copyDirectory(source: string, target: string): Promise<void> {
+		const files = await this.readDirRecursive(source, {});
+		for (const file of files) {
+			const newFile = join(target, relative(source, file));
+			await this.mkdirp(parse(newFile).dir);
+			await this.writeFile(newFile, await this.readFile(file, 'utf8'));
+		}
+	}
+
+	public copyDirectorySync(source: string, target: string): void {
+		const files = this.readDirRecursiveSync(source, {});
+		for (const file of files) {
+			const newFile = join(target, relative(source, file));
+			this.writeFileSync(newFile, this.readFileSync(file, 'utf8'));
+		}
+	}
+
+	public async copyFile(source: string, target: string): Promise<void> {
+		return this.writeFile(target, await this.readFile(source, 'utf8'));
+	}
+
+	public copyFileSync(source: string, target: string): void {
+		return this.writeFileSync(target, this.readFileSync(source, 'utf8'));
+	}
+
+	public async hashFiles(paths: string[], includePaths: boolean = true, salt: string = ''): Promise<string> {
+		const hashData: string[] = await Promise.all(paths.map((f) => this.readFile(f, 'utf8')));
+		hashData.push(salt);
+		if (includePaths) {
+			hashData.push(paths.sort().join(''));
+		}
+
+		return createHash('sha1')
+			.update(hashData.join(''))
+			.digest('hex');
 	}
 
 	private createVirtualFolder(fullPath: string, parent?: VirtualFolder): VirtualFolder {

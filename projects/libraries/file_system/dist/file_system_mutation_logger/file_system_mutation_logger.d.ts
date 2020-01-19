@@ -1,29 +1,28 @@
-import { FileSystem, FileSystemEntryStatus, FileSystemEntryType } from '../file_system';
-import { MapLike } from '../../../../../typings/common';
-export declare type MemoryFileSystemData = {
-    [path: string]: MemoryFileSystemEntry;
-};
-export interface MemoryFileSystemEntry {
-    name: string;
-    fullPath: string;
-    type: FileSystemEntryType;
-    parent: MemoryFileSystemEntry;
-    children?: {
-        [key: string]: MemoryFileSystemEntry;
-    };
-    content?: string;
+import { FileSystem, FileSystemEntryStatus } from '../file_system';
+export declare enum FileSystemMutationOperation {
+    MK_DIR = 0,
+    RM_DIR = 1,
+    UNLINK = 2,
+    WRITE = 3
 }
-export declare class MemoryFileSystem extends FileSystem {
+export interface FileSystemMutation {
+    operation: FileSystemMutationOperation;
+    path: string;
+    newContent?: string;
+    contentChanged?: boolean;
+    previousContent?: string;
+}
+export declare class FileSystemMutationLogger extends FileSystem {
     private fileSystem;
-    constructor(data?: MapLike<string>);
+    private logContentBeforeMutation;
+    readonly fileSystemMutations: FileSystemMutation[];
+    constructor(sourceFileSystem: FileSystem, logContentBeforeMutation?: boolean);
     watch(paths: string[], options: any, callback: any): Promise<() => void>;
     watchSync(paths: string[], options: any, callback: any): () => void;
     readlink(path: string): Promise<string>;
     readlinkSync(path: string): string;
     realpath(path: string): Promise<string>;
     realpathSync(path: string): string;
-    private fromJson;
-    toJson(): Promise<MapLike<string>>;
     mkdir(path: string): Promise<void>;
     mkdirSync(path: string): void;
     rmdir(path: string): Promise<void>;
@@ -40,6 +39,5 @@ export declare class MemoryFileSystem extends FileSystem {
     existsSync(path: string): boolean;
     writeFile(path: string, content: string): Promise<void>;
     writeFileSync(path: string, content: string): void;
-    private getEntry;
 }
-//# sourceMappingURL=memory_file_system.d.ts.map
+//# sourceMappingURL=file_system_mutation_logger.d.ts.map

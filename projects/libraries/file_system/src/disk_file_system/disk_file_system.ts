@@ -15,10 +15,48 @@ import {
 	writeFileSync,
 	mkdirSync,
 	rmdirSync,
-	Stats
+	Stats,
+	readlink,
+	realpath,
+	readlinkSync,
+	realpathSync
 } from 'fs';
 
 export class DiskFileSystem extends FileSystem {
+	public watch(paths: string[], options: any, callback: any): Promise<() => void> {
+		throw new Error('Method not implemented.');
+	}
+	public watchSync(paths: string[], options: any, callback: any): () => void {
+		throw new Error('Method not implemented.');
+	}
+
+	public readlink(path: string): Promise<string> {
+		return new Promise((resolve, reject) => {
+			return readlink(path, (err, data) => {
+				if (err) {
+					reject(err);
+				}
+				resolve(data);
+			});
+		});
+	}
+	public readlinkSync(path: string): string {
+		return readlinkSync(path);
+	}
+	public realpath(path: string): Promise<string> {
+		return new Promise((resolve, reject) => {
+			return realpath(path, (err, data) => {
+				if (err) {
+					reject(err);
+				}
+				resolve(data);
+			});
+		});
+	}
+	public realpathSync(path: string): string {
+		return realpathSync(path);
+	}
+
 	public readDir(path: string): Promise<string[]> {
 		return new Promise((resolve, reject) => {
 			return readdir(path, (err, data) => {

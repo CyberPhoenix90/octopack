@@ -1,4 +1,12 @@
 import { MapLike } from '../../../../typings/common';
+export interface WatchOptions {
+    recursive: boolean;
+    filter?: (path: string) => boolean;
+    persistent?: boolean;
+    changeBufferTime?: number;
+}
+export declare type WatchEvent = 'create' | 'update' | 'remove';
+export declare type WatchCallback = (event: WatchEvent, path: string) => void;
 export interface ReadDirOptions {
     directoryNameBlackList?: string[];
     includeDirectories?: boolean;
@@ -47,11 +55,26 @@ export declare abstract class FileSystem {
     abstract rmdirSync(path: string): void;
     abstract unlink(path: string): Promise<void>;
     abstract unlinkSync(path: string): void;
+    abstract watch(paths: string[], options: WatchOptions, callback: WatchCallback): Promise<() => void>;
+    abstract watchSync(paths: string[], options: WatchOptions, callback: WatchCallback): () => void;
+    abstract readlink(path: string): Promise<string>;
+    abstract readlinkSync(path: string): string;
+    abstract realpath(path: string): Promise<string>;
+    abstract realpathSync(path: string): string;
     glob(directory: string, globPattern: string): Promise<string[]>;
     globSync(directory: string, globPattern: string): string[];
     private optimizeGlob;
     toVirtualFile(filePath: string, parent?: VirtualFolder): Promise<VirtualFile>;
+    readFiles(files: string[], encoding?: string): Promise<string[]>;
+    readFilesIfExist(files: string[], encoding?: string): Promise<string[]>;
+    readFileIfExist(file: string, encoding?: string): Promise<string>;
+    readFileIfExistSync(file: string, encoding?: string): string;
     toVirtualFileSync(filePath: string, parent?: VirtualFolder): VirtualFile;
+    copyDirectory(source: string, target: string): Promise<void>;
+    copyDirectorySync(source: string, target: string): void;
+    copyFile(source: string, target: string): Promise<void>;
+    copyFileSync(source: string, target: string): void;
+    hashFiles(paths: string[], includePaths?: boolean, salt?: string): Promise<string>;
     private createVirtualFolder;
     serializeFolder(path: string): Promise<MapLike<VirtualFileSystemEntry>>;
     private serializeFolderContent;

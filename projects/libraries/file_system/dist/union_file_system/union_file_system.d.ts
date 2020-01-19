@@ -1,29 +1,13 @@
-import { FileSystem, FileSystemEntryStatus, FileSystemEntryType } from '../file_system';
-import { MapLike } from '../../../../../typings/common';
-export declare type MemoryFileSystemData = {
-    [path: string]: MemoryFileSystemEntry;
-};
-export interface MemoryFileSystemEntry {
-    name: string;
-    fullPath: string;
-    type: FileSystemEntryType;
-    parent: MemoryFileSystemEntry;
-    children?: {
-        [key: string]: MemoryFileSystemEntry;
-    };
-    content?: string;
-}
-export declare class MemoryFileSystem extends FileSystem {
-    private fileSystem;
-    constructor(data?: MapLike<string>);
-    watch(paths: string[], options: any, callback: any): Promise<() => void>;
-    watchSync(paths: string[], options: any, callback: any): () => void;
+import { FileSystem, WatchOptions, WatchCallback, FileSystemEntryStatus } from '../file_system';
+export declare class UnionFileSystem extends FileSystem {
+    private readonly fileSystems;
+    constructor(fileSystems: FileSystem[]);
+    watch(paths: string[], options: WatchOptions, callback: WatchCallback): Promise<() => void>;
+    watchSync(paths: string[], options: WatchOptions, callback: WatchCallback): () => void;
     readlink(path: string): Promise<string>;
     readlinkSync(path: string): string;
     realpath(path: string): Promise<string>;
     realpathSync(path: string): string;
-    private fromJson;
-    toJson(): Promise<MapLike<string>>;
     mkdir(path: string): Promise<void>;
     mkdirSync(path: string): void;
     rmdir(path: string): Promise<void>;
@@ -40,6 +24,5 @@ export declare class MemoryFileSystem extends FileSystem {
     existsSync(path: string): boolean;
     writeFile(path: string, content: string): Promise<void>;
     writeFileSync(path: string, content: string): void;
-    private getEntry;
 }
-//# sourceMappingURL=memory_file_system.d.ts.map
+//# sourceMappingURL=union_file_system.d.ts.map

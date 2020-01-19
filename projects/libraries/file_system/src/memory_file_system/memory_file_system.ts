@@ -1,6 +1,7 @@
 import { FileSystem, FileSystemEntryStatus, FileSystemEntryType } from '../file_system';
 import { FilePath } from '../file_path_utils';
 import { MapLike } from '../../../../../typings/common';
+import { resolve } from 'path';
 
 export type MemoryFileSystemData = { [path: string]: MemoryFileSystemEntry };
 
@@ -27,6 +28,30 @@ export class MemoryFileSystem extends FileSystem {
 					parent: undefined,
 					type: FileSystemEntryType.DIRECTORY
 			  };
+	}
+
+	public watch(paths: string[], options: any, callback: any): Promise<() => void> {
+		throw new Error('Method not implemented.');
+	}
+
+	public watchSync(paths: string[], options: any, callback: any): () => void {
+		throw new Error('Method not implemented.');
+	}
+
+	public async readlink(path: string): Promise<string> {
+		return '';
+	}
+
+	public readlinkSync(path: string): string {
+		return '';
+	}
+
+	public async realpath(path: string): Promise<string> {
+		return resolve(path);
+	}
+
+	public realpathSync(path: string): string {
+		return resolve(path);
 	}
 
 	private fromJson(json: MapLike<string>): MemoryFileSystemEntry {
