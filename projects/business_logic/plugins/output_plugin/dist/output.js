@@ -1,45 +1,46 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-const module_transpiler_1 = require("./module_transpiler");
-const path_1 = require("path");
+'use strict';
+Object.defineProperty(exports, '__esModule', { value: true });
+const module_transpiler_1 = require('./module_transpiler');
+const path_1 = require('path');
 function output(args) {
-    return async (model, context) => {
-        await module_transpiler_1.transpile(model, context);
-        const base = findLowestCommonFolder(Object.keys(model.outFiles));
-        for (const file of Object.values(model.outFiles)) {
-            const newPath = path_1.join(model.project.path, model.project.resolvedConfig.build.bundles[model.bundle].output, path_1.relative(base, file.fullPath));
-            await context.fileSystem.mkdirp(path_1.parse(newPath).dir);
-            await context.fileSystem.writeFile(newPath, file.content);
-        }
-        return model;
-    };
+	return async (model, context) => {
+		await module_transpiler_1.transpile(model, context);
+		const base = findLowestCommonFolder(model.output);
+		for (const file of model.output) {
+			const newPath = path_1.join(
+				model.project.path,
+				model.project.resolvedConfig.build.bundles[model.bundle].output,
+				path_1.relative(base, file)
+			);
+			await context.fileSystem.mkdirp(path_1.parse(newPath).dir);
+			await context.fileSystem.writeFile(newPath, await model.fileSystem.readFile(file, 'utf8'));
+		}
+		return model;
+	};
 }
 exports.output = output;
 function findLowestCommonFolder(files) {
-    if (files.length === 0) {
-        return '';
-    }
-    let candidate = path_1.parse(files[0]).dir;
-    for (let i = 1; i < files.length; i++) {
-        while (!isChildOf(path_1.parse(files[i]).dir, candidate)) {
-            if (candidate === '/') {
-                throw new Error('Could not determine common folder between files in compilation');
-            }
-            candidate = path_1.join(candidate, '..');
-        }
-    }
-    return candidate;
+	if (files.length === 0) {
+		return '';
+	}
+	let candidate = path_1.parse(files[0]).dir;
+	for (let i = 1; i < files.length; i++) {
+		while (!isChildOf(path_1.parse(files[i]).dir, candidate)) {
+			if (candidate === '/') {
+				throw new Error('Could not determine common folder between files in compilation');
+			}
+			candidate = path_1.join(candidate, '..');
+		}
+	}
+	return candidate;
 }
 function isChildOf(file, folder) {
-    while (file !== '/') {
-        if (file === folder) {
-            return true;
-        }
-        else {
-            file = path_1.join(file, '..');
-        }
-    }
-    return file === folder;
+	while (file !== '/') {
+		if (file === folder) {
+			return true;
+		} else {
+			file = path_1.join(file, '..');
+		}
+	}
+	return file === folder;
 }
-//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoib3V0cHV0LmpzIiwic291cmNlUm9vdCI6IiIsInNvdXJjZXMiOlsib3V0cHV0LnRzIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiJBQUVBLE9BQU8sRUFBRSxTQUFTLEVBQUUsTUFBTSxxQkFBcUIsQ0FBQztBQUNoRCxPQUFPLEVBQUUsUUFBUSxFQUFFLElBQUksRUFBRSxLQUFLLEVBQUUsTUFBTSxNQUFNLENBQUM7QUFFN0MsTUFBTSxVQUFVLE1BQU0sQ0FBQyxJQUFrQjtJQUN4QyxPQUFPLEtBQUssRUFBRSxLQUF1QixFQUFFLE9BQXNCLEVBQUUsRUFBRTtRQUNoRSxNQUFNLFNBQVMsQ0FBQyxLQUFLLEVBQUUsT0FBTyxDQUFDLENBQUM7UUFDaEMsTUFBTSxJQUFJLEdBQUcsc0JBQXNCLENBQUMsTUFBTSxDQUFDLElBQUksQ0FBQyxLQUFLLENBQUMsUUFBUSxDQUFDLENBQUMsQ0FBQztRQUNqRSxLQUFLLE1BQU0sSUFBSSxJQUFJLE1BQU0sQ0FBQyxNQUFNLENBQUMsS0FBSyxDQUFDLFFBQVEsQ0FBQyxFQUFFO1lBQ2pELE1BQU0sT0FBTyxHQUFHLElBQUksQ0FDbkIsS0FBSyxDQUFDLE9BQU8sQ0FBQyxJQUFJLEVBQ2xCLEtBQUssQ0FBQyxPQUFPLENBQUMsY0FBYyxDQUFDLEtBQUssQ0FBQyxPQUFPLENBQUMsS0FBSyxDQUFDLE1BQU0sQ0FBQyxDQUFDLE1BQU0sRUFDL0QsUUFBUSxDQUFDLElBQUksRUFBRSxJQUFJLENBQUMsUUFBUSxDQUFDLENBQzdCLENBQUM7WUFFRixNQUFNLE9BQU8sQ0FBQyxVQUFVLENBQUMsTUFBTSxDQUFDLEtBQUssQ0FBQyxPQUFPLENBQUMsQ0FBQyxHQUFHLENBQUMsQ0FBQztZQUNwRCxNQUFNLE9BQU8sQ0FBQyxVQUFVLENBQUMsU0FBUyxDQUFDLE9BQU8sRUFBRSxJQUFJLENBQUMsT0FBTyxDQUFDLENBQUM7U0FDMUQ7UUFFRCxPQUFPLEtBQUssQ0FBQztJQUNkLENBQUMsQ0FBQztBQUNILENBQUM7QUFFRCxTQUFTLHNCQUFzQixDQUFDLEtBQWU7SUFDOUMsSUFBSSxLQUFLLENBQUMsTUFBTSxLQUFLLENBQUMsRUFBRTtRQUN2QixPQUFPLEVBQUUsQ0FBQztLQUNWO0lBRUQsSUFBSSxTQUFTLEdBQUcsS0FBSyxDQUFDLEtBQUssQ0FBQyxDQUFDLENBQUMsQ0FBQyxDQUFDLEdBQUcsQ0FBQztJQUNwQyxLQUFLLElBQUksQ0FBQyxHQUFHLENBQUMsRUFBRSxDQUFDLEdBQUcsS0FBSyxDQUFDLE1BQU0sRUFBRSxDQUFDLEVBQUUsRUFBRTtRQUN0QyxPQUFPLENBQUMsU0FBUyxDQUFDLEtBQUssQ0FBQyxLQUFLLENBQUMsQ0FBQyxDQUFDLENBQUMsQ0FBQyxHQUFHLEVBQUUsU0FBUyxDQUFDLEVBQUU7WUFDbEQsSUFBSSxTQUFTLEtBQUssR0FBRyxFQUFFO2dCQUN0QixNQUFNLElBQUksS0FBSyxDQUFDLGdFQUFnRSxDQUFDLENBQUM7YUFDbEY7WUFDRCxTQUFTLEdBQUcsSUFBSSxDQUFDLFNBQVMsRUFBRSxJQUFJLENBQUMsQ0FBQztTQUNsQztLQUNEO0lBRUQsT0FBTyxTQUFTLENBQUM7QUFDbEIsQ0FBQztBQUVELFNBQVMsU0FBUyxDQUFDLElBQVksRUFBRSxNQUFjO0lBQzlDLE9BQU8sSUFBSSxLQUFLLEdBQUcsRUFBRTtRQUNwQixJQUFJLElBQUksS0FBSyxNQUFNLEVBQUU7WUFDcEIsT0FBTyxJQUFJLENBQUM7U0FDWjthQUFNO1lBQ04sSUFBSSxHQUFHLElBQUksQ0FBQyxJQUFJLEVBQUUsSUFBSSxDQUFDLENBQUM7U0FDeEI7S0FDRDtJQUVELE9BQU8sSUFBSSxLQUFLLE1BQU0sQ0FBQztBQUN4QixDQUFDIn0=
-//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoib3V0cHV0LmpzIiwic291cmNlUm9vdCI6IiIsInNvdXJjZXMiOlsib3V0cHV0LmpzIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiI7O0FBQUEsMkRBQWdEO0FBQ2hELCtCQUE2QztBQUM3QyxTQUFnQixNQUFNLENBQUMsSUFBSTtJQUN2QixPQUFPLEtBQUssRUFBRSxLQUFLLEVBQUUsT0FBTyxFQUFFLEVBQUU7UUFDNUIsTUFBTSw2QkFBUyxDQUFDLEtBQUssRUFBRSxPQUFPLENBQUMsQ0FBQztRQUNoQyxNQUFNLElBQUksR0FBRyxzQkFBc0IsQ0FBQyxNQUFNLENBQUMsSUFBSSxDQUFDLEtBQUssQ0FBQyxRQUFRLENBQUMsQ0FBQyxDQUFDO1FBQ2pFLEtBQUssTUFBTSxJQUFJLElBQUksTUFBTSxDQUFDLE1BQU0sQ0FBQyxLQUFLLENBQUMsUUFBUSxDQUFDLEVBQUU7WUFDOUMsTUFBTSxPQUFPLEdBQUcsV0FBSSxDQUFDLEtBQUssQ0FBQyxPQUFPLENBQUMsSUFBSSxFQUFFLEtBQUssQ0FBQyxPQUFPLENBQUMsY0FBYyxDQUFDLEtBQUssQ0FBQyxPQUFPLENBQUMsS0FBSyxDQUFDLE1BQU0sQ0FBQyxDQUFDLE1BQU0sRUFBRSxlQUFRLENBQUMsSUFBSSxFQUFFLElBQUksQ0FBQyxRQUFRLENBQUMsQ0FBQyxDQUFDO1lBQ3pJLE1BQU0sT0FBTyxDQUFDLFVBQVUsQ0FBQyxNQUFNLENBQUMsWUFBSyxDQUFDLE9BQU8sQ0FBQyxDQUFDLEdBQUcsQ0FBQyxDQUFDO1lBQ3BELE1BQU0sT0FBTyxDQUFDLFVBQVUsQ0FBQyxTQUFTLENBQUMsT0FBTyxFQUFFLElBQUksQ0FBQyxPQUFPLENBQUMsQ0FBQztTQUM3RDtRQUNELE9BQU8sS0FBSyxDQUFDO0lBQ2pCLENBQUMsQ0FBQztBQUNOLENBQUM7QUFYRCx3QkFXQztBQUNELFNBQVMsc0JBQXNCLENBQUMsS0FBSztJQUNqQyxJQUFJLEtBQUssQ0FBQyxNQUFNLEtBQUssQ0FBQyxFQUFFO1FBQ3BCLE9BQU8sRUFBRSxDQUFDO0tBQ2I7SUFDRCxJQUFJLFNBQVMsR0FBRyxZQUFLLENBQUMsS0FBSyxDQUFDLENBQUMsQ0FBQyxDQUFDLENBQUMsR0FBRyxDQUFDO0lBQ3BDLEtBQUssSUFBSSxDQUFDLEdBQUcsQ0FBQyxFQUFFLENBQUMsR0FBRyxLQUFLLENBQUMsTUFBTSxFQUFFLENBQUMsRUFBRSxFQUFFO1FBQ25DLE9BQU8sQ0FBQyxTQUFTLENBQUMsWUFBSyxDQUFDLEtBQUssQ0FBQyxDQUFDLENBQUMsQ0FBQyxDQUFDLEdBQUcsRUFBRSxTQUFTLENBQUMsRUFBRTtZQUMvQyxJQUFJLFNBQVMsS0FBSyxHQUFHLEVBQUU7Z0JBQ25CLE1BQU0sSUFBSSxLQUFLLENBQUMsZ0VBQWdFLENBQUMsQ0FBQzthQUNyRjtZQUNELFNBQVMsR0FBRyxXQUFJLENBQUMsU0FBUyxFQUFFLElBQUksQ0FBQyxDQUFDO1NBQ3JDO0tBQ0o7SUFDRCxPQUFPLFNBQVMsQ0FBQztBQUNyQixDQUFDO0FBQ0QsU0FBUyxTQUFTLENBQUMsSUFBSSxFQUFFLE1BQU07SUFDM0IsT0FBTyxJQUFJLEtBQUssR0FBRyxFQUFFO1FBQ2pCLElBQUksSUFBSSxLQUFLLE1BQU0sRUFBRTtZQUNqQixPQUFPLElBQUksQ0FBQztTQUNmO2FBQ0k7WUFDRCxJQUFJLEdBQUcsV0FBSSxDQUFDLElBQUksRUFBRSxJQUFJLENBQUMsQ0FBQztTQUMzQjtLQUNKO0lBQ0QsT0FBTyxJQUFJLEtBQUssTUFBTSxDQUFDO0FBQzNCLENBQUM7QUFDRCwwcUVBQTBxRSJ9

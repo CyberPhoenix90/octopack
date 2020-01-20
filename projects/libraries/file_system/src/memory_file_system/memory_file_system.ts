@@ -205,7 +205,7 @@ export class MemoryFileSystem extends FileSystem {
 			throw new Error('cannot add subfiles into files');
 		}
 
-		entry.children[fp.getFileName()] = {
+		entry.children[fp.getFullFileName()] = {
 			fullPath: path,
 			content,
 			name: fp.getFileName(),

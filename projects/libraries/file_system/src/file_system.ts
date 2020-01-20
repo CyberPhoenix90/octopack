@@ -197,6 +197,24 @@ export abstract class FileSystem {
 		return this.writeFileSync(target, this.readFileSync(source, 'utf8'));
 	}
 
+	public async copyFileFileSystem(source: string, targetFileSystem: FileSystem, targetPath: string): Promise<void> {
+		return targetFileSystem.writeFile(targetPath, await this.readFile(source, 'utf8'));
+	}
+
+	public copyFileFileSystemSync(source: string, targetFileSystem: FileSystem, targetPath: string): void {
+		return targetFileSystem.writeFileSync(targetPath, this.readFileSync(source, 'utf8'));
+	}
+
+	public async moveFileFileSystem(source: string, targetFileSystem: FileSystem, targetPath: string): Promise<void> {
+		await this.copyFileFileSystem(source, targetFileSystem, targetPath);
+		await this.unlink(source);
+	}
+
+	public moveFileFileSystemSync(source: string, targetFileSystem: FileSystem, targetPath: string): void {
+		this.copyFileFileSystemSync(source, targetFileSystem, targetPath);
+		this.unlinkSync(source);
+	}
+
 	public async hashFiles(paths: string[], includePaths: boolean = true, salt: string = ''): Promise<string> {
 		const hashData: string[] = await Promise.all(paths.map((f) => this.readFile(f, 'utf8')));
 		hashData.push(salt);

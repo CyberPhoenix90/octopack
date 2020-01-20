@@ -2,6 +2,7 @@ import { ParsedArguments } from 'argument_parser';
 import { CompilerModel, Project, ScriptContext, ProjectBuildData } from 'models';
 import { inputPhase } from './phases/input';
 import { pluginBasedPhase, pluginBasedChainedPhase } from './phases/plugin_phase';
+import { CachedFileSystem, FileSystemMutationLogger, MemoryFileSystem, FileSystemMutationOperation } from 'file_system';
 
 export class Compiler {
 	public async compile(
@@ -10,6 +11,9 @@ export class Compiler {
 		context: ScriptContext,
 		args: ParsedArguments
 	): Promise<void> {
+		const mlfs = new FileSystemMutationLogger(new MemoryFileSystem(), false);
+		const fs = new CachedFileSystem(context.fileSystem, mlfs);
+
 		let compileModel: CompilerModel = {
 			projectsBuildData: selectedProjects.map<ProjectBuildData>((p) => ({
 				bundle: this.getBundle(p, args),
@@ -17,7 +21,13 @@ export class Compiler {
 				allProjects,
 				selectedProjects,
 				project: p,
-				input: []
+				input: [],
+				get output(): string[] {
+					return mlfs.fileSystemMutations
+						.filter((m) => m.operation === FileSystemMutationOperation.WRITE)
+						.map((p) => p.path);
+				},
+				fileSystem: fs
 			}))
 		};
 

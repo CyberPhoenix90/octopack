@@ -74,6 +74,10 @@ export declare abstract class FileSystem {
     copyDirectorySync(source: string, target: string): void;
     copyFile(source: string, target: string): Promise<void>;
     copyFileSync(source: string, target: string): void;
+    copyFileFileSystem(source: string, targetFileSystem: FileSystem, targetPath: string): Promise<void>;
+    copyFileFileSystemSync(source: string, targetFileSystem: FileSystem, targetPath: string): void;
+    moveFileFileSystem(source: string, targetFileSystem: FileSystem, targetPath: string): Promise<void>;
+    moveFileFileSystemSync(source: string, targetFileSystem: FileSystem, targetPath: string): void;
     hashFiles(paths: string[], includePaths?: boolean, salt?: string): Promise<string>;
     private createVirtualFolder;
     serializeFolder(path: string): Promise<MapLike<VirtualFileSystemEntry>>;

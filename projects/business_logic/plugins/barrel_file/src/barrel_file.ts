@@ -30,7 +30,6 @@ export function barrelFile(args: MapLike<any>): OctoPackBuildPlugin {
 			return model;
 		}
 
-		const fileSystem = context.fileSystem;
 		const barrelFileContent: string[] = [];
 
 		const pathToBarrelFile = join(model.project.path, fromProjectToBarrelFile);
@@ -40,15 +39,13 @@ export function barrelFile(args: MapLike<any>): OctoPackBuildPlugin {
 			return model;
 		}
 
-		for (const file of model.files) {
-			const { fullPath, content } = file;
-
-			if (fullPath === pathToBarrelFile) {
+		for (const file of model.input) {
+			if (file === pathToBarrelFile) {
 				continue;
 			}
 
 			let includesPragma = false;
-			new FileManipulator(content).forEachComment((c) => {
+			new FileManipulator(await model.fileSystem.readFile(file, 'utf8')).forEachComment((c) => {
 				if (c.includes(pragma)) {
 					includesPragma = true;
 				}
@@ -56,17 +53,10 @@ export function barrelFile(args: MapLike<any>): OctoPackBuildPlugin {
 			});
 
 			if (
-				([
-					fullPath.endsWith('.ts'),
-					fullPath.endsWith('.tsx'),
-					fullPath.endsWith('.js'),
-					fullPath.endsWith('.jsx')
-				].some((c) => c) &&
-					optMode === 'in' &&
-					includesPragma) ||
+				(['.ts', '.tsx', '.js', '.jsx'].some((c) => file.endsWith(c)) && optMode === 'in' && includesPragma) ||
 				(optMode === 'out' && !includesPragma)
 			) {
-				const parsedExportPath = parse(relative(pathToBarrelFileFolder, file.fullPath));
+				const parsedExportPath = parse(relative(pathToBarrelFileFolder, file));
 				let exportPath = join(parsedExportPath.dir, parsedExportPath.name);
 				if (!exportPath.startsWith(`.${sep}`)) {
 					exportPath = `.${sep}${exportPath}`;
@@ -77,7 +67,7 @@ export function barrelFile(args: MapLike<any>): OctoPackBuildPlugin {
 		}
 
 		if (barrelFileContent.length) {
-			await fileSystem.writeFile(pathToBarrelFile, barrelFileContent.join(''));
+			await model.fileSystem.writeFile(pathToBarrelFile, barrelFileContent.join(''));
 		}
 		return model;
 	};

@@ -26,23 +26,23 @@ mod.prototype.require = function(path, ...args) {
 		}
 		runtime += `${args.footer ?? ''}`;
 
-		if (await context.fileSystem.exists(path)) {
+		if (await model.fileSystem.exists(path)) {
 			let existing: string;
 			switch (handleExisting) {
 				case 'append':
-					existing = await context.fileSystem.readFile(path, 'utf8');
-					await context.fileSystem.writeFile(path, `${existing}\n${runtime}`);
+					existing = await model.fileSystem.readFile(path, 'utf8');
+					await model.fileSystem.writeFile(path, `${existing}\n${runtime}`);
 					break;
 				case 'replace':
-					await context.fileSystem.writeFile(path, runtime);
+					await model.fileSystem.writeFile(path, runtime);
 					break;
 				case 'prepend':
-					existing = await context.fileSystem.readFile(path, 'utf8');
-					await context.fileSystem.writeFile(path, `${runtime}\n${existing}`);
+					existing = await model.fileSystem.readFile(path, 'utf8');
+					await model.fileSystem.writeFile(path, `${runtime}\n${existing}`);
 					break;
 			}
 		} else {
-			await context.fileSystem.writeFile(path, runtime);
+			await model.fileSystem.writeFile(path, runtime);
 		}
 
 		return model;

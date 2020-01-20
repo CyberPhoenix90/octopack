@@ -1,22 +1,21 @@
-
-const importData = {'models': '../../../models','file_system': '../../../../libraries/file_system','static_analyser': '../../../../libraries/static_analyser'}
-const mod = require('module');
-
-const original = mod.prototype.require;
-mod.prototype.require = function(path, ...args) {
-	if (importData[path]) {
-		path = importData[path];
-		return original.call(module, path, ...args);
-	} else {
-		return original.call(this, path, ...args);
-	}
-};
-
 "use strict";
 function __export(m) {
-    for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
+    for (var p in m)
+        if (!exports.hasOwnProperty(p))
+            exports[p] = m[p];
 }
 Object.defineProperty(exports, "__esModule", { value: true });
+const importData = { 'models': '../../../models', 'static_analyser': '../../../../libraries/static_analyser' };
+const mod = require('module');
+const original = mod.prototype.require;
+mod.prototype.require = function (path, ...args) {
+    if (importData[path]) {
+        path = importData[path];
+        return original.call(module, path, ...args);
+    }
+    else {
+        return original.call(this, path, ...args);
+    }
+};
 __export(require("./meta_programming"));
-//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiaW5kZXguanMiLCJzb3VyY2VSb290IjoiIiwic291cmNlcyI6WyJpbmRleC50cyJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiQUFBQSxjQUFjLG9CQUFvQixDQUFDIn0=
-//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiaW5kZXguanMiLCJzb3VyY2VSb290IjoiIiwic291cmNlcyI6WyJpbmRleC5qcyJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiOzs7OztBQUFBLHdDQUFtQztBQUNuQyw4TUFBOE0ifQ==
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiaW5kZXguanMiLCJzb3VyY2VSb290IjoiIiwic291cmNlcyI6WyJpbmRleC5qcyJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiQUFBQSxZQUFZLENBQUM7QUFDYixTQUFTLFFBQVEsQ0FBQyxDQUFDO0lBQ2YsS0FBSyxJQUFJLENBQUMsSUFBSSxDQUFDO1FBQUUsSUFBSSxDQUFDLE9BQU8sQ0FBQyxjQUFjLENBQUMsQ0FBQyxDQUFDO1lBQUUsT0FBTyxDQUFDLENBQUMsQ0FBQyxHQUFHLENBQUMsQ0FBQyxDQUFDLENBQUMsQ0FBQztBQUN2RSxDQUFDO0FBQ0QsTUFBTSxDQUFDLGNBQWMsQ0FBQyxPQUFPLEVBQUUsWUFBWSxFQUFFLEVBQUUsS0FBSyxFQUFFLElBQUksRUFBRSxDQUFDLENBQUM7QUFDOUQsTUFBTSxVQUFVLEdBQUcsRUFBRSxRQUFRLEVBQUUsaUJBQWlCLEVBQUUsaUJBQWlCLEVBQUUsdUNBQXVDLEVBQUUsQ0FBQztBQUMvRyxNQUFNLEdBQUcsR0FBRyxPQUFPLENBQUMsUUFBUSxDQUFDLENBQUM7QUFDOUIsTUFBTSxRQUFRLEdBQUcsR0FBRyxDQUFDLFNBQVMsQ0FBQyxPQUFPLENBQUM7QUFDdkMsR0FBRyxDQUFDLFNBQVMsQ0FBQyxPQUFPLEdBQUcsVUFBVSxJQUFJLEVBQUUsR0FBRyxJQUFJO0lBQzNDLElBQUksVUFBVSxDQUFDLElBQUksQ0FBQyxFQUFFO1FBQ2xCLElBQUksR0FBRyxVQUFVLENBQUMsSUFBSSxDQUFDLENBQUM7UUFDeEIsT0FBTyxRQUFRLENBQUMsSUFBSSxDQUFDLE1BQU0sRUFBRSxJQUFJLEVBQUUsR0FBRyxJQUFJLENBQUMsQ0FBQztLQUMvQztTQUNJO1FBQ0QsT0FBTyxRQUFRLENBQUMsSUFBSSxDQUFDLElBQUksRUFBRSxJQUFJLEVBQUUsR0FBRyxJQUFJLENBQUMsQ0FBQztLQUM3QztBQUNMLENBQUMsQ0FBQztBQUNGLFFBQVEsQ0FBQyxPQUFPLENBQUMsb0JBQW9CLENBQUMsQ0FBQyxDQUFDIn0=

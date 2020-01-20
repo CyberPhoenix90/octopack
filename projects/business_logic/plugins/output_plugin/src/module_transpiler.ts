@@ -2,18 +2,18 @@ import { ProjectBuildData, ScriptContext } from 'models';
 import * as ts from 'typescript';
 
 export async function transpile(model: ProjectBuildData, context: ScriptContext): Promise<void> {
-	for (const file of Object.values(model.outFiles)) {
-		if (file.fullPath.includes('js')) {
-			const output = ts.transpileModule(file.content, {
+	for (const file of model.output) {
+		if (file.includes('js')) {
+			const output = ts.transpileModule(await model.fileSystem.readFile(file, 'utf8'), {
 				compilerOptions: {
 					target: ts.ScriptTarget.ESNext,
 					module: ts.ModuleKind.CommonJS,
 					inlineSourceMap: true
 				},
-				fileName: file.fullPath
+				fileName: file
 			});
 			if (output.outputText) {
-				file.content = output.outputText;
+				await model.fileSystem.writeFile(file, output.outputText);
 			} else {
 				for (const diagnostic of output.diagnostics) {
 					const { line, character } = diagnostic.file.getLineAndCharacterOfPosition(diagnostic.start);

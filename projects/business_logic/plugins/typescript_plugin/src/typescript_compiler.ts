@@ -57,34 +57,24 @@ function getSystem(model: ProjectBuildData, context: ScriptContext): ts.System {
 	return {
 		...ts.sys,
 		readFile(path: string) {
-			const result = model.files.find((f) => f.fullPath === path);
-			if (result) {
-				return result.content;
-			}
-
-			return context.fileSystem.readFileSync(resolve(model.project.path, path), 'utf8');
+			return model.fileSystem.readFileSync(resolve(model.project.path, path), 'utf8');
 		},
 		writeFile(fileName: string, data: string, writeByteOrderMark: boolean) {
-			model.outFiles[fileName] = {
-				fullPath: fileName,
-				content: data,
-				parent: undefined,
-				type: FileSystemEntryType.FILE
-			};
+			return model.fileSystem.writeFileSync(resolve(model.project.path, fileName), data);
 		},
 		deleteFile(path: string) {
-			return context.fileSystem.unlinkSync(resolve(model.project.path, path));
+			return model.fileSystem.unlinkSync(resolve(model.project.path, path));
 		},
 		directoryExists(path: string) {
 			return (
-				context.fileSystem.existsSync(resolve(model.project.path, path)) &&
-				context.fileSystem.statSync(resolve(model.project.path, path)).type === FileSystemEntryType.DIRECTORY
+				model.fileSystem.existsSync(resolve(model.project.path, path)) &&
+				model.fileSystem.statSync(resolve(model.project.path, path)).type === FileSystemEntryType.DIRECTORY
 			);
 		},
 		fileExists(path: string) {
 			return (
-				context.fileSystem.existsSync(resolve(model.project.path, path)) &&
-				context.fileSystem.statSync(resolve(model.project.path, path)).type === FileSystemEntryType.FILE
+				model.fileSystem.existsSync(resolve(model.project.path, path)) &&
+				model.fileSystem.statSync(resolve(model.project.path, path)).type === FileSystemEntryType.FILE
 			);
 		},
 		getCurrentDirectory(): string {

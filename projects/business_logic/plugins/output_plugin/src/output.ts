@@ -6,16 +6,16 @@ import { relative, join, parse } from 'path';
 export function output(args: MapLike<any>): OctoPackBuildPlugin {
 	return async (model: ProjectBuildData, context: ScriptContext) => {
 		await transpile(model, context);
-		const base = findLowestCommonFolder(Object.keys(model.outFiles));
-		for (const file of Object.values(model.outFiles)) {
+		const base = findLowestCommonFolder(model.output);
+		for (const file of model.output) {
 			const newPath = join(
 				model.project.path,
 				model.project.resolvedConfig.build.bundles[model.bundle].output,
-				relative(base, file.fullPath)
+				relative(base, file)
 			);
 
 			await context.fileSystem.mkdirp(parse(newPath).dir);
-			await context.fileSystem.writeFile(newPath, file.content);
+			await context.fileSystem.writeFile(newPath, await model.fileSystem.readFile(file, 'utf8'));
 		}
 
 		return model;
