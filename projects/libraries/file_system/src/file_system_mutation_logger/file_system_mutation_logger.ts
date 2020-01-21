@@ -15,16 +15,22 @@ export interface FileSystemMutation {
 	previousContent?: string;
 }
 
+export interface FileSystemMutationLoggerOptions {
+	logContentBeforeMutation?: boolean;
+}
+
 export class FileSystemMutationLogger extends FileSystem {
 	private fileSystem: FileSystem;
-	private logContentBeforeMutation: boolean;
+	private options: FileSystemMutationLoggerOptions;
 	public readonly fileSystemMutations: FileSystemMutation[];
+	public readonly writtenFiles: Set<string>;
 
-	constructor(sourceFileSystem: FileSystem, logContentBeforeMutation: boolean = false) {
+	constructor(sourceFileSystem: FileSystem, options: FileSystemMutationLoggerOptions = {}) {
 		super();
 		this.fileSystem = sourceFileSystem;
-		this.logContentBeforeMutation = logContentBeforeMutation;
+		this.options = options;
 		this.fileSystemMutations = [];
+		this.writtenFiles = new Set();
 	}
 
 	public watch(paths: string[], options: any, callback: any): Promise<() => void> {
@@ -83,7 +89,7 @@ export class FileSystemMutationLogger extends FileSystem {
 		this.fileSystemMutations.push({
 			path,
 			operation: FileSystemMutationOperation.UNLINK,
-			previousContent: this.logContentBeforeMutation && (await this.readFileIfExist(path, 'utf8'))
+			previousContent: this.options.logContentBeforeMutation && (await this.readFileIfExist(path, 'utf8'))
 		});
 		return this.fileSystem.unlink(path);
 	}
@@ -92,7 +98,7 @@ export class FileSystemMutationLogger extends FileSystem {
 		this.fileSystemMutations.push({
 			path,
 			operation: FileSystemMutationOperation.UNLINK,
-			previousContent: this.logContentBeforeMutation && this.readFileIfExistSync(path, 'utf8')
+			previousContent: this.options.logContentBeforeMutation && this.readFileIfExistSync(path, 'utf8')
 		});
 		return this.fileSystem.unlinkSync(path);
 	}
@@ -131,12 +137,13 @@ export class FileSystemMutationLogger extends FileSystem {
 
 	public async writeFile(path: string, content: string): Promise<void> {
 		const prevContent = await this.readFileIfExist(path, 'utf8');
+		this.writtenFiles.add(path);
 		this.fileSystemMutations.push({
 			path,
 			newContent: content,
 			operation: FileSystemMutationOperation.WRITE,
 			contentChanged: prevContent !== content,
-			previousContent: this.logContentBeforeMutation && prevContent
+			previousContent: this.options.logContentBeforeMutation && prevContent
 		});
 
 		return this.fileSystem.writeFile(path, content);
@@ -144,12 +151,13 @@ export class FileSystemMutationLogger extends FileSystem {
 
 	public writeFileSync(path: string, content: string): void {
 		const prevContent = this.readFileIfExistSync(path, 'utf8');
+		this.writtenFiles.add(path);
 		this.fileSystemMutations.push({
 			path,
 			newContent: content,
 			operation: FileSystemMutationOperation.WRITE,
 			contentChanged: prevContent !== content,
-			previousContent: this.logContentBeforeMutation && prevContent
+			previousContent: this.options.logContentBeforeMutation && prevContent
 		});
 
 		return this.fileSystem.writeFileSync(path, content);

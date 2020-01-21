@@ -1,8 +1,8 @@
 import { ParsedArguments } from 'argument_parser';
-import { CompilerModel, Project, ScriptContext, ProjectBuildData } from 'models';
+import { CachedFileSystem, FileSystemMutationLogger, MemoryFileSystem } from 'file_system';
+import { CompilerModel, Project, ProjectBuildData, ScriptContext } from 'models';
 import { inputPhase } from './phases/input';
-import { pluginBasedPhase, pluginBasedChainedPhase } from './phases/plugin_phase';
-import { CachedFileSystem, FileSystemMutationLogger, MemoryFileSystem, FileSystemMutationOperation } from 'file_system';
+import { pluginBasedChainedPhase, pluginBasedPhase } from './phases/plugin_phase';
 
 export class Compiler {
 	public async compile(
@@ -11,24 +11,24 @@ export class Compiler {
 		context: ScriptContext,
 		args: ParsedArguments
 	): Promise<void> {
-		const mlfs = new FileSystemMutationLogger(new MemoryFileSystem(), false);
-		const fs = new CachedFileSystem(context.fileSystem, mlfs);
-
 		let compileModel: CompilerModel = {
-			projectsBuildData: selectedProjects.map<ProjectBuildData>((p) => ({
-				bundle: this.getBundle(p, args),
-				projectDependencies: new Set(),
-				allProjects,
-				selectedProjects,
-				project: p,
-				input: [],
-				get output(): string[] {
-					return mlfs.fileSystemMutations
-						.filter((m) => m.operation === FileSystemMutationOperation.WRITE)
-						.map((p) => p.path);
-				},
-				fileSystem: fs
-			}))
+			projectsBuildData: selectedProjects.map<ProjectBuildData>((p) => {
+				const mlfs = new FileSystemMutationLogger(new MemoryFileSystem());
+				const fs = new CachedFileSystem(context.fileSystem, mlfs);
+
+				return {
+					bundle: this.getBundle(p, args),
+					projectDependencies: new Set(),
+					allProjects,
+					selectedProjects,
+					project: p,
+					input: [],
+					get output(): string[] {
+						return Array.from(mlfs.writtenFiles);
+					},
+					fileSystem: fs
+				};
+			})
 		};
 
 		compileModel = await pluginBasedPhase('init', compileModel, context);

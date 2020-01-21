@@ -6,8 +6,27 @@ import { relative, join, parse } from 'path';
 export function output(args: MapLike<any>): OctoPackBuildPlugin {
 	return async (model: ProjectBuildData, context: ScriptContext) => {
 		await transpile(model, context);
-		const base = findLowestCommonFolder(model.output);
+		const fixedFiles = [];
+		const movableFiles = [];
+
 		for (const file of model.output) {
+			if (file.endsWith('.ts') || file.endsWith('.tsx')) {
+				continue;
+			}
+
+			if (
+				file.startsWith(
+					join(model.project.path, model.project.resolvedConfig.build.bundles[model.bundle].output)
+				)
+			) {
+				fixedFiles.push(file);
+			} else {
+				movableFiles.push(file);
+			}
+		}
+
+		const base = findLowestCommonFolder(movableFiles);
+		for (const file of movableFiles) {
 			const newPath = join(
 				model.project.path,
 				model.project.resolvedConfig.build.bundles[model.bundle].output,
@@ -16,6 +35,10 @@ export function output(args: MapLike<any>): OctoPackBuildPlugin {
 
 			await context.fileSystem.mkdirp(parse(newPath).dir);
 			await context.fileSystem.writeFile(newPath, await model.fileSystem.readFile(file, 'utf8'));
+		}
+		for (const file of fixedFiles) {
+			await context.fileSystem.mkdirp(parse(file).dir);
+			await context.fileSystem.writeFile(file, await model.fileSystem.readFile(file, 'utf8'));
 		}
 
 		return model;

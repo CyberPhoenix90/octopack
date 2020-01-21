@@ -15,7 +15,7 @@ module.exports = {
 								out: 'dist/index.js',
 								header: '#!/usr/bin/env node',
 								footer: 'require("./cli.js")',
-								handleExisting: 'prepend'
+								handleExisting: 'replace'
 							}
 						}
 					]

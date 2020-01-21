@@ -205,7 +205,7 @@ export class CachedFileSystem extends FileSystem {
 		const folder = parse(path).dir;
 		if (this.existsSync(folder)) {
 			if (!this.cacheFileSystem.existsSync(folder)) {
-				this.mkdirpSync(folder);
+				this.cacheFileSystem.mkdirpSync(folder);
 			}
 			this.cacheFileSystem.writeFileSync(path, content);
 		}

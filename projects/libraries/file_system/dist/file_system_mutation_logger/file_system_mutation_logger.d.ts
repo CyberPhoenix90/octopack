@@ -12,11 +12,15 @@ export interface FileSystemMutation {
     contentChanged?: boolean;
     previousContent?: string;
 }
+export interface FileSystemMutationLoggerOptions {
+    logContentBeforeMutation?: boolean;
+}
 export declare class FileSystemMutationLogger extends FileSystem {
     private fileSystem;
-    private logContentBeforeMutation;
+    private options;
     readonly fileSystemMutations: FileSystemMutation[];
-    constructor(sourceFileSystem: FileSystem, logContentBeforeMutation?: boolean);
+    readonly writtenFiles: Set<string>;
+    constructor(sourceFileSystem: FileSystem, options?: FileSystemMutationLoggerOptions);
     watch(paths: string[], options: any, callback: any): Promise<() => void>;
     watchSync(paths: string[], options: any, callback: any): () => void;
     readlink(path: string): Promise<string>;
