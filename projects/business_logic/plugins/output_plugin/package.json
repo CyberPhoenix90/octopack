@@ -4,6 +4,10 @@
 	"main": "dist/index.js",
 	"typings": "dist/index.d.ts",
 	"dependencies": {
-		"@types/node": "^13.1.2"
+		"@types/combine-source-map": "^0.8.1",
+		"@types/convert-source-map": "^1.5.1",
+		"@types/node": "^13.1.2",
+		"combine-source-map": "^0.8.0",
+		"convert-source-map": "^1.7.0"
 	}
 }
