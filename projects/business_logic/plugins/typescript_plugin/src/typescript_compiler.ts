@@ -85,7 +85,8 @@ function getSystem(model: ProjectBuildData, context: ScriptContext): ts.System {
 			for (const i of include) {
 				result.push(
 					...model.fileSystem.globSync(path, i, {
-						extensionWhiteList: extensions
+						extensionWhiteList: extensions,
+						matchPartialExtensions: true
 					})
 				);
 			}
