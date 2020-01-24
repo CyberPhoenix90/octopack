@@ -1,62 +1,66 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-const module_transpiler_1 = require("./module_transpiler");
-const path_1 = require("path");
+'use strict';
+Object.defineProperty(exports, '__esModule', { value: true });
+const module_transpiler_1 = require('./module_transpiler');
+const path_1 = require('path');
 function output(args) {
-    return async (model, context) => {
-        await module_transpiler_1.transpile(model, context);
-        const fixedFiles = [];
-        const movableFiles = [];
-        for (const file of model.output) {
-            if (!file.endsWith('.d.ts') && (file.endsWith('.ts') || file.endsWith('.tsx'))) {
-                continue;
-            }
-            if (file.startsWith(path_1.join(model.project.path, model.project.resolvedConfig.build.bundles[model.bundle].output))) {
-                fixedFiles.push(file);
-            }
-            else {
-                movableFiles.push(file);
-            }
-        }
-        const base = findLowestCommonFolder(movableFiles);
-        for (const file of movableFiles) {
-            const newPath = path_1.join(model.project.path, model.project.resolvedConfig.build.bundles[model.bundle].output, path_1.relative(base, file));
-            await context.fileSystem.mkdirp(path_1.parse(newPath).dir);
-            await context.fileSystem.writeFile(newPath, await model.fileSystem.readFile(file, 'utf8'));
-        }
-        for (const file of fixedFiles) {
-            await context.fileSystem.mkdirp(path_1.parse(file).dir);
-            await context.fileSystem.writeFile(file, await model.fileSystem.readFile(file, 'utf8'));
-        }
-        return model;
-    };
+	return async (model, context) => {
+		await module_transpiler_1.transpile(model, context);
+		const fixedFiles = [];
+		const movableFiles = [];
+		for (const file of model.output) {
+			if (!file.endsWith('.d.ts') && (file.endsWith('.ts') || file.endsWith('.tsx'))) {
+				continue;
+			}
+			if (
+				file.startsWith(
+					path_1.join(model.project.path, model.project.resolvedConfig.build.bundles[model.bundle].output)
+				)
+			) {
+				fixedFiles.push(file);
+			} else {
+				movableFiles.push(file);
+			}
+		}
+		const base = findLowestCommonFolder(movableFiles);
+		for (const file of movableFiles) {
+			const newPath = path_1.join(
+				model.project.path,
+				model.project.resolvedConfig.build.bundles[model.bundle].output,
+				path_1.relative(base, file)
+			);
+			await context.fileSystem.mkdirp(path_1.parse(newPath).dir);
+			await context.fileSystem.writeFile(newPath, await model.fileSystem.readFile(file, 'utf8'));
+		}
+		for (const file of fixedFiles) {
+			await context.fileSystem.mkdirp(path_1.parse(file).dir);
+			await context.fileSystem.writeFile(file, await model.fileSystem.readFile(file, 'utf8'));
+		}
+		return model;
+	};
 }
 exports.output = output;
 function findLowestCommonFolder(files) {
-    if (files.length === 0) {
-        return '';
-    }
-    let candidate = path_1.parse(files[0]).dir;
-    for (let i = 1; i < files.length; i++) {
-        while (!isChildOf(path_1.parse(files[i]).dir, candidate)) {
-            if (candidate === '/') {
-                throw new Error('Could not determine common folder between files in compilation');
-            }
-            candidate = path_1.join(candidate, '..');
-        }
-    }
-    return candidate;
+	if (files.length === 0) {
+		return '';
+	}
+	let candidate = path_1.parse(files[0]).dir;
+	for (let i = 1; i < files.length; i++) {
+		while (!isChildOf(path_1.parse(files[i]).dir, candidate)) {
+			if (candidate === '/') {
+				throw new Error('Could not determine common folder between files in compilation');
+			}
+			candidate = path_1.join(candidate, '..');
+		}
+	}
+	return candidate;
 }
 function isChildOf(file, folder) {
-    while (file !== '/') {
-        if (file === folder) {
-            return true;
-        }
-        else {
-            file = path_1.join(file, '..');
-        }
-    }
-    return file === folder;
+	while (file !== '/') {
+		if (file === folder) {
+			return true;
+		} else {
+			file = path_1.join(file, '..');
+		}
+	}
+	return file === folder;
 }
-//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoib3V0cHV0LmpzIiwic291cmNlUm9vdCI6IiIsInNvdXJjZXMiOlsib3V0cHV0LnRzIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiJBQUVBLE9BQU8sRUFBRSxTQUFTLEVBQUUsTUFBTSxxQkFBcUIsQ0FBQztBQUNoRCxPQUFPLEVBQUUsUUFBUSxFQUFFLElBQUksRUFBRSxLQUFLLEVBQUUsTUFBTSxNQUFNLENBQUM7QUFFN0MsTUFBTSxVQUFVLE1BQU0sQ0FBQyxJQUFrQjtJQUN4QyxPQUFPLEtBQUssRUFBRSxLQUF1QixFQUFFLE9BQXNCLEVBQUUsRUFBRTtRQUNoRSxNQUFNLFNBQVMsQ0FBQyxLQUFLLEVBQUUsT0FBTyxDQUFDLENBQUM7UUFDaEMsTUFBTSxVQUFVLEdBQUcsRUFBRSxDQUFDO1FBQ3RCLE1BQU0sWUFBWSxHQUFHLEVBQUUsQ0FBQztRQUV4QixLQUFLLE1BQU0sSUFBSSxJQUFJLEtBQUssQ0FBQyxNQUFNLEVBQUU7WUFDaEMsSUFBSSxDQUFDLElBQUksQ0FBQyxRQUFRLENBQUMsT0FBTyxDQUFDLElBQUksQ0FBQyxJQUFJLENBQUMsUUFBUSxDQUFDLEtBQUssQ0FBQyxJQUFJLElBQUksQ0FBQyxRQUFRLENBQUMsTUFBTSxDQUFDLENBQUMsRUFBRTtnQkFDL0UsU0FBUzthQUNUO1lBRUQsSUFDQyxJQUFJLENBQUMsVUFBVSxDQUNkLElBQUksQ0FBQyxLQUFLLENBQUMsT0FBTyxDQUFDLElBQUksRUFBRSxLQUFLLENBQUMsT0FBTyxDQUFDLGNBQWMsQ0FBQyxLQUFLLENBQUMsT0FBTyxDQUFDLEtBQUssQ0FBQyxNQUFNLENBQUMsQ0FBQyxNQUFNLENBQUMsQ0FDekYsRUFDQTtnQkFDRCxVQUFVLENBQUMsSUFBSSxDQUFDLElBQUksQ0FBQyxDQUFDO2FBQ3RCO2lCQUFNO2dCQUNOLFlBQVksQ0FBQyxJQUFJLENBQUMsSUFBSSxDQUFDLENBQUM7YUFDeEI7U0FDRDtRQUVELE1BQU0sSUFBSSxHQUFHLHNCQUFzQixDQUFDLFlBQVksQ0FBQyxDQUFDO1FBQ2xELEtBQUssTUFBTSxJQUFJLElBQUksWUFBWSxFQUFFO1lBQ2hDLE1BQU0sT0FBTyxHQUFHLElBQUksQ0FDbkIsS0FBSyxDQUFDLE9BQU8sQ0FBQyxJQUFJLEVBQ2xCLEtBQUssQ0FBQyxPQUFPLENBQUMsY0FBYyxDQUFDLEtBQUssQ0FBQyxPQUFPLENBQUMsS0FBSyxDQUFDLE1BQU0sQ0FBQyxDQUFDLE1BQU0sRUFDL0QsUUFBUSxDQUFDLElBQUksRUFBRSxJQUFJLENBQUMsQ0FDcEIsQ0FBQztZQUVGLE1BQU0sT0FBTyxDQUFDLFVBQVUsQ0FBQyxNQUFNLENBQUMsS0FBSyxDQUFDLE9BQU8sQ0FBQyxDQUFDLEdBQUcsQ0FBQyxDQUFDO1lBQ3BELE1BQU0sT0FBTyxDQUFDLFVBQVUsQ0FBQyxTQUFTLENBQUMsT0FBTyxFQUFFLE1BQU0sS0FBSyxDQUFDLFVBQVUsQ0FBQyxRQUFRLENBQUMsSUFBSSxFQUFFLE1BQU0sQ0FBQyxDQUFDLENBQUM7U0FDM0Y7UUFDRCxLQUFLLE1BQU0sSUFBSSxJQUFJLFVBQVUsRUFBRTtZQUM5QixNQUFNLE9BQU8sQ0FBQyxVQUFVLENBQUMsTUFBTSxDQUFDLEtBQUssQ0FBQyxJQUFJLENBQUMsQ0FBQyxHQUFHLENBQUMsQ0FBQztZQUNqRCxNQUFNLE9BQU8sQ0FBQyxVQUFVLENBQUMsU0FBUyxDQUFDLElBQUksRUFBRSxNQUFNLEtBQUssQ0FBQyxVQUFVLENBQUMsUUFBUSxDQUFDLElBQUksRUFBRSxNQUFNLENBQUMsQ0FBQyxDQUFDO1NBQ3hGO1FBRUQsT0FBTyxLQUFLLENBQUM7SUFDZCxDQUFDLENBQUM7QUFDSCxDQUFDO0FBRUQsU0FBUyxzQkFBc0IsQ0FBQyxLQUFlO0lBQzlDLElBQUksS0FBSyxDQUFDLE1BQU0sS0FBSyxDQUFDLEVBQUU7UUFDdkIsT0FBTyxFQUFFLENBQUM7S0FDVjtJQUVELElBQUksU0FBUyxHQUFHLEtBQUssQ0FBQyxLQUFLLENBQUMsQ0FBQyxDQUFDLENBQUMsQ0FBQyxHQUFHLENBQUM7SUFDcEMsS0FBSyxJQUFJLENBQUMsR0FBRyxDQUFDLEVBQUUsQ0FBQyxHQUFHLEtBQUssQ0FBQyxNQUFNLEVBQUUsQ0FBQyxFQUFFLEVBQUU7UUFDdEMsT0FBTyxDQUFDLFNBQVMsQ0FBQyxLQUFLLENBQUMsS0FBSyxDQUFDLENBQUMsQ0FBQyxDQUFDLENBQUMsR0FBRyxFQUFFLFNBQVMsQ0FBQyxFQUFFO1lBQ2xELElBQUksU0FBUyxLQUFLLEdBQUcsRUFBRTtnQkFDdEIsTUFBTSxJQUFJLEtBQUssQ0FBQyxnRUFBZ0UsQ0FBQyxDQUFDO2FBQ2xGO1lBQ0QsU0FBUyxHQUFHLElBQUksQ0FBQyxTQUFTLEVBQUUsSUFBSSxDQUFDLENBQUM7U0FDbEM7S0FDRDtJQUVELE9BQU8sU0FBUyxDQUFDO0FBQ2xCLENBQUM7QUFFRCxTQUFTLFNBQVMsQ0FBQyxJQUFZLEVBQUUsTUFBYztJQUM5QyxPQUFPLElBQUksS0FBSyxHQUFHLEVBQUU7UUFDcEIsSUFBSSxJQUFJLEtBQUssTUFBTSxFQUFFO1lBQ3BCLE9BQU8sSUFBSSxDQUFDO1NBQ1o7YUFBTTtZQUNOLElBQUksR0FBRyxJQUFJLENBQUMsSUFBSSxFQUFFLElBQUksQ0FBQyxDQUFDO1NBQ3hCO0tBQ0Q7SUFFRCxPQUFPLElBQUksS0FBSyxNQUFNLENBQUM7QUFDeEIsQ0FBQyJ9
-//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoib3V0cHV0LmpzIiwic291cmNlUm9vdCI6IiIsInNvdXJjZXMiOlsib3V0cHV0LmpzIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiI7O0FBQUEsMkRBQWdEO0FBQ2hELCtCQUE2QztBQUM3QyxTQUFnQixNQUFNLENBQUMsSUFBSTtJQUN2QixPQUFPLEtBQUssRUFBRSxLQUFLLEVBQUUsT0FBTyxFQUFFLEVBQUU7UUFDNUIsTUFBTSw2QkFBUyxDQUFDLEtBQUssRUFBRSxPQUFPLENBQUMsQ0FBQztRQUNoQyxNQUFNLFVBQVUsR0FBRyxFQUFFLENBQUM7UUFDdEIsTUFBTSxZQUFZLEdBQUcsRUFBRSxDQUFDO1FBQ3hCLEtBQUssTUFBTSxJQUFJLElBQUksS0FBSyxDQUFDLE1BQU0sRUFBRTtZQUM3QixJQUFJLENBQUMsSUFBSSxDQUFDLFFBQVEsQ0FBQyxPQUFPLENBQUMsSUFBSSxDQUFDLElBQUksQ0FBQyxRQUFRLENBQUMsS0FBSyxDQUFDLElBQUksSUFBSSxDQUFDLFFBQVEsQ0FBQyxNQUFNLENBQUMsQ0FBQyxFQUFFO2dCQUM1RSxTQUFTO2FBQ1o7WUFDRCxJQUFJLElBQUksQ0FBQyxVQUFVLENBQUMsV0FBSSxDQUFDLEtBQUssQ0FBQyxPQUFPLENBQUMsSUFBSSxFQUFFLEtBQUssQ0FBQyxPQUFPLENBQUMsY0FBYyxDQUFDLEtBQUssQ0FBQyxPQUFPLENBQUMsS0FBSyxDQUFDLE1BQU0sQ0FBQyxDQUFDLE1BQU0sQ0FBQyxDQUFDLEVBQUU7Z0JBQzVHLFVBQVUsQ0FBQyxJQUFJLENBQUMsSUFBSSxDQUFDLENBQUM7YUFDekI7aUJBQ0k7Z0JBQ0QsWUFBWSxDQUFDLElBQUksQ0FBQyxJQUFJLENBQUMsQ0FBQzthQUMzQjtTQUNKO1FBQ0QsTUFBTSxJQUFJLEdBQUcsc0JBQXNCLENBQUMsWUFBWSxDQUFDLENBQUM7UUFDbEQsS0FBSyxNQUFNLElBQUksSUFBSSxZQUFZLEVBQUU7WUFDN0IsTUFBTSxPQUFPLEdBQUcsV0FBSSxDQUFDLEtBQUssQ0FBQyxPQUFPLENBQUMsSUFBSSxFQUFFLEtBQUssQ0FBQyxPQUFPLENBQUMsY0FBYyxDQUFDLEtBQUssQ0FBQyxPQUFPLENBQUMsS0FBSyxDQUFDLE1BQU0sQ0FBQyxDQUFDLE1BQU0sRUFBRSxlQUFRLENBQUMsSUFBSSxFQUFFLElBQUksQ0FBQyxDQUFDLENBQUM7WUFDaEksTUFBTSxPQUFPLENBQUMsVUFBVSxDQUFDLE1BQU0sQ0FBQyxZQUFLLENBQUMsT0FBTyxDQUFDLENBQUMsR0FBRyxDQUFDLENBQUM7WUFDcEQsTUFBTSxPQUFPLENBQUMsVUFBVSxDQUFDLFNBQVMsQ0FBQyxPQUFPLEVBQUUsTUFBTSxLQUFLLENBQUMsVUFBVSxDQUFDLFFBQVEsQ0FBQyxJQUFJLEVBQUUsTUFBTSxDQUFDLENBQUMsQ0FBQztTQUM5RjtRQUNELEtBQUssTUFBTSxJQUFJLElBQUksVUFBVSxFQUFFO1lBQzNCLE1BQU0sT0FBTyxDQUFDLFVBQVUsQ0FBQyxNQUFNLENBQUMsWUFBSyxDQUFDLElBQUksQ0FBQyxDQUFDLEdBQUcsQ0FBQyxDQUFDO1lBQ2pELE1BQU0sT0FBTyxDQUFDLFVBQVUsQ0FBQyxTQUFTLENBQUMsSUFBSSxFQUFFLE1BQU0sS0FBSyxDQUFDLFVBQVUsQ0FBQyxRQUFRLENBQUMsSUFBSSxFQUFFLE1BQU0sQ0FBQyxDQUFDLENBQUM7U0FDM0Y7UUFDRCxPQUFPLEtBQUssQ0FBQztJQUNqQixDQUFDLENBQUM7QUFDTixDQUFDO0FBNUJELHdCQTRCQztBQUNELFNBQVMsc0JBQXNCLENBQUMsS0FBSztJQUNqQyxJQUFJLEtBQUssQ0FBQyxNQUFNLEtBQUssQ0FBQyxFQUFFO1FBQ3BCLE9BQU8sRUFBRSxDQUFDO0tBQ2I7SUFDRCxJQUFJLFNBQVMsR0FBRyxZQUFLLENBQUMsS0FBSyxDQUFDLENBQUMsQ0FBQyxDQUFDLENBQUMsR0FBRyxDQUFDO0lBQ3BDLEtBQUssSUFBSSxDQUFDLEdBQUcsQ0FBQyxFQUFFLENBQUMsR0FBRyxLQUFLLENBQUMsTUFBTSxFQUFFLENBQUMsRUFBRSxFQUFFO1FBQ25DLE9BQU8sQ0FBQyxTQUFTLENBQUMsWUFBSyxDQUFDLEtBQUssQ0FBQyxDQUFDLENBQUMsQ0FBQyxDQUFDLEdBQUcsRUFBRSxTQUFTLENBQUMsRUFBRTtZQUMvQyxJQUFJLFNBQVMsS0FBSyxHQUFHLEVBQUU7Z0JBQ25CLE1BQU0sSUFBSSxLQUFLLENBQUMsZ0VBQWdFLENBQUMsQ0FBQzthQUNyRjtZQUNELFNBQVMsR0FBRyxXQUFJLENBQUMsU0FBUyxFQUFFLElBQUksQ0FBQyxDQUFDO1NBQ3JDO0tBQ0o7SUFDRCxPQUFPLFNBQVMsQ0FBQztBQUNyQixDQUFDO0FBQ0QsU0FBUyxTQUFTLENBQUMsSUFBSSxFQUFFLE1BQU07SUFDM0IsT0FBTyxJQUFJLEtBQUssR0FBRyxFQUFFO1FBQ2pCLElBQUksSUFBSSxLQUFLLE1BQU0sRUFBRTtZQUNqQixPQUFPLElBQUksQ0FBQztTQUNmO2FBQ0k7WUFDRCxJQUFJLEdBQUcsV0FBSSxDQUFDLElBQUksRUFBRSxJQUFJLENBQUMsQ0FBQztTQUMzQjtLQUNKO0lBQ0QsT0FBTyxJQUFJLEtBQUssTUFBTSxDQUFDO0FBQzNCLENBQUM7QUFDRCw4bUdBQThtRyJ9
