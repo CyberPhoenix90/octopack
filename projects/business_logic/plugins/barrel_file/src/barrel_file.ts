@@ -26,18 +26,10 @@ export function barrelFile(args: MapLike<any>): OctoPackBuildPlugin {
 			return model;
 		}
 		const fromProjectToBarrelFile: string = args.output;
-		if (fromProjectToBarrelFile.endsWith('.ts') || fromProjectToBarrelFile.endsWith('.js')) {
-			return model;
-		}
-
 		const barrelFileContent: string[] = [];
 
 		const pathToBarrelFile = join(model.project.path, fromProjectToBarrelFile);
 		const pathToBarrelFileFolder = parse(pathToBarrelFile).dir;
-		if (relative(model.project.path, pathToBarrelFile).startsWith('..')) {
-			context.uiLogger.error('Barrel file would be outside of project. Not generating it.');
-			return model;
-		}
 
 		for (const file of model.input) {
 			if (file === pathToBarrelFile) {
@@ -67,7 +59,7 @@ export function barrelFile(args: MapLike<any>): OctoPackBuildPlugin {
 		}
 
 		if (barrelFileContent.length) {
-			await model.fileSystem.writeFile(pathToBarrelFile, barrelFileContent.join(''));
+			await model.fileSystem.writeFile(pathToBarrelFile, barrelFileContent.sort().join(''));
 		}
 		return model;
 	};

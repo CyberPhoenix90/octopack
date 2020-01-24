@@ -8,7 +8,6 @@ export declare class Server {
     constructor(config: ServerConfiguration);
     initialize(): void;
     close(): void;
-    private logForEveryContext;
     private processMessage;
     private runBuildScript;
 }

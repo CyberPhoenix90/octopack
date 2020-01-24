@@ -1,0 +1,19 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const script_1 = require("./script");
+class Host extends script_1.Script {
+    autoComplete() {
+        throw new Error('Method not implemented.');
+    }
+    help() {
+        return {
+            description: 'Hosts stuff'
+        };
+    }
+    async run(args, context) {
+        return {};
+    }
+}
+exports.Host = Host;
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiaG9zdC5qcyIsInNvdXJjZVJvb3QiOiIiLCJzb3VyY2VzIjpbImhvc3QudHMiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IkFBRUEsT0FBTyxFQUFRLE1BQU0sRUFBZ0IsTUFBTSxVQUFVLENBQUM7QUFFdEQsTUFBTSxPQUFPLElBQUssU0FBUSxNQUFNO0lBQ3hCLFlBQVk7UUFDbEIsTUFBTSxJQUFJLEtBQUssQ0FBQyx5QkFBeUIsQ0FBQyxDQUFDO0lBQzVDLENBQUM7SUFFTSxJQUFJO1FBQ1YsT0FBTztZQUNOLFdBQVcsRUFBRSxhQUFhO1NBQzFCLENBQUM7SUFDSCxDQUFDO0lBRU0sS0FBSyxDQUFDLEdBQUcsQ0FBQyxJQUFxQixFQUFFLE9BQXNCO1FBQzdELE9BQU8sRUFBRSxDQUFDO0lBQ1gsQ0FBQztDQUNEIn0=
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiaG9zdC5qcyIsInNvdXJjZVJvb3QiOiIiLCJzb3VyY2VzIjpbImhvc3QuanMiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6Ijs7QUFBQSxxQ0FBa0M7QUFDbEMsTUFBYSxJQUFLLFNBQVEsZUFBTTtJQUM1QixZQUFZO1FBQ1IsTUFBTSxJQUFJLEtBQUssQ0FBQyx5QkFBeUIsQ0FBQyxDQUFDO0lBQy9DLENBQUM7SUFDRCxJQUFJO1FBQ0EsT0FBTztZQUNILFdBQVcsRUFBRSxhQUFhO1NBQzdCLENBQUM7SUFDTixDQUFDO0lBQ0QsS0FBSyxDQUFDLEdBQUcsQ0FBQyxJQUFJLEVBQUUsT0FBTztRQUNuQixPQUFPLEVBQUUsQ0FBQztJQUNkLENBQUM7Q0FDSjtBQVpELG9CQVlDO0FBQ0QsOGhCQUE4aEIifQ==

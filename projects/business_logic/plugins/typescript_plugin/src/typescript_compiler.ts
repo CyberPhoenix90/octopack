@@ -1,6 +1,6 @@
 import * as ts from 'typescript';
 import { ScriptContext, ProjectBuildData } from 'models';
-import { join, resolve } from 'path';
+import { join, resolve, isAbsolute } from 'path';
 import { FileSystemEntryType } from 'file_system';
 
 export interface TypescriptCompilerConfig {}
@@ -56,6 +56,9 @@ function parseConfigFile(path: string, tsConfig: string, system: ts.System): ts.
 function getSystem(model: ProjectBuildData, context: ScriptContext): ts.System {
 	return {
 		...ts.sys,
+		getCurrentDirectory: () => {
+			return model.project.path;
+		},
 		readFile(path: string) {
 			return model.fileSystem.readFileSync(resolve(model.project.path, path), 'utf8');
 		},
@@ -64,6 +67,29 @@ function getSystem(model: ProjectBuildData, context: ScriptContext): ts.System {
 		},
 		deleteFile(path: string) {
 			return model.fileSystem.unlinkSync(resolve(model.project.path, path));
+		},
+		realpath(path: string) {
+			return model.fileSystem.realpathSync(path);
+		},
+		createDirectory: (path) => {
+			if (!isAbsolute(path)) {
+				path = join(model.project.path, path);
+			}
+			model.fileSystem.mkdirSync(path);
+		},
+		readDirectory(path: string, extensions: string[], exclude: string[], include: string[], depth) {
+			if (depth) {
+				throw new Error('Internal error: depth paramteter not supported in typescript system shim');
+			}
+			const result = [];
+			for (const i of include) {
+				result.push(
+					...model.fileSystem.globSync(path, i, {
+						extensionWhiteList: extensions
+					})
+				);
+			}
+			return result;
 		},
 		directoryExists(path: string) {
 			return (
@@ -76,9 +102,6 @@ function getSystem(model: ProjectBuildData, context: ScriptContext): ts.System {
 				model.fileSystem.existsSync(resolve(model.project.path, path)) &&
 				model.fileSystem.statSync(resolve(model.project.path, path)).type === FileSystemEntryType.FILE
 			);
-		},
-		getCurrentDirectory(): string {
-			return model.project.path;
 		}
 	};
 }

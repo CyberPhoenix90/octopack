@@ -1,17 +1,17 @@
 #!/usr/bin/env node
 
+import { Build, Generate, Host, Run, Test } from 'api';
+import { parseArguments } from 'argument_parser';
 import { findConfiguration, OctopackConfiguration } from 'config_resolver';
 import { localDiskFileSystem } from 'file_system';
-import { join } from 'path';
-import { Build, Generate } from 'api';
 import {
-	Logger,
 	CallbackLoggerAdapter,
-	LogLevelPrependerLoggerEnhancer,
 	ConsoleLoggerAdapter,
+	Logger,
+	LogLevelPrependerLoggerEnhancer,
 	WriteFileLoggerAdapter
 } from 'logger';
-import { parseArguments } from 'argument_parser';
+import { join } from 'path';
 
 //Self executing async function due to lack of top level async support
 (async () => {
@@ -67,6 +67,30 @@ function runScript(config: OctopackConfiguration, workspaceRoot: string) {
 		});
 	} else if (process.argv[2] === 'generate') {
 		new Generate().run(parseArguments(process.argv.slice(3)), {
+			workspaceRoot,
+			fileSystem: localDiskFileSystem,
+			devLogger: devLogger,
+			uiLogger: uiLogger,
+			workspaceConfig: config
+		});
+	} else if (process.argv[2] === 'run') {
+		new Run().run(parseArguments(process.argv.slice(3)), {
+			workspaceRoot,
+			fileSystem: localDiskFileSystem,
+			devLogger: devLogger,
+			uiLogger: uiLogger,
+			workspaceConfig: config
+		});
+	} else if (process.argv[2] === 'host') {
+		new Host().run(parseArguments(process.argv.slice(3)), {
+			workspaceRoot,
+			fileSystem: localDiskFileSystem,
+			devLogger: devLogger,
+			uiLogger: uiLogger,
+			workspaceConfig: config
+		});
+	} else if (process.argv[2] === 'test') {
+		new Test().run(parseArguments(process.argv.slice(3)), {
 			workspaceRoot,
 			fileSystem: localDiskFileSystem,
 			devLogger: devLogger,

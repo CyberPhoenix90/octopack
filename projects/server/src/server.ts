@@ -1,10 +1,18 @@
 import * as WebSocket from 'ws';
-import { Logger, CallbackLoggerAdapter, Log, LogLevel } from 'logger';
+import {
+	Logger,
+	CallbackLoggerAdapter,
+	Log,
+	ConsoleLoggerAdapter,
+	WriteFileLoggerAdapter,
+	LogLevelPrependerLoggerEnhancer
+} from 'logger';
 import { Message } from './message_definitions/message';
 import { MessageTypes } from './message_definitions/message_types';
 import { MessageResponse } from './message_definitions/message_response';
 import { ServerConfiguration } from './server_configuration';
 import { Build } from 'api';
+import { join } from 'path';
 
 export class Server {
 	private server: WebSocket.Server;
@@ -15,7 +23,7 @@ export class Server {
 	private logs: Log[];
 
 	constructor(config: ServerConfiguration) {
-		const { port = 8080, loggingContexts: loggingContext = { uiLogger: undefined, devLogger: undefined } } = config;
+		const { port = 8080 } = config;
 
 		if (port >= 1024 && port <= 49151) {
 			this.port = port;
@@ -23,10 +31,18 @@ export class Server {
 			throw new Error(`${port} is not allowed to be used as a port. Aborting creation of server.`);
 		}
 
-		const {
-			uiLogger = new Logger({ adapters: [], enhancers: [] }),
-			devLogger = new Logger({ adapters: [], enhancers: [] })
-		} = loggingContext;
+		const devLogger = new Logger({
+			adapters: [new WriteFileLoggerAdapter(join(__dirname, '../log.txt'))],
+			enhancers: [new LogLevelPrependerLoggerEnhancer()]
+		});
+		const uiLogger = new Logger({
+			adapters: [
+				new ConsoleLoggerAdapter(),
+				new CallbackLoggerAdapter((log) => devLogger.log(log.text ?? log.object, log.logLevel))
+			],
+			enhancers: [new LogLevelPrependerLoggerEnhancer()]
+		});
+
 		this.uiLogger = uiLogger;
 		this.devLogger = devLogger;
 
@@ -42,7 +58,7 @@ export class Server {
 		this.server = new WebSocket.Server({ port: this.port });
 
 		this.server.on('connection', (socket) => {
-			this.logForEveryContext('A client connected', LogLevel.INFO);
+			this.uiLogger.info('A client connected');
 
 			socket.on('message', async (message) => {
 				if (typeof message === 'string') {
@@ -53,36 +69,29 @@ export class Server {
 							socket.send(JSON.stringify(response));
 						}
 					} else {
-						this.logForEveryContext(
-							`Received message without defined type. It cannot be handled. Received message: ${message}`,
-							LogLevel.ERROR
+						this.uiLogger.error(
+							`Received message without defined type. It cannot be handled. Received message: ${message}`
 						);
 					}
 				} else {
-					this.logForEveryContext(
-						`Received message that wasn't a string. It cannot be handled. Received message: ${message}`,
-						LogLevel.ERROR
+					this.uiLogger.error(
+						`Received message that wasn't a string. It cannot be handled. Received message: ${message}`
 					);
 				}
 			});
 
 			socket.on('close', () => {
-				this.logForEveryContext('A client disconnected', LogLevel.INFO);
+				this.uiLogger.info('A client disconnected');
 			});
 		});
 
-		this.logForEveryContext('Server launched', LogLevel.INFO);
+		this.uiLogger.info('Server launched');
 	}
 
 	public close(): void {
 		if (this.server) {
 			this.server.close();
 		}
-	}
-
-	private logForEveryContext(logData: any, logLevel: LogLevel): void {
-		this.uiLogger.log(logData, logLevel);
-		this.devLogger.log(logData, logLevel);
 	}
 
 	private async processMessage(message: Message): Promise<MessageResponse | undefined> {
@@ -94,10 +103,7 @@ export class Server {
 				return this.runBuildScript(data as Message<MessageTypes.BUILD_REQUEST>['data']);
 		}
 
-		this.logForEveryContext(
-			`${type} does not have any handling. The server will not process this message.`,
-			LogLevel.ERROR
-		);
+		this.uiLogger.error(`${type} does not have any handling. The server will not process this message.`);
 		return undefined;
 	}
 

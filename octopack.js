@@ -3,8 +3,18 @@ module.exports = {
 	scope: 'workspace',
 	configVersion: '1',
 	bundles: ['dist'],
-	settings: {
-		nodeJsEngine: '13.5.0'
+	run: {
+		nodeJsEngine: '13.5.0',
+		restartOnExitWithError: false,
+		defaultArguments: [],
+		watch: false
+	},
+	host: {
+		openBrowser: true,
+		port: 8888,
+		ip: 'localhost',
+		hotreload: true,
+		watch: true
 	},
 	generator: ['tsconfigMappingGenerator'],
 	build: {
@@ -28,7 +38,7 @@ module.exports = {
 						}
 					],
 					compile: ['typescript'],
-					emit: [{ name: 'runtime', config: { out: 'src/index.js', handleExisting: 'prepend' } }]
+					emit: [{ name: 'runtime', config: { out: 'dist/index.js', handleExisting: 'prepend' } }]
 				}
 			}
 		}

@@ -11,6 +11,10 @@ export interface ReadDirOptions {
     directoryNameBlackList?: string[];
     includeDirectories?: boolean;
     excludeFiles?: boolean;
+    /**
+     * match partial extensions means in files that have double extensions like .d.ts a simple .ts search would match
+     */
+    matchPartialExtensions?: boolean;
     extensionBlackList?: string[];
     extensionWhiteList?: string[];
 }
@@ -61,8 +65,8 @@ export declare abstract class FileSystem {
     abstract readlinkSync(path: string): string;
     abstract realpath(path: string): Promise<string>;
     abstract realpathSync(path: string): string;
-    glob(directory: string, globPattern: string): Promise<string[]>;
-    globSync(directory: string, globPattern: string): string[];
+    glob(directory: string, globPattern: string, options?: ReadDirOptions): Promise<string[]>;
+    globSync(directory: string, globPattern: string, options?: ReadDirOptions): string[];
     private optimizeGlob;
     toVirtualFile(filePath: string, parent?: VirtualFolder): Promise<VirtualFile>;
     readFiles(files: string[], encoding?: string): Promise<string[]>;

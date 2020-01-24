@@ -11,7 +11,7 @@ export class Generate extends Script {
 
 	public help(): Help {
 		return {
-			description: 'Builds stuff'
+			description: 'Generates stuff'
 		};
 	}
 

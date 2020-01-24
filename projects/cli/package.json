@@ -3,7 +3,8 @@
 	"version": "0.0.0",
 	"main": "dist/index.js",
 	"bin": {
-		"octo": "dist/index.js"
+		"octo": "dist/index.js",
+		"octod": "dist/debug.js"
 	},
 	"dependencies": {
 		"@types/node": "^13.1.2"

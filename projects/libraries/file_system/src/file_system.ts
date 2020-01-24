@@ -20,6 +20,10 @@ export interface ReadDirOptions {
 	directoryNameBlackList?: string[];
 	includeDirectories?: boolean;
 	excludeFiles?: boolean;
+	/**
+	 * match partial extensions means in files that have double extensions like .d.ts a simple .ts search would match
+	 */
+	matchPartialExtensions?: boolean;
 	extensionBlackList?: string[];
 	extensionWhiteList?: string[];
 }
@@ -80,15 +84,15 @@ export abstract class FileSystem {
 	public abstract realpath(path: string): Promise<string>;
 	public abstract realpathSync(path: string): string;
 
-	public async glob(directory: string, globPattern: string): Promise<string[]> {
+	public async glob(directory: string, globPattern: string, options: ReadDirOptions = {}): Promise<string[]> {
 		({ directory, globPattern } = this.optimizeGlob(directory, globPattern));
-		const candidates = await this.readDirRecursive(directory, {});
+		const candidates = await this.readDirRecursive(directory, options);
 		return match(candidates, globPattern);
 	}
 
-	public globSync(directory: string, globPattern: string): string[] {
+	public globSync(directory: string, globPattern: string, options: ReadDirOptions = {}): string[] {
 		({ directory, globPattern } = this.optimizeGlob(directory, globPattern));
-		const candidates = this.readDirRecursiveSync(directory, {});
+		const candidates = this.readDirRecursiveSync(directory, options);
 		return match(candidates, globPattern);
 	}
 
@@ -415,8 +419,14 @@ export abstract class FileSystem {
 		if (!options.excludeFiles) {
 			if (options.extensionWhiteList) {
 				const fp = new FilePath(file);
-				if (options.extensionWhiteList.includes(fp.getExtensionString())) {
-					results.push(join(path, file));
+				if (options.matchPartialExtensions) {
+					if (options.extensionWhiteList.some((ext) => fp.getExtensionString().endsWith(ext))) {
+						results.push(join(path, file));
+					}
+				} else {
+					if (options.extensionWhiteList.includes(fp.getExtensionString())) {
+						results.push(join(path, file));
+					}
 				}
 			} else if (options.extensionBlackList) {
 				const fp = new FilePath(file);
