@@ -6,6 +6,10 @@ spawnSync('npm', ['install'], {
 	cwd: join(__dirname, '../projects/libraries/file_system')
 });
 
+spawnSync('npm', ['install'], {
+	cwd: join(__dirname, '../projects/business_logic/plugins/output_plugin')
+});
+
 const { Build } = require('../projects/api');
 const { Logger } = require('../projects/libraries/logger');
 const { localDiskFileSystem } = require('../projects/libraries/file_system');
