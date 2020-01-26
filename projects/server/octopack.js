@@ -2,9 +2,9 @@ module.exports = {
 	name: 'server',
 	scope: 'project',
 	configVersion: '1',
+	platform: 'node',
+	assembly: 'executable',
 	build: {
-		platform: 'node',
-		assembly: 'executable',
 		bundles: {
 			dist: {
 				compilation: {

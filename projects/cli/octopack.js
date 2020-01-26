@@ -2,9 +2,12 @@ module.exports = {
 	name: 'cli',
 	scope: 'project',
 	configVersion: '1',
+	platform: 'node',
+	assembly: 'library',
+	deploy: {
+		deployDir: 'deploy'
+	},
 	build: {
-		platform: 'node',
-		assembly: 'library',
 		bundles: {
 			dist: {
 				compilation: {

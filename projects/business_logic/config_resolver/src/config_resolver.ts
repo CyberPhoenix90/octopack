@@ -2,6 +2,7 @@ import { FileSystem as FileSystemEntryData } from 'file_system';
 import { OctopackConfiguration } from './configuration';
 import { join } from 'path';
 import { objectUtils } from 'utilities';
+import { MapLike } from 'typings/common';
 
 export const OCTOPACK_CONFIG_FILE_NAME = 'octopack.js';
 
@@ -29,6 +30,8 @@ export function resolveConfig(configs: {
 }): OctopackConfiguration {
 	return objectUtils.deepAssign(
 		{
+			assembly: undefined,
+			platform: undefined,
 			build: undefined,
 			configVersion: undefined,
 			name: undefined,
@@ -52,4 +55,25 @@ export async function loadConfig(path: string, fileSystem: FileSystemEntryData):
 	}
 
 	return config;
+}
+
+export function getBundle(config: OctopackConfiguration, candidates: MapLike<boolean>): string {
+	const bundles = Object.keys(config.build.bundles);
+	let defaultBundle;
+	for (const bundle of bundles) {
+		if (candidates[bundle] === true) {
+			return bundle;
+		}
+		if (config.build.bundles[bundle].default) {
+			defaultBundle = bundle;
+		}
+	}
+
+	if (defaultBundle) {
+		return defaultBundle;
+	} else if (bundles.length === 1) {
+		return bundles[0];
+	} else {
+		return undefined;
+	}
 }

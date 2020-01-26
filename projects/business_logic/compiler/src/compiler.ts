@@ -3,6 +3,7 @@ import { CachedFileSystem, FileSystemMutationLogger, MemoryFileSystem } from 'fi
 import { CompilerModel, Project, ProjectBuildData, ScriptContext } from 'models';
 import { inputPhase } from './phases/input';
 import { pluginBasedChainedPhase, pluginBasedPhase } from './phases/plugin_phase';
+import { getBundle } from 'config_resolver';
 
 export class Compiler {
 	public async compile(
@@ -16,8 +17,15 @@ export class Compiler {
 				const mlfs = new FileSystemMutationLogger(new MemoryFileSystem());
 				const fs = new CachedFileSystem(context.fileSystem, mlfs);
 
+				const bundle = getBundle(p.resolvedConfig, args.map as any);
+				if (!bundle) {
+					throw new Error(
+						`No bundle could be determined for project ${p} please define a default or state the bundle to be used with a CLI flag`
+					);
+				}
+
 				return {
-					bundle: this.getBundle(p, args),
+					bundle,
 					projectDependencies: new Set(),
 					allProjects,
 					selectedProjects,
@@ -83,29 +91,6 @@ export class Compiler {
 		}
 
 		return true;
-	}
-
-	private getBundle(project: Project, args: ParsedArguments): string {
-		const bundles = Object.keys(project.resolvedConfig.build.bundles);
-		let defaultBundle;
-		for (const bundle of bundles) {
-			if (args.map[bundle] === true) {
-				return bundle;
-			}
-			if (project.resolvedConfig.build.bundles[bundle].default) {
-				defaultBundle = bundle;
-			}
-		}
-
-		if (defaultBundle) {
-			return defaultBundle;
-		} else if (bundles.length === 1) {
-			return bundles[0];
-		} else {
-			throw new Error(
-				`No bundle could be determined for project ${project} please define a default or state the bundle to be used with a CLI flag`
-			);
-		}
 	}
 }
 

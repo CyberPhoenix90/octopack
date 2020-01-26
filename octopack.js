@@ -13,8 +13,7 @@ module.exports = {
 		openBrowser: true,
 		port: 8888,
 		ip: 'localhost',
-		hotreload: true,
-		watch: true
+		hotreload: true
 	},
 	generator: ['tsconfigMappingGenerator'],
 	build: {

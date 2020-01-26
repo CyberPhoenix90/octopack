@@ -5,7 +5,7 @@ import { MapLike } from '../../../../../typings/common';
 
 export function barrelFile(args: MapLike<any>): OctoPackBuildPlugin {
 	return async (model: ProjectBuildData, context: ScriptContext) => {
-		if (model.project.resolvedConfig.build.assembly === 'executable') {
+		if (model.project.resolvedConfig.assembly === 'executable') {
 			return model;
 		}
 
