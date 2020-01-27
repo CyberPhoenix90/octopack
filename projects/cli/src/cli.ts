@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-import { Build, Generate, Host, Run, Test } from 'api';
+import { Build, Generate, Host, Run, Test, Deploy } from 'api';
 import { parseArguments } from 'argument_parser';
 import { findConfiguration, OctopackConfiguration } from 'config_resolver';
 import { localDiskFileSystem } from 'file_system';
@@ -91,6 +91,14 @@ function runScript(config: OctopackConfiguration, workspaceRoot: string) {
 		});
 	} else if (process.argv[2] === 'test') {
 		new Test().run(parseArguments(process.argv.slice(3)), {
+			workspaceRoot,
+			fileSystem: localDiskFileSystem,
+			devLogger: devLogger,
+			uiLogger: uiLogger,
+			workspaceConfig: config
+		});
+	} else if (process.argv[2] === 'deploy') {
+		new Deploy().run(parseArguments(process.argv.slice(3)), {
 			workspaceRoot,
 			fileSystem: localDiskFileSystem,
 			devLogger: devLogger,

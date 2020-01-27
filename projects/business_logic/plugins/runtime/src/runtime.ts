@@ -8,9 +8,9 @@ export function runtime(args: MapLike<any>): OctoPackBuildPlugin {
 		let handleExisting: 'append' | 'replace' | 'prepend' = args.handleExisting ?? 'replace';
 
 		let runtime: string = `${args.header ?? ''}`;
-		if (model.projectDependencies.size) {
+		if (model.project.projectDependencies.size) {
 			runtime += `
-${createImportMap(model, path)}
+${createImportMap(model, path, model.flags.remapImportSource)}
 const mod = require('module');
 
 const original = mod.prototype.require;
@@ -49,10 +49,14 @@ mod.prototype.require = function(path, ...args) {
 	};
 }
 
-function createImportMap(model: ProjectBuildData, path: string): string {
+function createImportMap(model: ProjectBuildData, path: string, remap?: string): string {
 	const result: string[] = [];
-	for (const dep of model.projectDependencies) {
-		result.push(`'${dep.resolvedConfig.name}': '${relative(parse(path).dir, dep.path)}'`);
+	for (const dep of model.project.projectDependencies) {
+		if (remap) {
+			result.push(`'${dep.resolvedConfig.name}': '${join(remap, dep.resolvedConfig.name)}'`);
+		} else {
+			result.push(`'${dep.resolvedConfig.name}': '${relative(parse(path).dir, dep.path)}'`);
+		}
 	}
 
 	return `const importData = {${result.join(',')}}`;

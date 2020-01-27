@@ -6,16 +6,17 @@ import { MapLike } from '../../../../../typings/common';
 export function projectImporter(args: MapLike<any>): OctoPackBuildPlugin {
 	return async (model: ProjectBuildData, context: ScriptContext) => {
 		context.uiLogger.info(`[${model.project.resolvedConfig.name}]Mapping project imports`);
+		model.project.projectDependencies = new Set();
 		for (const file of model.input) {
 			if (file.endsWith('.ts') || file.endsWith('.tsx') || file.endsWith('.js') || file.endsWith('.jsx')) {
-				await remapImports(file, model);
+				await findDependencies(file, model);
 			}
 		}
 		return model;
 	};
 }
 
-async function remapImports(file: string, model: ProjectBuildData): Promise<void> {
+async function findDependencies(file: string, model: ProjectBuildData): Promise<void> {
 	const fm = new FileManipulator(await model.fileSystem.readFile(file, 'utf8'));
 	fm.queryAst((node) => {
 		if (isImportDeclaration(node)) {
@@ -25,7 +26,7 @@ async function remapImports(file: string, model: ProjectBuildData): Promise<void
 					const [name] = moduleName.split('/');
 					const target = model.allProjects.find((p) => p.resolvedConfig.name === name);
 					if (target) {
-						model.projectDependencies.add(target);
+						model.project.projectDependencies.add(target);
 					}
 				}
 			}
@@ -34,6 +35,4 @@ async function remapImports(file: string, model: ProjectBuildData): Promise<void
 			return [];
 		}
 	});
-	fm.applyManipulations();
-	await model.fileSystem.writeFile(file, fm.content);
 }

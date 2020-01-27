@@ -2,3 +2,4 @@
 node_modules
 projects/cli/log.txt
 *.d.ts.map
+deploy

@@ -1,5 +1,6 @@
 import { Project, ScriptContext } from '../projects/project';
-import { CachedFileSystem } from 'projects/libraries/file_system/dist';
+import { CachedFileSystem } from 'file_system';
+import { MapLike } from '../../../../../typings/common';
 
 export type OctoPackBuildPlugin = (model: ProjectBuildData, context: ScriptContext) => Promise<ProjectBuildData>;
 export type OctoPackGeneratorPlugin = (projects: Project[], context: ScriptContext) => Promise<void>;
@@ -9,9 +10,9 @@ export interface CompilerModel {
 }
 
 export interface ProjectBuildData {
+	flags: MapLike<string>;
 	project: Project;
 	selectedProjects: Project[];
-	projectDependencies: Set<Project>;
 	allProjects: Project[];
 	bundle: string;
 	fileSystem: CachedFileSystem;

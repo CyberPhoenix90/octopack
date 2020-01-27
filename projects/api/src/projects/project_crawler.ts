@@ -3,11 +3,16 @@ import { loadConfig, OCTOPACK_CONFIG_FILE_NAME, resolveConfig } from 'config_res
 import { ScriptContext, Project } from 'models';
 
 export class ProjectCrawler {
-	public async findProjects(root: string, context: ScriptContext): Promise<Project[]> {
-		const result: Project[] = [];
-		await this.searchDirectory(result, root, context);
+	private cache: Project[];
 
-		return result;
+	public async findProjects(root: string, context: ScriptContext): Promise<Project[]> {
+		if (!this.cache) {
+			const result: Project[] = [];
+			await this.searchDirectory(result, root, context);
+			this.cache = result;
+		}
+
+		return this.cache;
 	}
 
 	public async searchDirectory(result: Project[], path: string, context: ScriptContext): Promise<void> {

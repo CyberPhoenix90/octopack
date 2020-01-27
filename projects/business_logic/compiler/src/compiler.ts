@@ -25,8 +25,8 @@ export class Compiler {
 				}
 
 				return {
+					flags: args.map as any,
 					bundle,
-					projectDependencies: new Set(),
 					allProjects,
 					selectedProjects,
 					project: p,
@@ -59,7 +59,9 @@ export class Compiler {
 			let circle = true;
 
 			for (let i = compileModel.projectsBuildData.length - 1; i >= 0; i--) {
-				if (this.hasAll(compileModel.projectsBuildData[i].projectDependencies, selectedProjects, order)) {
+				if (
+					this.hasAll(compileModel.projectsBuildData[i].project.projectDependencies, selectedProjects, order)
+				) {
 					order.push(compileModel.projectsBuildData[i]);
 					compileModel.projectsBuildData.splice(i, 1);
 					circle = false;

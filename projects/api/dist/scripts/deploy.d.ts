@@ -5,5 +5,6 @@ export declare class Deploy extends Script {
     autoComplete(): Promise<string[]>;
     help(): Help;
     run(args: ParsedArguments, context: ScriptContext): Promise<ScriptStatus>;
+    private prepareDependency;
 }
 //# sourceMappingURL=deploy.d.ts.map
