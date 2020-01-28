@@ -47,7 +47,9 @@ function parseConfigFile(path: string, tsConfig: string, system: ts.System): ts.
 	const parsedConfig = JSON.parse(tsConfig);
 	delete parsedConfig.compilerOptions.outDir;
 	delete parsedConfig.compilerOptions.outFile;
-	parsedConfig.compilerOptions.module = 'es2015';
+	delete parsedConfig.compilerOptions.sourceMap;
+	parsedConfig.compilerOptions.inlineSourceMap = true;
+	parsedConfig.compilerOptions.module = 'esnext';
 
 	const result = ts.parseJsonText('tsconfig.json', JSON.stringify(parsedConfig));
 	return ts.parseJsonSourceFileConfigFileContent(result, system, path);

@@ -11,6 +11,7 @@ export interface OctopackConfiguration {
 	platform: 'node' | 'browser' | 'electron' | 'android';
 	assembly: 'library' | 'executable';
 	scope: 'project' | 'workspace' | 'solution';
+	isProject?: boolean;
 	configVersion: string;
 	generator?: OctopackBuildPluginModel[];
 	build?: BuildScript;

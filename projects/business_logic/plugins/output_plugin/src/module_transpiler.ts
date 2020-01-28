@@ -21,7 +21,10 @@ export async function transpile(model: ProjectBuildData, context: ScriptContext)
 			const output = ts.transpileModule(content, {
 				compilerOptions: {
 					target: ts.ScriptTarget.ESNext,
-					module: ts.ModuleKind.CommonJS,
+					module:
+						model.project.resolvedConfig.platform === 'browser'
+							? ts.ModuleKind.UMD
+							: ts.ModuleKind.CommonJS,
 					inlineSourceMap: true
 				},
 				fileName: file

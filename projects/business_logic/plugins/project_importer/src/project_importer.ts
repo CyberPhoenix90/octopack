@@ -6,7 +6,6 @@ import { MapLike } from '../../../../../typings/common';
 export function projectImporter(args: MapLike<any>): OctoPackBuildPlugin {
 	return async (model: ProjectBuildData, context: ScriptContext) => {
 		context.uiLogger.info(`[${model.project.resolvedConfig.name}]Mapping project imports`);
-		model.project.projectDependencies = new Set();
 		for (const file of model.input) {
 			if (file.endsWith('.ts') || file.endsWith('.tsx') || file.endsWith('.js') || file.endsWith('.jsx')) {
 				await findDependencies(file, model);

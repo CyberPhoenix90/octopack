@@ -3,7 +3,7 @@ import { FileSystem } from 'file_system';
 import { Logger } from 'logger';
 export interface Project {
     path: string;
-    projectDependencies?: Set<Project>;
+    projectDependencies: Set<Project>;
     rawConfig: OctopackConfiguration;
     resolvedConfig: OctopackConfiguration;
 }

@@ -65,6 +65,6 @@ export class FilePath {
 		} else {
 			this.fileName = data.name;
 		}
-		this.fileExtensions = path.split('.').slice(1);
+		this.fileExtensions = data.base.split('.').slice(1);
 	}
 }

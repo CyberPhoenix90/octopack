@@ -18,9 +18,10 @@ export class ProjectCrawler {
 	public async searchDirectory(result: Project[], path: string, context: ScriptContext): Promise<void> {
 		if (await context.fileSystem.exists(join(path, OCTOPACK_CONFIG_FILE_NAME))) {
 			const config = await loadConfig(path, context.fileSystem);
-			if (config.scope === 'project') {
+			if (config.scope === 'project' || config.isProject) {
 				result.push({
 					path,
+					projectDependencies: new Set(),
 					rawConfig: config,
 					resolvedConfig: resolveConfig({
 						project: config,
