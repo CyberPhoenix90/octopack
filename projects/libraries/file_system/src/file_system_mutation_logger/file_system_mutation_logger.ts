@@ -107,7 +107,9 @@ export class FileSystemMutationLogger extends FileSystem {
 		return this.fileSystem.readFile(path, encoding);
 	}
 
-	public readFileSync(path: string, encoding: string): string {
+	public readFileSync(path: string, encoding: string): string;
+	public readFileSync(path: string): Buffer;
+	public readFileSync(path: string, encoding?: string): string | Buffer {
 		return this.fileSystem.readFileSync(path, encoding);
 	}
 

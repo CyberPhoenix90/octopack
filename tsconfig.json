@@ -34,6 +34,9 @@
             "meta_programming": [
                 "projects/business_logic/plugins/meta_programming"
             ],
+            "npm_importer": [
+                "projects/business_logic/plugins/npm_importer"
+            ],
             "npm_installer": [
                 "projects/business_logic/plugins/npm_installer"
             ],

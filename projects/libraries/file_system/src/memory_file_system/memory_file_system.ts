@@ -133,7 +133,9 @@ export class MemoryFileSystem extends FileSystem {
 		return this.readFileSync(path, encoding);
 	}
 
-	public readFileSync(path: string, encoding: string): string {
+	public readFileSync(path: string, encoding: string): string;
+	public readFileSync(path: string): Buffer;
+	public readFileSync(path: string, encoding?: string): string | Buffer {
 		const entry = this.getEntry(path);
 		if (!entry) {
 			throw new Error(`No such path ${path}`);
@@ -142,7 +144,11 @@ export class MemoryFileSystem extends FileSystem {
 			throw new Error(`${path} is a directory`);
 		}
 
-		return entry.content;
+		if (encoding && encoding !== 'buffer') {
+			return entry.content;
+		} else {
+			return Buffer.from(entry.content);
+		}
 	}
 
 	public async stat(path: string): Promise<FileSystemEntryStatus> {
@@ -157,11 +163,13 @@ export class MemoryFileSystem extends FileSystem {
 
 		const s: FileSystemEntryStatus = {
 			type: entry.type,
-			isBlockDevice: false,
-			isCharacterDevice: false,
-			isFIFO: false,
-			isSocket: false,
-			isSymbolicLink: false,
+			isBlockDevice: () => false,
+			isCharacterDevice: () => false,
+			isFIFO: () => false,
+			isSocket: () => false,
+			isSymbolicLink: () => false,
+			isFile: () => entry.type === FileSystemEntryType.FILE,
+			isDirectory: () => entry.type === FileSystemEntryType.DIRECTORY,
 			size: entry.content ? entry.content.length : 0
 		};
 

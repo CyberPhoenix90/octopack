@@ -29,11 +29,13 @@ export interface ReadDirOptions {
 }
 
 export interface FileSystemEntryStatus {
-	isBlockDevice: boolean;
-	isCharacterDevice: boolean;
-	isFIFO: boolean;
-	isSocket: boolean;
-	isSymbolicLink: boolean;
+	isBlockDevice(): boolean;
+	isCharacterDevice(): boolean;
+	isFIFO(): boolean;
+	isSocket(): boolean;
+	isSymbolicLink(): boolean;
+	isFile(): boolean;
+	isDirectory(): boolean;
 	size: number;
 	type: FileSystemEntryType;
 }
@@ -65,6 +67,8 @@ export abstract class FileSystem {
 	public abstract existsSync(path: string): boolean;
 	public abstract readFile(path: string, encoding: string): Promise<string>;
 	public abstract readFileSync(path: string, encoding: string): string;
+	public abstract readFileSync(path: string): Buffer;
+	public abstract readFileSync(path: string, encoding?: string): string | Buffer;
 	public abstract readDir(path: string): Promise<string[]>;
 	public abstract readDirSync(path: string): string[];
 	public abstract stat(path: string): Promise<FileSystemEntryStatus>;

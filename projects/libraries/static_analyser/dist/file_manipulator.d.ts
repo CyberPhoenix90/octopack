@@ -12,6 +12,7 @@ export declare class FileManipulator {
     private ast;
     private language;
     constructor(fileContent: string, language?: ScriptKind);
+    isModule(): boolean;
     /**
      * Rewrites AST based on the changes you requested
      */

@@ -8,6 +8,7 @@ import { metaProgramming } from 'meta_programming';
 import { barrelFile } from 'barrel_file';
 import { output } from 'output_plugin';
 import { runtime } from 'runtime';
+import { npmImporter } from 'npm_importer';
 
 export function loadBuildPlugin(plugin: OctopackBuildPluginModel): OctoPackBuildPlugin {
 	if (typeof plugin === 'string') {
@@ -21,6 +22,8 @@ function initializePlugin(name: string, args: MapLike<any>): OctoPackBuildPlugin
 	switch (name) {
 		case 'projectImporter':
 			return projectImporter(args);
+		case 'npmImporter':
+			return npmImporter(args);
 		case 'typescript':
 			return typescript(args);
 		case 'npmInstall':

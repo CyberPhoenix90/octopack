@@ -148,7 +148,7 @@ export class DiskFileSystem extends FileSystem {
 		return new Promise((resolve, reject) => {
 			return stat(path, (err, data) => {
 				if (err) {
-					reject(err);
+					return reject(err);
 				}
 				resolve(this.mapStatsToFileSystemEntryStatus(data));
 			});
@@ -163,11 +163,13 @@ export class DiskFileSystem extends FileSystem {
 	private mapStatsToFileSystemEntryStatus(stats: Stats): FileSystemEntryStatus {
 		return {
 			type: stats.isDirectory() ? FileSystemEntryType.DIRECTORY : FileSystemEntryType.FILE,
-			isBlockDevice: stats.isBlockDevice(),
-			isCharacterDevice: stats.isCharacterDevice(),
-			isFIFO: stats.isFIFO(),
-			isSocket: stats.isSocket(),
-			isSymbolicLink: stats.isSymbolicLink(),
+			isBlockDevice: stats.isBlockDevice.bind(stats),
+			isCharacterDevice: stats.isCharacterDevice.bind(stats),
+			isFIFO: stats.isFIFO.bind(stats),
+			isSocket: stats.isSocket.bind(stats),
+			isSymbolicLink: stats.isSymbolicLink.bind(stats),
+			isFile: stats.isFile.bind(stats),
+			isDirectory: stats.isDirectory.bind(stats),
 			size: stats.size
 		};
 	}
@@ -195,7 +197,9 @@ export class DiskFileSystem extends FileSystem {
 		});
 	}
 
-	public readFileSync(path: string, encoding: string = 'utf8'): string {
+	public readFileSync(path: string, encoding: string): string;
+	public readFileSync(path: string): Buffer;
+	public readFileSync(path: string, encoding?: string): string | Buffer {
 		return readFileSync(path, encoding);
 	}
 }

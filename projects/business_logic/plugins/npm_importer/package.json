@@ -1,0 +1,11 @@
+{
+	"name": "@octopack/npm-importer",
+	"version": "0.0.0",
+	"main": "dist/index.js",
+	"typings": "dist/index.d.ts",
+	"dependencies": {
+		"@types/node": "^13.1.2",
+		"@types/webpack": "^4.41.3",
+		"webpack": "^4.41.5"
+	}
+}

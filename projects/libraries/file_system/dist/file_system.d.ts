@@ -1,3 +1,4 @@
+/// <reference types="node" />
 import { MapLike } from '../../../../typings/common';
 export interface WatchOptions {
     recursive: boolean;
@@ -19,11 +20,13 @@ export interface ReadDirOptions {
     extensionWhiteList?: string[];
 }
 export interface FileSystemEntryStatus {
-    isBlockDevice: boolean;
-    isCharacterDevice: boolean;
-    isFIFO: boolean;
-    isSocket: boolean;
-    isSymbolicLink: boolean;
+    isBlockDevice(): boolean;
+    isCharacterDevice(): boolean;
+    isFIFO(): boolean;
+    isSocket(): boolean;
+    isSymbolicLink(): boolean;
+    isFile(): boolean;
+    isDirectory(): boolean;
     size: number;
     type: FileSystemEntryType;
 }
@@ -47,6 +50,8 @@ export declare abstract class FileSystem {
     abstract existsSync(path: string): boolean;
     abstract readFile(path: string, encoding: string): Promise<string>;
     abstract readFileSync(path: string, encoding: string): string;
+    abstract readFileSync(path: string): Buffer;
+    abstract readFileSync(path: string, encoding?: string): string | Buffer;
     abstract readDir(path: string): Promise<string[]>;
     abstract readDirSync(path: string): string[];
     abstract stat(path: string): Promise<FileSystemEntryStatus>;

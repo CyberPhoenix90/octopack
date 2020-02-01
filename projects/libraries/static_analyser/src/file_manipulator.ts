@@ -1,4 +1,16 @@
-import { createSourceFile, ScriptTarget, ScriptKind, SourceFile, Node, SyntaxKind } from 'typescript';
+import {
+	createSourceFile,
+	ScriptTarget,
+	ScriptKind,
+	SourceFile,
+	Node,
+	SyntaxKind,
+	isExportAssignment,
+	isExportDeclaration,
+	isImportDeclaration,
+	isImportSpecifier,
+	isExportSpecifier
+} from 'typescript';
 import { FileSystem, VirtualFile, FileSystemEntryType } from 'file_system';
 import { forEachComment, TokenPosition } from 'tslint';
 
@@ -19,6 +31,30 @@ export class FileManipulator {
 		this.content = fileContent;
 		this.language = language;
 		this.manipulations = [];
+	}
+
+	public isModule(): boolean {
+		let found = false;
+		this.queryAst((node) => {
+			if (isExportAssignment(node)) {
+				found = true;
+			} else if (isExportDeclaration(node)) {
+				found = true;
+			} else if (isImportDeclaration(node)) {
+				found = true;
+			} else if (isImportSpecifier(node)) {
+				found = true;
+			} else if (isExportSpecifier(node)) {
+				found = true;
+			} else if (node.kind === SyntaxKind.ExportKeyword) {
+				found = true;
+			} else if (node.kind === SyntaxKind.ImportKeyword) {
+				found = true;
+			}
+			return [];
+		});
+
+		return found;
 	}
 
 	/**

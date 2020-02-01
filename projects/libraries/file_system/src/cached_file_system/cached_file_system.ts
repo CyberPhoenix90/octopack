@@ -82,12 +82,16 @@ export class CachedFileSystem extends FileSystem {
 	public async mkdir(path: string): Promise<void> {
 		if (!this.fileSystem.exists(path)) {
 			return this.cacheFileSystem.mkdir(path);
+		} else {
+			await this.cacheFileSystem.mkdirp(path);
 		}
 	}
 
 	public mkdirSync(path: string): void {
 		if (!this.fileSystem.exists(path)) {
 			return this.cacheFileSystem.mkdirSync(path);
+		} else {
+			this.cacheFileSystem.mkdirpSync(path);
 		}
 	}
 
@@ -135,7 +139,9 @@ export class CachedFileSystem extends FileSystem {
 		}
 	}
 
-	public readFileSync(path: string, encoding: string): string {
+	public readFileSync(path: string, encoding: string): string;
+	public readFileSync(path: string): Buffer;
+	public readFileSync(path: string, encoding?: string): string | Buffer {
 		if (this.cacheFileSystem.existsSync(path)) {
 			return this.cacheFileSystem.readFileSync(path, encoding);
 		} else {

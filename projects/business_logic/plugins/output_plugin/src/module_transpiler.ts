@@ -2,10 +2,11 @@ import * as combine from 'combine-source-map';
 import { fromComment } from 'convert-source-map';
 import { ProjectBuildData, ScriptContext } from 'models';
 import * as ts from 'typescript';
+import { FileManipulator } from 'static_analyser';
 
 export async function transpile(model: ProjectBuildData, context: ScriptContext): Promise<void> {
 	for (const file of model.output) {
-		if (file.includes('js')) {
+		if (file.includes('.js')) {
 			const originalContent = await model.fileSystem.readFile(file, 'utf8');
 			let content: string;
 			let mappedFile;
@@ -16,6 +17,11 @@ export async function transpile(model: ProjectBuildData, context: ScriptContext)
 				mappedFile = fromComment(originalContent.substring(sourceMapIndex + 1)).toObject().file;
 			} else {
 				content = originalContent;
+			}
+
+			const fm = new FileManipulator(content, ts.ScriptKind.JS);
+			if (!fm.isModule()) {
+				continue;
 			}
 
 			const output = ts.transpileModule(content, {

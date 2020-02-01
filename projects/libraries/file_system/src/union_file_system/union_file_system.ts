@@ -120,7 +120,9 @@ export class UnionFileSystem extends FileSystem {
 		throw new Error(`No such path ${path}`);
 	}
 
-	public readFileSync(path: string, encoding: string): string {
+	public readFileSync(path: string, encoding: string): string;
+	public readFileSync(path: string): Buffer;
+	public readFileSync(path: string, encoding?: string): string | Buffer {
 		for (const fs of this.fileSystems) {
 			try {
 				return fs.readFileSync(path, encoding);

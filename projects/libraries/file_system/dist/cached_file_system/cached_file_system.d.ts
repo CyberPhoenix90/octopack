@@ -1,3 +1,4 @@
+/// <reference types="node" />
 import { FileSystem, FileSystemEntryStatus } from '../file_system';
 export declare class CachedFileSystem extends FileSystem {
     private fileSystem;
@@ -21,6 +22,7 @@ export declare class CachedFileSystem extends FileSystem {
     unlinkSync(path: string): void;
     readFile(path: string, encoding: string): Promise<string>;
     readFileSync(path: string, encoding: string): string;
+    readFileSync(path: string): Buffer;
     stat(path: string): Promise<FileSystemEntryStatus>;
     statSync(path: string): FileSystemEntryStatus;
     readDir(path: string): Promise<string[]>;

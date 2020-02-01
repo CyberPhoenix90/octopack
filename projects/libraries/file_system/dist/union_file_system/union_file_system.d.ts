@@ -1,3 +1,4 @@
+/// <reference types="node" />
 import { FileSystem, WatchOptions, WatchCallback, FileSystemEntryStatus } from '../file_system';
 export declare class UnionFileSystem extends FileSystem {
     private readonly fileSystems;
@@ -16,6 +17,7 @@ export declare class UnionFileSystem extends FileSystem {
     unlinkSync(path: string): void;
     readFile(path: string, encoding: string): Promise<string>;
     readFileSync(path: string, encoding: string): string;
+    readFileSync(path: string): Buffer;
     stat(path: string): Promise<FileSystemEntryStatus>;
     statSync(path: string): FileSystemEntryStatus;
     readDir(path: string): Promise<string[]>;

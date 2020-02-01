@@ -76,7 +76,9 @@ export class MaskedFileSystem extends FileSystem {
 		return this.fileSystem.realpathSync(path);
 	}
 
-	public readFileSync(path: string, encoding: string): string {
+	public readFileSync(path: string, encoding: string): string;
+	public readFileSync(path: string): Buffer;
+	public readFileSync(path: string, encoding?: string): string | Buffer {
 		if (this.allowedFiles.has(path)) {
 			return this.fileSystem.readFileSync(path, encoding);
 		} else {

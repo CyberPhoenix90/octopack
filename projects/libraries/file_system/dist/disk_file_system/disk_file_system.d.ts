@@ -1,3 +1,4 @@
+/// <reference types="node" />
 import { FileSystem, FileSystemEntryStatus } from '../file_system';
 export declare class DiskFileSystem extends FileSystem {
     watch(paths: string[], options: any, callback: any): Promise<() => void>;
@@ -22,7 +23,8 @@ export declare class DiskFileSystem extends FileSystem {
     exists(path: string): Promise<boolean>;
     existsSync(path: string): boolean;
     readFile(path: string, encoding?: string): Promise<string>;
-    readFileSync(path: string, encoding?: string): string;
+    readFileSync(path: string, encoding: string): string;
+    readFileSync(path: string): Buffer;
 }
 export declare const localDiskFileSystem: DiskFileSystem;
 //# sourceMappingURL=disk_file_system.d.ts.map

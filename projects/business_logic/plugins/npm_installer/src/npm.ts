@@ -35,7 +35,7 @@ async function isUpToDate(model: ProjectBuildData, context: ScriptContext, pkg: 
 					)
 				);
 
-				if (depPkg.version !== lockFile.dependencies[dep].version) {
+				if (!lockFile.dependencies[dep] || depPkg.version !== lockFile.dependencies[dep].version) {
 					return false;
 				}
 			} else {

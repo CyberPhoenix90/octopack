@@ -1,3 +1,4 @@
+/// <reference types="node" />
 import { FileSystem, FileSystemEntryStatus, FileSystemEntryType } from '../file_system';
 import { MapLike } from '../../../../../typings/common';
 export declare type MemoryFileSystemData = {
@@ -32,6 +33,7 @@ export declare class MemoryFileSystem extends FileSystem {
     unlinkSync(path: string): void;
     readFile(path: string, encoding: string): Promise<string>;
     readFileSync(path: string, encoding: string): string;
+    readFileSync(path: string): Buffer;
     stat(path: string): Promise<FileSystemEntryStatus>;
     statSync(path: string): FileSystemEntryStatus;
     readDir(path: string): Promise<string[]>;

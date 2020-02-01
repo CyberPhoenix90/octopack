@@ -1,3 +1,4 @@
+/// <reference types="node" />
 import { FileSystem, FileSystemEntryStatus } from '../file_system';
 export declare class MaskedFileSystem extends FileSystem {
     watch(paths: string[], options: any, callback: any): Promise<() => void>;
@@ -17,6 +18,7 @@ export declare class MaskedFileSystem extends FileSystem {
     realpath(path: string): Promise<string>;
     realpathSync(path: string): string;
     readFileSync(path: string, encoding: string): string;
+    readFileSync(path: string): Buffer;
     stat(path: string): Promise<FileSystemEntryStatus>;
     statSync(path: string): FileSystemEntryStatus;
     readDir(path: string): Promise<string[]>;

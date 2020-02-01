@@ -71,7 +71,9 @@ export class RemoteFileSystem extends FileSystem {
 		return this.sendOperation(RemoteFileSystemOperation.READFILE, [path, encoding]);
 	}
 
-	public readFileSync(path: string, encoding: string): string {
+	public readFileSync(path: string, encoding: string): string;
+	public readFileSync(path: string): Buffer;
+	public readFileSync(path: string, encoding?: string): string | Buffer {
 		throw new Error('Remote file system does not support sync operations');
 	}
 
