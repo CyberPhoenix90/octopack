@@ -66,9 +66,10 @@ async function loadPackage(model: ProjectBuildData, pkg: string) {
 		moduleName: pkg,
 		externals: {},
 		mode: 'production',
-		entry: join(model.project.path, 'node_modules', pkg, 'package.json')
+		entry: join(model.project.path, 'node_modules', pkg)
 	});
 
 	await model.fileSystem.mkdirp(join(model.project.path, 'build_assets', pkg));
 	await model.fileSystem.writeFile(join(model.project.path, 'build_assets', pkg, 'bundle.js'), result);
+	model.project.fileDependencies.set(pkg, join('build_assets', pkg, 'bundle.js'));
 }

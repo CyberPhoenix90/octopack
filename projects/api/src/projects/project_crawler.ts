@@ -22,6 +22,7 @@ export class ProjectCrawler {
 				result.push({
 					path,
 					projectDependencies: new Set(),
+					fileDependencies: new Map(),
 					rawConfig: config,
 					resolvedConfig: resolveConfig({
 						project: config,
