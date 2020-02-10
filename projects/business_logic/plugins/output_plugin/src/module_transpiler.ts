@@ -1,5 +1,5 @@
-import * as combine from 'combine-source-map';
-import { fromComment } from 'convert-source-map';
+//import * as combine from 'combine-source-map';
+// import { fromComment } from 'convert-source-map';
 import { ProjectBuildData, ScriptContext } from 'models';
 import * as ts from 'typescript';
 import { FileManipulator } from 'static_analyser';
@@ -9,12 +9,12 @@ export async function transpile(model: ProjectBuildData, context: ScriptContext)
 		if (file.includes('.js')) {
 			const originalContent = await model.fileSystem.readFile(file, 'utf8');
 			let content: string;
-			let mappedFile;
+			// let mappedFile;
 
 			const sourceMapIndex = originalContent.indexOf('\n//# sourceMappingURL=');
 			if (sourceMapIndex !== -1) {
 				content = originalContent.substring(0, sourceMapIndex);
-				mappedFile = fromComment(originalContent.substring(sourceMapIndex + 1)).toObject().file;
+				// mappedFile = fromComment(originalContent.substring(sourceMapIndex + 1)).toObject().file;
 			} else {
 				content = originalContent;
 			}
@@ -37,18 +37,18 @@ export async function transpile(model: ProjectBuildData, context: ScriptContext)
 			});
 			if (output.outputText) {
 				let result = output.outputText.substring(0, output.outputText.indexOf('\n//# sourceMappingURL='));
-				if (sourceMapIndex !== -1) {
-					result +=
-						'\n' +
-						combine
-							.create(mappedFile)
-							.addFile({
-								source: originalContent,
-								sourceFile: mappedFile
-							})
-							.addFile({ source: output.outputText, sourceFile: mappedFile })
-							.comment();
-				}
+				// if (sourceMapIndex !== -1) {
+				// 	result +=
+				// 		'\n' +
+				// 		combine
+				// 			.create(mappedFile)
+				// 			.addFile({
+				// 				source: originalContent,
+				// 				sourceFile: mappedFile
+				// 			})
+				// 			.addFile({ source: output.outputText, sourceFile: mappedFile })
+				// 			.comment();
+				// }
 
 				await model.fileSystem.writeFile(file, result);
 			} else {
