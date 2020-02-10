@@ -47,7 +47,7 @@ NodeJS:
 Browser:
 
 -   [x] Auto npm install
--   [ ] Import from npm
+-   [x] Import from npm
 -   [ ] Import from github
 -   [ ] Import from url
 -   [ ] Import wasm
@@ -65,6 +65,6 @@ Browser:
 -   [ ] Deploy
 -   [ ] Host project
 -   [ ] Run Tests
--   [ ] Produce working output
+-   [x] Produce working output
 
 More platforms and features to be announced
