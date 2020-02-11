@@ -31,6 +31,9 @@
             "barrel_file": [
                 "projects/business_logic/plugins/barrel_file"
             ],
+            "bundle": [
+                "projects/business_logic/plugins/bundle"
+            ],
             "meta_programming": [
                 "projects/business_logic/plugins/meta_programming"
             ],

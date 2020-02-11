@@ -9,6 +9,7 @@ import { barrelFile } from 'barrel_file';
 import { output } from 'output_plugin';
 import { runtime } from 'runtime';
 import { npmImporter } from 'npm_importer';
+import { bundle } from 'bundle';
 
 export function loadBuildPlugin(plugin: OctopackBuildPluginModel): OctoPackBuildPlugin {
 	if (typeof plugin === 'string') {
@@ -32,6 +33,8 @@ function initializePlugin(name: string, args: MapLike<any>): OctoPackBuildPlugin
 			return metaProgramming(args);
 		case 'barrelFile':
 			return barrelFile(args);
+		case 'bundle':
+			return bundle(args);
 		case 'output':
 			return output(args);
 		case 'runtime':

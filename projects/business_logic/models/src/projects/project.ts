@@ -6,6 +6,7 @@ export interface Project {
 	path: string;
 	projectDependencies: Set<Project>;
 	fileDependencies: Map<string, string>;
+	virtualFileImports: Map<string, string>;
 	rawConfig: OctopackConfiguration;
 	resolvedConfig: OctopackConfiguration;
 }

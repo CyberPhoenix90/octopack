@@ -8,6 +8,7 @@ const barrel_file_1 = require("barrel_file");
 const output_plugin_1 = require("output_plugin");
 const runtime_1 = require("runtime");
 const npm_importer_1 = require("npm_importer");
+const bundle_1 = require("bundle");
 function loadBuildPlugin(plugin) {
     if (typeof plugin === 'string') {
         return initializePlugin(plugin, {});
@@ -31,6 +32,8 @@ function initializePlugin(name, args) {
             return meta_programming_1.metaProgramming(args);
         case 'barrelFile':
             return barrel_file_1.barrelFile(args);
+        case 'bundle':
+            return bundle_1.bundle(args);
         case 'output':
             return output_plugin_1.output(args);
         case 'runtime':

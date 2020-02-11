@@ -1753,13 +1753,26 @@ function generateNodeJsRuntime(model, runtime, path) {
     if (model.project.projectDependencies.size) {
         runtime.push(`
 ${createImportMap(model, path, model.flags.remapImportSource)}
+${createVirtualFileMap(model, path)}
 const mod = require('module');
+const {resolve, relative} = require('path');
 
 const original = mod.prototype.require;
 mod.prototype.require = function(path, ...args) {
-	if (importData[path]) {
-		path = importData[path];
-		return original.call(module, path, ...args);
+
+	let resolvedPath = path;
+	if(resolvedPath.startsWith('.')) {
+		resolvedPath = relative(__dirname,resolve(module.path, path))
+		if(virtualFiles[resolvedPath]) {
+			const code = virtualFiles[resolvedPath];
+			code(require, exports, module);
+			return;
+		} else {
+			return original.call(this, path, ...args);
+		}
+	} else if (importData[resolvedPath]) {
+		resolvedPath = importData[resolvedPath];
+		return original.call(module, resolvedPath, ...args);
 	} else {
 		return original.call(this, path, ...args);
 	}
@@ -1786,4 +1799,11 @@ function createImportMap(model, path, remap) {
         result.push(`'${dep}': '${depPath}'`);
     }
     return `const importData = {${result.join(',')}}`;
+}
+function createVirtualFileMap(model, path) {
+    const result = [];
+    for (const filePath of model.project.virtualFileImports.keys()) {
+        result.push(`'${filePath}': (require, exports, module) => (${model.project.virtualFileImports.get(filePath)})`);
+    }
+    return `const virtualFiles = {${result.join(',')}}`;
 }

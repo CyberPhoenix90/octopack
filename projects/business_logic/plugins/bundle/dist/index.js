@@ -3,7 +3,7 @@ function __export(m) {
     for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
 }
 Object.defineProperty(exports, "__esModule", { value: true });
-const importData = { 'file_system': '../../file_system' };
+const importData = { 'models': '../../../models' };
 const virtualFiles = {};
 const mod = require('module');
 const { resolve, relative } = require('path');
@@ -29,4 +29,4 @@ mod.prototype.require = function (path, ...args) {
         return original.call(this, path, ...args);
     }
 };
-__export(require("./file_manipulator"));
+__export(require("./bundle"));
