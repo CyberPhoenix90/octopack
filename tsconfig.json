@@ -76,6 +76,9 @@
             "utilities": [
                 "projects/libraries/utilities"
             ],
+            "webserver": [
+                "projects/libraries/webserver"
+            ],
             "server": [
                 "projects/server"
             ]

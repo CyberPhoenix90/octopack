@@ -9,7 +9,7 @@ function bundle(args) {
         context.uiLogger.info(`[${model.project.resolvedConfig.name}]Creating bundle`);
         const outputDir = path_1.join(model.project.path, model.project.resolvedConfig.build.bundles[model.bundle].output);
         for (const file of model.output) {
-            if (!file.endsWith('.d.ts') && (file.endsWith('.ts') || file.endsWith('.tsx'))) {
+            if (!file.endsWith('.js')) {
                 continue;
             }
             if (file.startsWith(outputDir)) {

@@ -12,7 +12,7 @@ export function bundle(args: MapLike<any>): OctoPackBuildPlugin {
 		const outputDir = join(model.project.path, model.project.resolvedConfig.build.bundles[model.bundle].output);
 
 		for (const file of model.output) {
-			if (!file.endsWith('.d.ts') && (file.endsWith('.ts') || file.endsWith('.tsx'))) {
+			if (!file.endsWith('.js')) {
 				continue;
 			}
 

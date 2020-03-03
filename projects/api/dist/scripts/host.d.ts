@@ -5,5 +5,7 @@ export declare class Host extends Script {
     autoComplete(): Promise<string[]>;
     help(): Help;
     run(args: ParsedArguments, context: ScriptContext): Promise<ScriptStatus>;
+    private submitFile;
+    private getMimeType;
 }
 //# sourceMappingURL=host.d.ts.map

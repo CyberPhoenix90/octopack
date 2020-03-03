@@ -1,0 +1,11 @@
+{
+	"name": "@octopack/webserver",
+	"version": "0.0.0",
+	"main": "dist/index.js",
+	"typings": "dist/index.d.ts",
+	"dependencies": {
+		"@types/minimatch": "^3.0.3",
+		"@types/node": "^13.1.2",
+		"minimatch": "^3.0.4"
+	}
+}

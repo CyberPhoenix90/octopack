@@ -3,7 +3,7 @@ function __export(m) {
     for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
 }
 Object.defineProperty(exports, "__esModule", { value: true });
-const importData = { 'config_resolver': '../../business_logic/config_resolver', 'models': '../../business_logic/models', 'argument_parser': '../../libraries/argument_parser', 'compiler': '../../business_logic/compiler', 'plugin_loader': '../../business_logic/plugin_loader' };
+const importData = { 'config_resolver': '../../business_logic/config_resolver', 'models': '../../business_logic/models', 'argument_parser': '../../libraries/argument_parser', 'compiler': '../../business_logic/compiler', 'plugin_loader': '../../business_logic/plugin_loader', 'webserver': '../../libraries/webserver' };
 const virtualFiles = {};
 const mod = require('module');
 const { resolve, relative } = require('path');
