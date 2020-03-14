@@ -3,12 +3,12 @@ import * as minimatch from 'minimatch';
 import { MapLike } from '../../../../typings/common';
 
 export enum HTTPVerb {
-	POST,
-	GET,
-	PUT,
-	DELETE,
-	HEAD,
-	OPTIONS
+	POST = 'POST',
+	GET = 'GET',
+	PUT = 'PUT',
+	DELETE = 'DELETE',
+	HEAD = 'HEAD',
+	OPTIONS = 'OPTIONS'
 }
 
 export interface WebServerConfig {
@@ -148,5 +148,20 @@ export class WebServer {
 				}
 			}
 		});
+	}
+}
+
+export function getMimeType(extension: string): string {
+	switch (extension) {
+		case 'html':
+			return 'text/html';
+		case 'js':
+			return 'text/javascript';
+		case 'css':
+			return 'text/css';
+		case 'woff2':
+			return 'font/woff2';
+		default:
+			return 'text/plain';
 	}
 }

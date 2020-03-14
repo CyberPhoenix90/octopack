@@ -10,6 +10,7 @@ interface DefinedModule {
 	name: string;
 	url: string;
 	exports: any;
+	done: boolean;
 }
 
 var { define, require } = (() => {
@@ -40,6 +41,10 @@ var { define, require } = (() => {
 		dependencies: string[],
 		callback: (...args: any[]) => any
 	): Promise<void> {
+		if (mod.done) {
+			return mod.exports;
+		}
+
 		const args = [];
 		for (const dep of dependencies) {
 			switch (dep) {
@@ -64,6 +69,7 @@ var { define, require } = (() => {
 			mod.exports = ret;
 		}
 		context = undefined;
+		mod.done = true;
 		mod.definePromiseResolve();
 	}
 
@@ -83,7 +89,7 @@ var { define, require } = (() => {
 			await defineByUrlMap[url].definePromise;
 			return defineByUrlMap[url].exports;
 		}
-		throw new Error('Script ' + url + ' did not define expected module');
+		return undefined;
 	}
 
 	function download(url: string): Promise<void> {
@@ -157,6 +163,7 @@ var { define, require } = (() => {
 		const mod: DefinedModule = {
 			name,
 			url,
+			done: false,
 			definePromise: p,
 			definePromiseResolve: r,
 			exports: defineByUrlMap[url]?.exports ?? {}
@@ -179,6 +186,7 @@ var { define, require } = (() => {
 				name: document.currentScript?.src,
 				//@ts-ignore
 				url: document.currentScript?.src,
+				done: false,
 				definePromise: p,
 				definePromiseResolve: r,
 				exports: {}

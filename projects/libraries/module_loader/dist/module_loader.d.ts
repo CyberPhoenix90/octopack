@@ -10,6 +10,7 @@ interface DefinedModule {
     name: string;
     url: string;
     exports: any;
+    done: boolean;
 }
 declare var define: {
     (name: string, dependenies: string[], callback?: () => void): void;
