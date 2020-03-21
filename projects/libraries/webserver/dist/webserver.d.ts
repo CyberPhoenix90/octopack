@@ -1,12 +1,12 @@
 /// <reference types="node" />
 import * as http from 'http';
 export declare enum HTTPVerb {
-    POST = 0,
-    GET = 1,
-    PUT = 2,
-    DELETE = 3,
-    HEAD = 4,
-    OPTIONS = 5
+    POST = "POST",
+    GET = "GET",
+    PUT = "PUT",
+    DELETE = "DELETE",
+    HEAD = "HEAD",
+    OPTIONS = "OPTIONS"
 }
 export interface WebServerConfig {
     port: number;
@@ -33,4 +33,5 @@ export declare class WebServer {
     private getMessageHandlers;
     private onMessage;
 }
+export declare function getMimeType(extension: string): string;
 //# sourceMappingURL=webserver.d.ts.map

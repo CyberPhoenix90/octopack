@@ -14,10 +14,11 @@ interface DefinedModule {
 }
 
 var { define, require } = (() => {
+	const pendingDownload: { [key: string]: Promise<void> } = {};
 	const defineByNameMap: { [key: string]: DefinedModule } = {};
 	const defineByUrlMap: { [key: string]: DefinedModule } = {};
 	const config: Config = {
-		baseUrl: location.href.substring(0, location.href.lastIndexOf('/')),
+		baseUrl: location.origin + location.pathname.substring(0, location.pathname.lastIndexOf('/')),
 		paths: {}
 	};
 	let context: DefinedModule = undefined;
@@ -79,11 +80,19 @@ var { define, require } = (() => {
 		}
 		let url = resolveUrl(mod.url, dep);
 
+		if (url in pendingDownload) {
+			await pendingDownload[url];
+		}
+
 		if (url in defineByUrlMap) {
+			await defineByUrlMap[url].definePromise;
 			return defineByUrlMap[url].exports;
 		}
 
-		await download(url);
+		const promise = download(url);
+		pendingDownload[url] = promise;
+		await promise;
+		delete pendingDownload[url];
 
 		if (url in defineByUrlMap) {
 			await defineByUrlMap[url].definePromise;
@@ -124,8 +133,10 @@ var { define, require } = (() => {
 			}
 			if (dependency.startsWith('/')) {
 				url = join(location.origin, dependency);
-			} else {
+			} else if (!dependency.includes('://')) {
 				url = join(config.baseUrl, dependency);
+			} else {
+				url = dependency;
 			}
 		}
 
@@ -194,8 +205,8 @@ var { define, require } = (() => {
 			requireFor(mod, files, callback);
 		} else {
 			const id = resolveUrl(context?.url, files);
-			if (id in defineByNameMap) {
-				return defineByNameMap[id].exports;
+			if (files in defineByNameMap) {
+				return defineByNameMap[files].exports;
 			} else if (id in defineByUrlMap) {
 				return defineByUrlMap[id].exports;
 			} else {
@@ -205,6 +216,15 @@ var { define, require } = (() => {
 	}
 
 	require.config = function(c: Config) {
+		if (c.paths) {
+			for (const id in c.paths) {
+				if (c.paths[id].startsWith('.')) {
+					//@ts-ignore
+					c.paths[id] = resolveUrl(document.currentScript?.src, c.paths[id]);
+				}
+			}
+		}
+
 		for (const key in c) {
 			//@ts-ignore
 			if (!config[key]) {

@@ -3,12 +3,12 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const http = require("http");
 const minimatch = require("minimatch");
 (function (HTTPVerb) {
-    HTTPVerb[HTTPVerb["POST"] = 0] = "POST";
-    HTTPVerb[HTTPVerb["GET"] = 1] = "GET";
-    HTTPVerb[HTTPVerb["PUT"] = 2] = "PUT";
-    HTTPVerb[HTTPVerb["DELETE"] = 3] = "DELETE";
-    HTTPVerb[HTTPVerb["HEAD"] = 4] = "HEAD";
-    HTTPVerb[HTTPVerb["OPTIONS"] = 5] = "OPTIONS";
+    HTTPVerb["POST"] = "POST";
+    HTTPVerb["GET"] = "GET";
+    HTTPVerb["PUT"] = "PUT";
+    HTTPVerb["DELETE"] = "DELETE";
+    HTTPVerb["HEAD"] = "HEAD";
+    HTTPVerb["OPTIONS"] = "OPTIONS";
 })(exports.HTTPVerb || (exports.HTTPVerb = {}));
 class WebServer {
     constructor(config) {
@@ -119,3 +119,18 @@ class WebServer {
     }
 }
 exports.WebServer = WebServer;
+function getMimeType(extension) {
+    switch (extension) {
+        case 'html':
+            return 'text/html';
+        case 'js':
+            return 'text/javascript';
+        case 'css':
+            return 'text/css';
+        case 'woff2':
+            return 'font/woff2';
+        default:
+            return 'text/plain';
+    }
+}
+exports.getMimeType = getMimeType;
