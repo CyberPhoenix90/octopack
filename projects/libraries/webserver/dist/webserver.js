@@ -63,7 +63,8 @@ class WebServer {
             const data = Buffer.concat(chunks);
             const wrappedRequest = {
                 body: data,
-                url: req.url,
+                url: req.url.split('?')[0],
+                query: req.url.split('?')[1],
                 method: req.method
             };
             try {

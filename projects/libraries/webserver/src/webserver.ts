@@ -18,6 +18,7 @@ export interface WebServerConfig {
 
 export interface HttpRequest {
 	url: string;
+	query?: string;
 	body: Buffer;
 	method: HTTPVerb;
 }
@@ -98,7 +99,8 @@ export class WebServer {
 			const data = Buffer.concat(chunks);
 			const wrappedRequest: HttpRequest = {
 				body: data,
-				url: req.url,
+				url: req.url.split('?')[0],
+				query: req.url.split('?')[1],
 				method: (req.method as any) as HTTPVerb
 			};
 			try {

@@ -14,6 +14,7 @@ export interface WebServerConfig {
 }
 export interface HttpRequest {
     url: string;
+    query?: string;
     body: Buffer;
     method: HTTPVerb;
 }
