@@ -1,4 +1,4 @@
-Octopack is an upcoming all in one solution for javascript and typescript infrastructure needs for projects of all sizes. From simple hobby projects all the way to multimillion LOC enterprise projects spanning multiple github repos and teams.
+Octopack is an upcoming all in one solution for javascript and typescript infrastructure needs for projects of all sizes. From simple hobby projects all the way to multimillion LOC enterprise projects spanning multiple git repos and teams.
 
 Octopack is still in very early stages. It is not recommended to try to use it at this stage. If you want to follow the progress we have a feature checklist below. Not all features that will exist are in that list.
 
